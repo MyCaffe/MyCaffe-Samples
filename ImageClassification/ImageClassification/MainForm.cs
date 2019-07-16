@@ -445,6 +445,7 @@ namespace ImageClassification
             string strModel;
 
             load_descriptors("mnist", out strSolver, out strModel); // Load the descriptors from their respective files (installed by MyCaffe Test Application install)
+            // NOTE: model fixup not need for we will use the DATA layer which pulls data from SQL or SQLEXPRESS via the MyCaffeImageDatabase.
             strSolver = fixup_solver(strSolver, 10000); // set the interval beyond the iterations to skip testing during solving.
 
             DatasetFactory factory = new DatasetFactory();
