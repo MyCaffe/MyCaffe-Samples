@@ -21,6 +21,9 @@ using System.Windows.Forms;
 
 namespace ImageClassification
 {
+    /// <summary>
+    /// The MainForm class for Image Classification Samples.
+    /// </summary>
     public partial class MainForm : Form
     {
         CancelEvent m_evtCancel = new CancelEvent();
@@ -31,6 +34,9 @@ namespace ImageClassification
         string[] m_rgstrTestingFiles;
         CryptoRandom m_random;
 
+        /// <summary>
+        /// The constructor.
+        /// </summary>
         public MainForm()
         {
             InitializeComponent();
@@ -107,11 +113,22 @@ namespace ImageClassification
             return solver_param.ToProto("root").ToString();
         }
 
+        /// <summary>
+        /// Create a file name from the image index and simple datum making sure to add the image label to the file name.
+        /// </summary>
+        /// <param name="nIdx">Specifies the image index.</param>
+        /// <param name="sd">Specifies the SimpleDatum containing the image data.</param>
+        /// <returns>The file name is returned.</returns>
         private string getFileName(int nIdx, SimpleDatum sd)
         {
             return "img_" + nIdx.ToString() + "-" + sd.Label.ToString() + ".png";
         }
 
+        /// <summary>
+        /// Retrieve the label name from an image file name.
+        /// </summary>
+        /// <param name="strFile">Specifies the file name.</param>
+        /// <returns>The label value is returned.</returns>
         private int getLabelFromFileName(string strFile)
         {
             int nPos = strFile.IndexOf('-');
@@ -128,6 +145,12 @@ namespace ImageClassification
             return int.Parse(strLabel);
         }
 
+        /// <summary>
+        /// Export images (from the image database) to file for several of the samples.
+        /// </summary>
+        /// <param name="strDsName">Specifies the dataset name.</param>
+        /// <param name="strType">Specifies the type 'training' or 'testing'.</param>
+        /// <param name="strDir">Specifies the directory.</param>
         private void export_images(string strDsName, string strType, string strDir)
         {
             if (!Directory.Exists(strDir))
@@ -166,6 +189,13 @@ namespace ImageClassification
             }
         }
 
+        /// <summary>
+        /// Load a batch of data by randomly selecting from the files and loading the data into the data and label blobs.
+        /// </summary>
+        /// <param name="rgstrFiles">Specifies the image files to select from.</param>
+        /// <param name="nBatchSize">Specifies the batch size.</param>
+        /// <param name="dataBlob">Specifies the data blob to load with image data.</param>
+        /// <param name="labelBlob">Specifies the label blob to load with label data.</param>
         private void loadData(string[] rgstrFiles, int nBatchSize, Blob<float> dataBlob, Blob<float> labelBlob)
         {
             List<float> rgData = new List<float>();
@@ -308,6 +338,7 @@ namespace ImageClassification
             MessageBox.Show("Average Accuracy = " + dfAccuracy.ToString("P"), "Traing/Test on MNIST Completed", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+
         //-----------------------------------------------------------------------------------------
         //  Simpler Classification (using solver)
         //-----------------------------------------------------------------------------------------
@@ -359,6 +390,11 @@ namespace ImageClassification
             MessageBox.Show("Average Accuracy = " + dfAccuracy.ToString("P"), "Traing/Test on MNIST Completed", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        /// <summary>
+        /// Event called at the start of each testing pass.
+        /// </summary>
+        /// <param name="sender">Specifies the solver firing the event.</param>
+        /// <param name="e">Specifies the event args.</param>
         private void Solver_OnTestStart(object sender, EventArgs e)
         {
             Solver<float> solver = sender as Solver<float>;
@@ -370,6 +406,11 @@ namespace ImageClassification
             loadData(m_rgstrTrainingFiles, 32, dataBlob, labelBlob);
         }
 
+        /// <summary>
+        /// Event called at the start of each training pass.
+        /// </summary>
+        /// <param name="sender">Specifies the solver firing the event.</param>
+        /// <param name="e">Specifies the event args.</param>
         private void Solver_OnStart(object sender, EventArgs e)
         {
             Solver<float> solver = sender as Solver<float>;
@@ -381,10 +422,16 @@ namespace ImageClassification
             loadData(m_rgstrTestingFiles, 32, dataBlob, labelBlob);
         }
 
+
         //-----------------------------------------------------------------------------------------
         //  Simplest Classification (using MyCaffeControl and MyCaffeImageDatabase)
         //-----------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// The SimplerClassification shows how to the MyCaffeControl (and internal MyCaffeImageDatabase) to train and test on the MNIST dataset.
+        /// </summary>
+        /// <param name="sender">Specifies the event sender.</param>
+        /// <param name="e">Specifies the event args.</param>
         private void btnSimplestClassification_Click(object sender, EventArgs e)
         {
             Stopwatch sw = new Stopwatch();
