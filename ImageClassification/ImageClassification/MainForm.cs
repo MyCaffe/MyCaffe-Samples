@@ -436,7 +436,6 @@ namespace ImageClassification
         private void btnSimplestClassification_Click(object sender, EventArgs e)
         {
             Stopwatch sw = new Stopwatch();
-            int nBatchSize = 32;
             SettingsCaffe settings = new SettingsCaffe();
             settings.ImageDbLoadMethod = IMAGEDB_LOAD_METHOD.LOAD_ALL;  // load all images into memory before training.
             settings.GpuIds = "0";
