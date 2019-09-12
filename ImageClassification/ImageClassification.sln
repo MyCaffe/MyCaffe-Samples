@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.757
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageClassification", "ImageClassification\ImageClassification.csproj", "{638B5B0B-B97F-4DBE-AE7C-67B53AA7490E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageClassificationBareBones", "ImageClassificationBareBones\ImageClassificationBareBones.csproj", "{626D3B4C-30A0-4957-B965-B6757D1B1D69}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{638B5B0B-B97F-4DBE-AE7C-67B53AA7490E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{638B5B0B-B97F-4DBE-AE7C-67B53AA7490E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{638B5B0B-B97F-4DBE-AE7C-67B53AA7490E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{626D3B4C-30A0-4957-B965-B6757D1B1D69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{626D3B4C-30A0-4957-B965-B6757D1B1D69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{626D3B4C-30A0-4957-B965-B6757D1B1D69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{626D3B4C-30A0-4957-B965-B6757D1B1D69}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
