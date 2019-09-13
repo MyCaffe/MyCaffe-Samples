@@ -32,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AleControlLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f59a5464a77ea1ad, processorArchitecture=MSIL">
