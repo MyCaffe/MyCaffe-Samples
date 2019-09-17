@@ -36,11 +36,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AleControlLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f59a5464a77ea1ad, processorArchitecture=MSIL">
-      <HintPath>..\packages\AleControl.0.10.1.169-beta1\lib\net40\AleControlLib.dll</HintPath>
+      <HintPath>..\packages\AleControl.0.10.1.221-beta1\lib\net40\AleControlLib.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="CudaControlLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f59a5464a77ea1ad, processorArchitecture=MSIL">
-      <HintPath>..\packages\CudaControl.0.10.1.169-beta1\lib\net40\CudaControlLib.dll</HintPath>
+      <HintPath>..\packages\CudaControl.0.10.1.221-beta1\lib\net40\CudaControlLib.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -58,32 +58,32 @@
     <Reference Include="Microsoft.SqlServer.Types, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.SqlServer.Types.14.0.314.76\lib\net40\Microsoft.SqlServer.Types.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe, Version=0.10.1.169, Culture=neutral, PublicKeyToken=40efa406af72d203, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.10.1.169-beta1\lib\net40\MyCaffe.dll</HintPath>
+    <Reference Include="MyCaffe, Version=0.10.1.221, Culture=neutral, PublicKeyToken=40efa406af72d203, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.10.1.221-beta1\lib\net40\MyCaffe.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.basecode, Version=0.10.1.169, Culture=neutral, PublicKeyToken=da09778f48a756ef, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.10.1.169-beta1\lib\net40\MyCaffe.basecode.dll</HintPath>
+    <Reference Include="MyCaffe.basecode, Version=0.10.1.221, Culture=neutral, PublicKeyToken=da09778f48a756ef, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.10.1.221-beta1\lib\net40\MyCaffe.basecode.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.db.image, Version=0.10.1.169, Culture=neutral, PublicKeyToken=28fbed6f5155dac1, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.10.1.169-beta1\lib\net40\MyCaffe.db.image.dll</HintPath>
+    <Reference Include="MyCaffe.db.image, Version=0.10.1.221, Culture=neutral, PublicKeyToken=28fbed6f5155dac1, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.10.1.221-beta1\lib\net40\MyCaffe.db.image.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.db.stream, Version=0.10.1.169, Culture=neutral, PublicKeyToken=0ace0a87fc7b019d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.10.1.169-beta1\lib\net40\MyCaffe.db.stream.dll</HintPath>
+    <Reference Include="MyCaffe.db.stream, Version=0.10.1.221, Culture=neutral, PublicKeyToken=0ace0a87fc7b019d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.10.1.221-beta1\lib\net40\MyCaffe.db.stream.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.extras, Version=0.10.1.169, Culture=neutral, PublicKeyToken=3f98a055c0abf5a4, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.10.1.169-beta1\lib\net40\MyCaffe.extras.dll</HintPath>
+    <Reference Include="MyCaffe.extras, Version=0.10.1.221, Culture=neutral, PublicKeyToken=3f98a055c0abf5a4, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.10.1.221-beta1\lib\net40\MyCaffe.extras.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.gym, Version=0.10.1.169, Culture=neutral, PublicKeyToken=dbcb41420a003db4, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.10.1.169-beta1\lib\net40\MyCaffe.gym.dll</HintPath>
+    <Reference Include="MyCaffe.gym, Version=0.10.1.221, Culture=neutral, PublicKeyToken=dbcb41420a003db4, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.10.1.221-beta1\lib\net40\MyCaffe.gym.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.gym.python, Version=0.10.1.169, Culture=neutral, PublicKeyToken=f234fbf693eeff0f, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.10.1.169-beta1\lib\net40\MyCaffe.gym.python.dll</HintPath>
+    <Reference Include="MyCaffe.gym.python, Version=0.10.1.221, Culture=neutral, PublicKeyToken=f234fbf693eeff0f, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.10.1.221-beta1\lib\net40\MyCaffe.gym.python.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.preprocessor, Version=0.10.1.169, Culture=neutral, PublicKeyToken=aa7e9fd5d6875c9b, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.10.1.169-beta1\lib\net40\MyCaffe.preprocessor.dll</HintPath>
+    <Reference Include="MyCaffe.preprocessor, Version=0.10.1.221, Culture=neutral, PublicKeyToken=aa7e9fd5d6875c9b, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.10.1.221-beta1\lib\net40\MyCaffe.preprocessor.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.trainers, Version=0.10.1.169, Culture=neutral, PublicKeyToken=b36f2786de43a412, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.10.1.169-beta1\lib\net40\MyCaffe.trainers.dll</HintPath>
+    <Reference Include="MyCaffe.trainers, Version=0.10.1.221, Culture=neutral, PublicKeyToken=b36f2786de43a412, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.10.1.221-beta1\lib\net40\MyCaffe.trainers.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -179,6 +179,6 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /s /y "$(SolutionDir)packages\HDF5DotNet.x64.1.8.9\NativeBinaries\*.*" "$(TargetDir)"
-xcopy /s /y "$(SolutionDir)packages\MyCaffe.0.10.1.169-beta1\NativeBinaries\x64\*.*" "$(TargetDir)"</PostBuildEvent>
+xcopy /s /y "$(SolutionDir)packages\MyCaffe.0.10.1.221-beta1\NativeBinaries\x64\*.*" "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

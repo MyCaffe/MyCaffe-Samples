@@ -192,7 +192,6 @@ namespace ImageClassificationBareBones
 
             MyCaffeControl<float> mycaffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel);
 
-#warning COMPILE ERROR - requires the new MyCaffeControl.LoadLite function which will be added in the next MyCaffe release.  To get this working, add the LoadLite function on line 1044 of https://github.com/MyCaffe/MyCaffe/blob/master/MyCaffe/MyCaffeControl.cs to your MyCaffeControl and rebuild.
             mycaffe.LoadLite(Phase.TRAIN,   // using the training phase. 
                          strSolver,     // solver descriptor, that specifies to use the SGD solver.
                          strModel,      // simple LENET model descriptor.
@@ -293,7 +292,6 @@ namespace ImageClassificationBareBones
             strSolver = fixup_solver(strSolver, 10000); // set the interval beyond the iterations to skip testing during solving.
 
             MyCaffeControl<float> mycaffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel);
-#warning COMPILE ERROR - requires the new MyCaffeControl.LoadLite function which will be added in the next MyCaffe release.  To get this working, add the LoadLite function on line 1044 of https://github.com/MyCaffe/MyCaffe/blob/master/MyCaffe/MyCaffeControl.cs to your MyCaffeControl and rebuild.
             mycaffe.LoadLite(Phase.TRAIN,   // using the training phase. 
                          strSolver,     // solver descriptor, that specifies to use the SGD solver.
                          strModel,      // simple LENET model descriptor.
