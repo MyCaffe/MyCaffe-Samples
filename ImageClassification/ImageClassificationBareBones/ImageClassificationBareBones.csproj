@@ -89,19 +89,8 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="models\dqn\atari\solver.prototxt" />
-    <None Include="models\dqn\atari\train_val.prototxt" />
-    <None Include="models\dqn\cartpole\solver.prototxt" />
-    <None Include="models\dqn\cartpole\train_val.prototxt" />
     <None Include="models\mnist\lenet_solver.prototxt" />
     <None Include="models\mnist\lenet_train_test.prototxt" />
-    <None Include="models\pg\atari\solver.prototxt" />
-    <None Include="models\pg\atari\train_val.prototxt" />
-    <None Include="models\pg\cartpole\solver.prototxt" />
-    <None Include="models\pg\cartpole\train_val.prototxt" />
-    <None Include="models\rnn\char_rnn\solver.prototxt" />
-    <None Include="models\rnn\char_rnn\train_val_cudnn.prototxt" />
-    <None Include="models\vgg\vgg19\neuralstyle\deploy.prototxt" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -112,18 +101,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="roms\breakout.bin" />
-    <None Include="roms\defender.bin" />
-    <None Include="roms\pong.bin" />
-    <None Include="roms\space_invaders.bin" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="data\char-rnn\shakespeare.txt" />
-    <Content Include="data\neuralstyle\content.jpg" />
-    <Content Include="data\neuralstyle\style.jpg" />
     <Content Include="Powered by MyCaffe 100.png" />
     <Content Include="Powered by MyCaffe 275.png" />
   </ItemGroup>
