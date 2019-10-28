@@ -181,6 +181,12 @@ namespace ImageClassificationBareBones
             SettingsCaffe settings = new SettingsCaffe();
             settings.GpuIds = "0";
 
+            if (!Directory.Exists(m_strImageDirTraining) || !Directory.Exists(m_strImageDirTesting))
+            {
+                MessageBox.Show("You must first 'export' the images by running the 'ImageClassification' sample and pressing the 'Export Images' button.", "Images Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             m_rgstrTrainingFiles = Directory.GetFiles(m_strImageDirTraining);
             m_rgstrTestingFiles = Directory.GetFiles(m_strImageDirTesting);
 
@@ -281,6 +287,12 @@ namespace ImageClassificationBareBones
             SettingsCaffe settings = new SettingsCaffe();
             settings.GpuIds = "0";
 
+            if (!Directory.Exists(m_strImageDirTraining) || !Directory.Exists(m_strImageDirTesting))
+            {
+                MessageBox.Show("You must first 'export' the images by running the 'ImageClassification' sample and pressing the 'Export Images' button.", "Images Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             m_rgstrTrainingFiles = Directory.GetFiles(m_strImageDirTraining);
             m_rgstrTestingFiles = Directory.GetFiles(m_strImageDirTesting);
 
@@ -308,7 +320,7 @@ namespace ImageClassificationBareBones
 
             // Run the solver to test the net (using its internal test net)
             nIterations = 100;
-            double dfAccuracy = solver.Test(nIterations);
+            double dfAccuracy = solver.TestClassification(nIterations);
 
             m_log.WriteLine("Accuracy = " + dfAccuracy.ToString("P"));
 
