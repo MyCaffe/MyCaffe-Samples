@@ -174,6 +174,12 @@ namespace ImageClassification
 
             // Save all testing images.
             int nCount = db.ImageCount(nSrcId);
+            if (nCount == 0)
+            {
+                MessageBox.Show("You must run the MyCaffe Test Application (see https://github.com/MyCaffe/MyCaffe/releases), create the database and Load MNIST by selecting the 'Database | Load MNIST...' menu.", strDsName + " not found!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             for (int i = 0; i < nCount; i++)
             {
                 SimpleDatum sd = db.QueryImage(nSrcId, i, IMGDB_LABEL_SELECTION_METHOD.NONE, IMGDB_IMAGE_SELECTION_METHOD.NONE);
@@ -384,7 +390,7 @@ namespace ImageClassification
 
             // Run the solver to test the net (using its internal test net)
             nIterations = 100;
-            double dfAccuracy = solver.Test(nIterations);
+            double dfAccuracy = solver.TestClassification(nIterations);
 
             m_log.WriteLine("Accuracy = " + dfAccuracy.ToString("P"));
 
