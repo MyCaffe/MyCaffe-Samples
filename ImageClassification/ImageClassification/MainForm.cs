@@ -252,6 +252,8 @@ namespace ImageClassification
         /// sample above).
         /// </summary>
         /// <remarks>
+        /// IMPORTANT: This sample is for demonstration, using the Simplest Classification method is the fastest recommended method that uses the Image Database. 
+        /// 
         /// This sample requires that you have already loaded the MNIST dataset into SQL (or SQLEXPRESS) using the MyCaffe
         /// Test Application by selecting its 'Database | Load MNIST...' menu item.
         /// </remarks>
@@ -263,6 +265,12 @@ namespace ImageClassification
             int nBatchSize = 32;
             SettingsCaffe settings = new SettingsCaffe();
             settings.GpuIds = "0";
+
+            if (!Directory.Exists(m_strImageDirTesting) || !Directory.Exists(m_strImageDirTraining))
+            {
+                MessageBox.Show("You must first export the MNIST images by pressing the Export button!", "Export Needed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             m_rgstrTrainingFiles = Directory.GetFiles(m_strImageDirTraining);
             m_rgstrTestingFiles = Directory.GetFiles(m_strImageDirTesting);
@@ -354,6 +362,12 @@ namespace ImageClassification
         /// The SimplerClassification shows how to use the solver directly and load data via its OnStart (for training) and
         /// OnTestStart (for testing) events.
         /// </summary>
+        /// <remarks>
+        /// IMPORTANT: This sample is for demonstration, using the Simplest Classification method is the fastest recommended method that uses the Image Database. 
+        /// 
+        /// This sample requires that you have already loaded the MNIST dataset into SQL (or SQLEXPRESS) using the MyCaffe
+        /// Test Application by selecting its 'Database | Load MNIST...' menu item.
+        /// </remarks>
         /// <param name="sender">Specifies the event sender.</param>
         /// <param name="e">Specifies the event args.</param>
         private void btnSimplerClassification_Click(object sender, EventArgs e)
@@ -362,6 +376,12 @@ namespace ImageClassification
             int nBatchSize = 32;
             SettingsCaffe settings = new SettingsCaffe();
             settings.GpuIds = "0";
+
+            if (!Directory.Exists(m_strImageDirTesting) || !Directory.Exists(m_strImageDirTraining))
+            {
+                MessageBox.Show("You must first export the MNIST images by pressing the Export button!", "Export Needed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             m_rgstrTrainingFiles = Directory.GetFiles(m_strImageDirTraining);
             m_rgstrTestingFiles = Directory.GetFiles(m_strImageDirTesting);
@@ -435,7 +455,7 @@ namespace ImageClassification
         //-----------------------------------------------------------------------------------------
 
         /// <summary>
-        /// The SimplerClassification shows how to the MyCaffeControl (and internal MyCaffeImageDatabase) to train and test on the MNIST dataset.
+        /// The SimplestClassification shows how to the MyCaffeControl (and internal MyCaffeImageDatabase) to train and test on the MNIST dataset.
         /// </summary>
         /// <param name="sender">Specifies the event sender.</param>
         /// <param name="e">Specifies the event args.</param>
