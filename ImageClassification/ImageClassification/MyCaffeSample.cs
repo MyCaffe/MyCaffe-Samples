@@ -44,7 +44,7 @@ namespace MyCaffeSample
     /// 5.) Register the file 'packages\CudaControl.x.x.x.x\nativeBinaries\x64\CudaControl.dll'
     ///     by running the command 'regsvr32.exe CudaControl.dll' from a CMD window with
     ///     Administrative privileges.
-    /// 6.) Copy the file 'packages\MyCaffe.x.x.x.x\nativeBinaries\x64\CudaDnnDll.10.0.dll'
+    /// 6.) Copy the file 'packages\MyCaffe.x.x.x.x\nativeBinaries\x64\CudaDnnDll.10.1.dll'
     ///     to the output 'bin\x64\Debug' and 'bin\x64\Release' directories for this
     ///     DLL provides your connection to CUDA.
     /// 7.) IMPORTANT: Setup your project to build to the x64 Platform Target by unchecking
@@ -144,6 +144,73 @@ namespace MyCaffeSample
         }
 
         /// <summary>
+        /// The Initialize function shows how to create MyCaffe and load a siamese project into it. 
+        /// </summary>
+        /// <remarks>
+        /// MyCaffe organizes datasets and models by project where each project contains 
+        /// the following:
+        ///     a.) The Solver Description
+        ///     b.) The Model Descrption
+        ///     c.) The Dataset (a reference to the Dataset in the database)
+        ///     d.) The Model Results (trained weights)
+        ///     
+        /// The example function below loads a new project used to run the Siamese model
+        /// on the MNIST dataset.
+        /// </remarks>
+        /// <param name="loadMethod">Specifies how the images are to be loaded (e.g. on demand, all at once, etc.)</param>
+        public void InitializeSiamese(IMAGEDB_LOAD_METHOD loadMethod)
+        {
+            try
+            {
+                //---------------------------------------------------
+                // The Default SQL instance is used by 'default'.
+                // To change to a different instance, uncomment the
+                //  line below which will then use the 'SQLEXPRESS' 
+                //  instance.
+                //---------------------------------------------------
+                // EntitiesConnection.GlobalDatabaseServerName = ".\\SQLEXPRESS";
+
+                // Load the MNIST dataset descriptor (not the images)
+                DatasetFactory factory = new DatasetFactory();
+                DatasetDescriptor ds = factory.LoadDataset("MNIST");
+
+                // Create the LeNet project.
+                ProjectEx prj = new ProjectEx("SiameseNet");
+
+                // Load the LeNet model and solver desciptions into the project.
+                string strDir = Path.GetFullPath("..\\..\\..\\models\\siamese\\mnist\\");
+                if (!Directory.Exists(strDir))
+                    strDir = Path.GetFullPath("..\\..\\models\\siamese\\mnist\\");
+
+                prj.LoadModelFile(strDir + "train_val.prototxt");
+                prj.LoadSolverFile(strDir + "solver.prototxt");
+                // Set the project dataset to the MNIST dataset.
+                prj.SetDataset(ds);
+
+                // Setup the MyCaffe initialization settings.
+                SettingsCaffe settings = new SettingsCaffe();
+                settings.GpuIds = "0";  // use GPU 0.
+                settings.ImageDbLoadMethod = loadMethod;
+
+                // Setup the MyCaffe output log.
+                m_log = new Log("Test");
+                m_log.OnWriteLine += Log_OnWriteLine;
+
+                // Create the MyCaffeControl 
+                m_caffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel);
+
+                // Load the project into MyCaffe.  This steps will load the images
+                // into the MyCafffe in-memory Image Database and create a connection
+                // to the GPU used.
+                m_caffe.Load(Phase.TRAIN, prj);
+            }
+            catch (Exception excpt)
+            {
+                MessageBox.Show("ERROR: " + excpt.Message + "\n\nMake sure that you are building this project for x64!", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
         /// Output from the training and testing operations will go to this even.
         /// </summary>
         /// <remarks>
@@ -162,7 +229,7 @@ namespace MyCaffeSample
         public void Train()
         {
             m_evtCancel.Reset();
-            m_caffe.Train(1000);
+            m_caffe.Train(2000);
         }
 
         /// <summary>
@@ -222,6 +289,18 @@ namespace MyCaffeSample
             sample.Dispose();
 
             MessageBox.Show("The MNIST trained accuracy = " + dfAccuracy.ToString("P"));
+        }
+
+        public static void RunSiameseSample(IMAGEDB_LOAD_METHOD loadMethod = IMAGEDB_LOAD_METHOD.LOAD_ALL)
+        {
+            MyCaffeSample sample = new MyCaffeSample();
+
+            sample.InitializeSiamese(loadMethod);
+            sample.Train();
+            double dfAccuracy = sample.Test();
+            sample.Dispose();
+
+            MessageBox.Show("The MNIST trained with SiameseNet accuracy = " + dfAccuracy.ToString("P"));
         }
     }
 
