@@ -62,8 +62,16 @@ namespace BlobUsage
             Blob<float> blobResult = scalar2.Clone();
             cuda.add(scalar1.count(), scalar1.gpu_data, scalar2.gpu_data, blobResult.mutable_gpu_data);
 
-            // Transfer the data back to CPU memory and return the result.
-            return blobResult.mutable_cpu_data;
+            // Transfer the data back to CPU memory.
+            float[] rgRes = blobResult.mutable_cpu_data;
+
+            // Free up any resources used (including any GPU memory used).
+            scalar1.Dispose();
+            scalar2.Dispose();
+            blobResult.Dispose();
+
+            // Return the result.
+            return rgRes;
         }
     }
 }
