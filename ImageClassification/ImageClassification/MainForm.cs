@@ -464,7 +464,9 @@ namespace ImageClassification
             DatasetFactory factory = new DatasetFactory();
             Stopwatch sw = new Stopwatch();
             SettingsCaffe settings = new SettingsCaffe();
-            settings.ImageDbLoadMethod = IMAGEDB_LOAD_METHOD.LOAD_ALL;  // load all images into memory before training.
+            // Load all images into memory before training.
+            settings.ImageDbLoadMethod = IMAGEDB_LOAD_METHOD.LOAD_ALL;  
+            // Use GPU ID = 0.
             settings.GpuIds = "0";
 
             string strSolver;
