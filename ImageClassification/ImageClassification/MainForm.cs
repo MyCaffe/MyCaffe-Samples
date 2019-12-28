@@ -461,6 +461,7 @@ namespace ImageClassification
         /// <param name="e">Specifies the event args.</param>
         private void btnSimplestClassification_Click(object sender, EventArgs e)
         {
+            DatasetFactory factory = new DatasetFactory();
             Stopwatch sw = new Stopwatch();
             SettingsCaffe settings = new SettingsCaffe();
             settings.ImageDbLoadMethod = IMAGEDB_LOAD_METHOD.LOAD_ALL;  // load all images into memory before training.
@@ -469,30 +470,38 @@ namespace ImageClassification
             string strSolver;
             string strModel;
 
-            load_descriptors("mnist", out strSolver, out strModel); // Load the descriptors from their respective files (installed by MyCaffe Test Application install)
-            // NOTE: model fixup not need for we will use the DATA layer which pulls data from SQL or SQLEXPRESS via the MyCaffeImageDatabase.
-            strSolver = fixup_solver(strSolver, 10000); // set the interval beyond the iterations to skip testing during solving.
+            // Load the descriptors from their respective files (installed by MyCaffe Test Application install)
+            load_descriptors("mnist", out strSolver, out strModel);
 
-            DatasetFactory factory = new DatasetFactory();
+            // NOTE: model fixup not needed for we will use the DATA layer which pulls data from SQL or SQLEXPRESS via the MyCaffeImageDatabase.
+            // Set the interval beyond the iterations to skip testing during solving.
+            strSolver = fixup_solver(strSolver, 10000); 
+
+            // Load the MNIST dataset descriptor.
             DatasetDescriptor ds = factory.LoadDataset("MNIST");
+
+            // Create a test project with the dataset and descriptors.
             ProjectEx project = new ProjectEx("Test");
             project.SetDataset(ds);
             project.ModelDescription = strModel;
             project.SolverDescription = strSolver;
             project.WeightsState = null;
 
+            // Create the MyCaffeControl
             MyCaffeControl<float> mycaffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel);
-            mycaffe.Load(Phase.TRAIN,   // using the training phase. 
-                         project);       // useing the project with the dataset, model and solver descriptions.
 
-            // Use MyCaffe to do the training (which uses the internal solver and internal training net)
+            // Load the project, using the TRAIN phase.
+            mycaffe.Load(Phase.TRAIN, project);       
+
+            // Trian the model for 5000 interations (which uses the internal solver and internal training net)
             int nIterations = 5000;
             mycaffe.Train(nIterations);
 
-            // Use MyCaffe to do the testing (which uses the internal solver and internal testing net)
+            // Test the model for 100 iterations (which uses the internal solver and internal testing net)
             nIterations = 100;
             double dfAccuracy = mycaffe.Test(nIterations);
 
+            // Report the testing accuracy.
             m_log.WriteLine("Accuracy = " + dfAccuracy.ToString("P"));
 
             MessageBox.Show("Average Accuracy = " + dfAccuracy.ToString("P"), "Traing/Test on MNIST Completed", MessageBoxButtons.OK, MessageBoxIcon.Information);
