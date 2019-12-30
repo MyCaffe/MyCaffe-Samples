@@ -299,32 +299,43 @@ namespace ImageClassificationBareBones
             string strSolver;
             string strModel;
 
-            load_descriptors("mnist", out strSolver, out strModel); // Load the descriptors from their respective files (installed by MyCaffe Test Application install)
+            // Load the descriptors from their respective files 
+            // (installed by MyCaffe Test Application install)
+            load_descriptors("mnist", out strSolver, out strModel); 
             strModel = fixup_model(strModel, nBatchSize);
-            strSolver = fixup_solver(strSolver, 10000); // set the interval beyond the iterations to skip testing during solving.
+            // set the interval beyond the iterations to skip testing during solving.
+            strSolver = fixup_solver(strSolver, 10000); 
 
+            // Create the MyCaffeControl.
             MyCaffeControl<float> mycaffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel);
-            mycaffe.LoadLite(Phase.TRAIN,   // using the training phase. 
-                         strSolver,     // solver descriptor, that specifies to use the SGD solver.
-                         strModel,      // simple LENET model descriptor.
-                         null);         // no weights are loaded.
 
-            // Perform your own training
+            // Load the solver and model descriptors without the Image Database.
+            mycaffe.LoadLite(Phase.TRAIN,   // using the training phase. 
+                         strSolver,         // solver descriptor, that specifies to use the SGD solver.
+                         strModel,          // simple LENET model descriptor.
+                         null);             // no weights are loaded.
+
+            // Load your own data via the OnStart and OnTestStart
+            // events each called at the start of the Training
+            // and Testing iterations respectively.
             Solver<float> solver = mycaffe.GetInternalSolver();
             solver.OnStart += Solver_OnStart;
             solver.OnTestStart += Solver_OnTestStart;
 
             // Run the solver to train the net.
             int nIterations = 5000;
-            solver.Solve(nIterations);
+            mycaffe.Train(nIterations);
 
             // Run the solver to test the net (using its internal test net)
             nIterations = 100;
-            double dfAccuracy = solver.TestClassification(nIterations);
+            double dfAccuracy = mycaffe.Test(nIterations);
 
+            // Report the testing accuracy.
             m_log.WriteLine("Accuracy = " + dfAccuracy.ToString("P"));
 
             MessageBox.Show("Average Accuracy = " + dfAccuracy.ToString("P"), "Traing/Test on MNIST Completed", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            // Release any resources used.
+            mycaffe.Dispose();
         }
 
         /// <summary>
