@@ -12,7 +12,6 @@ def onWriteLine(sender, e):
 log = Log('test')
 log.OnWriteLine += onWriteLine
 cancel = CancelEvent()
-factory = DatasetFactory()
 settings = SettingsCaffe()
 
 # Load all images into memory before training
@@ -28,6 +27,7 @@ file = open("C:\\ProgramData\\MyCaffe\\test_data\\models\\mnist\\lenet_train_tes
 strModel = file.read()
 
 # Load the MNIST dataset descriptor.
+factory = DatasetFactory()
 ds = factory.LoadDataset('MNIST')
 
 # Create a test project with the dataset and descriptors
