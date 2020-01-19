@@ -1,3 +1,13 @@
+# This sample requires installing the MyCaffe AI Platform first which is located at
+# https://github.com/MyCaffe/MyCaffe/releases
+# Once installed, make sure to create the create the database and load the MNIST dataset
+# which are completed by doing the following:
+#    a.) Install Microsoft SQL Express (or SQL)
+#    b.) Run the MyCaffe Test Application
+#    c.) Create the Database - select the 'Database | Create Database' menu.
+#    d.) Load MNIST - select the 'Database | Load MNIST' menu.
+#    e.) Create a 64-bit Python environment.
+#    f.) Install PythonNet - run 'pip install pythonnet'
 import clr
 clr.AddReference('C:\Program Files\SignalPop\MyCaffe\MyCaffe.dll')
 from MyCaffe import *
