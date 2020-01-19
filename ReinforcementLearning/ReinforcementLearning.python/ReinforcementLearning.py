@@ -1,7 +1,8 @@
 # == Reinforcement Learning Sample ==
-# IMPORTANT: This sample requires MyCaffe version 0.10.2.119 or greater.
-# This sample requires first installing the MyCaffe AI Platform which is located at
-# https://github.com/MyCaffe/MyCaffe/releases
+# IMPORTANT: This sample requires MyCaffe version 0.10.2.120 or greater.
+# This sample requires:
+#   * Installing and running the MyCaffe AI Platform which is located at
+#     https://github.com/MyCaffe/MyCaffe/releases
 # Once installed, make sure to create the database and load the MNIST dataset
 # which are completed by doing the following:
 #    a.) Install Microsoft SQL Express (or SQL)
@@ -210,7 +211,7 @@ strModel = file.read()
 try:
     ds = gym.GetDataset(DATA_TYPE.VALUES)
 except Exception as e:
-    print("You must have MyCaffe version 0.10.2.119 or greater to run this sample!")
+    print("You must have MyCaffe version 0.10.2.120 or greater to run this sample!")
     print(".")
     print(".")
     quit()
