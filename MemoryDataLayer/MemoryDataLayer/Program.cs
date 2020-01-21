@@ -128,7 +128,7 @@ namespace MemoryDataLayer
             // Load a set of 10 datums with the same raw data.
             for (int i = 0; i < 10; i++)
             {
-                Datum d = new Datum(false, 1, 60, 1, i, DateTime.MinValue, rgRawData, null, 0, false, i);
+                Datum d = new Datum(false, 1, 60, 1, i, DateTime.MinValue, rgRawData, 0, false, i);
                 rgData.Add(d);
             }
 

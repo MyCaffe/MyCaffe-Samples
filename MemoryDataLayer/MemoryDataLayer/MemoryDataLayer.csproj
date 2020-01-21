@@ -32,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -49,11 +50,11 @@
     <Reference Include="Microsoft.SqlServer.Types, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.SqlServer.Types.14.0.314.76\lib\net40\Microsoft.SqlServer.Types.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe, Version=0.10.2.38, Culture=neutral, PublicKeyToken=40efa406af72d203, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.10.2.38-beta1\lib\net40\MyCaffe.dll</HintPath>
+    <Reference Include="MyCaffe, Version=0.10.2.124, Culture=neutral, PublicKeyToken=40efa406af72d203, processorArchitecture=AMD64">
+      <HintPath>..\packages\MyCaffe.0.10.2.124-beta1\lib\net40\MyCaffe.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.basecode, Version=0.10.2.38, Culture=neutral, PublicKeyToken=da09778f48a756ef, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.10.2.38-beta1\lib\net40\MyCaffe.basecode.dll</HintPath>
+    <Reference Include="MyCaffe.basecode, Version=0.10.2.124, Culture=neutral, PublicKeyToken=da09778f48a756ef, processorArchitecture=AMD64">
+      <HintPath>..\packages\MyCaffe.0.10.2.124-beta1\lib\net40\MyCaffe.basecode.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -82,6 +83,6 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /s /y "$(SolutionDir)packages\HDF5DotNet.x64.1.8.9\NativeBinaries\*.*" "$(TargetDir)"
-xcopy /s /y "$(SolutionDir)packages\MyCaffe.0.10.2.38-beta1\NativeBinaries\x64\*.*" "$(TargetDir)"</PostBuildEvent>
+xcopy /s /y "$(SolutionDir)packages\MyCaffe.0.10.2.124-beta1\NativeBinaries\x64\*.*" "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
