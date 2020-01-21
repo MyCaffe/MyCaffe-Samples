@@ -198,7 +198,7 @@ log.OnWriteLine += onWriteLine
 cancel = CancelEvent()
 settings = SettingsCaffe()
 
-# Load all images into memory before training
+# Load on demand used for data is received from the Gym.
 settings.ImageDbLoadMethod = IMAGEDB_LOAD_METHOD.LOAD_ON_DEMAND
 # Use GPU ID = 0
 settings.GpuIds = '0'
