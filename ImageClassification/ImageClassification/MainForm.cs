@@ -166,7 +166,7 @@ namespace ImageClassification
             settings.ImageDbLoadMethod = IMAGEDB_LOAD_METHOD.LOAD_ON_DEMAND;
 
             MyCaffeImageDatabase db = new MyCaffeImageDatabase(m_log);
-            db.InitializeWithDsName(settings, strDsName);
+            db.InitializeWithDsName1(settings, strDsName);
             DatasetDescriptor ds = db.GetDatasetByName(strDsName);
             int nSrcId = (strType == "training") ? ds.TrainingSource.ID : ds.TestingSource.ID;
 
@@ -217,7 +217,7 @@ namespace ImageClassification
                 Bitmap bmp = new Bitmap(strFile);
                 int nLabel = getLabelFromFileName(strFile);
 
-                Datum d = ImageData.GetImageData(bmp, 1, false, nLabel);
+                Datum d = ImageData.GetImageDataD(bmp, 1, false, nLabel);
                 rgData.AddRange(d.ByteData.Select(p => (float)p * fScale));
                 rgLabel.Add(nLabel);
                 bmp.Dispose();

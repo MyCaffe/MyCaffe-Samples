@@ -147,7 +147,7 @@ namespace ImageClassificationBareBones
                 Bitmap bmp = new Bitmap(strFile);
                 int nLabel = getLabelFromFileName(strFile);
 
-                Datum d = ImageData.GetImageData(bmp, 1, false, nLabel);
+                Datum d = ImageData.GetImageDataD(bmp, 1, false, nLabel);
                 rgData.AddRange(d.ByteData.Select(p => (float)p * fScale));
                 rgLabel.Add(nLabel);
                 bmp.Dispose();

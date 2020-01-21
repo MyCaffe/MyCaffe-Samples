@@ -283,6 +283,8 @@ namespace MyCaffeSample
         {
             MyCaffeSample sample = new MyCaffeSample();
 
+            MessageBox.Show("Welcome to the LeNet Classification Sample - all output is sent to the Visual Studio Output window.", "LeNet Classification Sample");
+
             sample.Initialize(loadMethod);
             sample.Train();
             double dfAccuracy = sample.Test();
@@ -294,6 +296,8 @@ namespace MyCaffeSample
         public static void RunSiameseSample(IMAGEDB_LOAD_METHOD loadMethod = IMAGEDB_LOAD_METHOD.LOAD_ALL)
         {
             MyCaffeSample sample = new MyCaffeSample();
+
+            MessageBox.Show("Welcome to the Siamese Classification Sample - all output is sent to the Visual Studio Output window.", "Siamese Classification Sample");
 
             sample.InitializeSiamese(loadMethod);
             sample.Train();
@@ -520,6 +524,8 @@ namespace MyCaffeSample
         {
             if (evtCancel != null)
                 evtCancel.Reset();
+
+            MessageBox.Show("Welcome to the Policy Gradient Reinforcement Learning Sample - all output is sent to the Visual Studio Output window.", "Policy Gradient Sample");
 
             MyCaffeGymUiServiceHost gymHost = new MyCaffeGymUiServiceHost();
 
@@ -790,6 +796,7 @@ namespace MyCaffeSample
             if (evtCancel != null)
                 evtCancel.Reset();
 
+            MessageBox.Show("Welcome to the DQN Reinforcement Learning Sample - all output is sent to the Visual Studio Output window.", "DQN Sample");
 
             // Setup the MyCaffe output log.
             if (log == null)
@@ -904,11 +911,11 @@ namespace MyCaffeSample
             Tuple<Bitmap, SimpleDatum> data = m_igym.Render(bShowUi, 512, 512, true);
             int nDataLen = 0;
             SimpleDatum stateData = state.Item1.GetData(m_bNormalizeInput, out nDataLen);
-            Observation obs = new Observation(null, ImageData.GetImage(data.Item2), m_igym.RequiresDisplayImage, stateData.RealData, state.Item2, state.Item3);
+            Observation obs = new Observation(null, ImageData.GetImage(data.Item2), m_igym.RequiresDisplayImage, stateData.RealDataD, state.Item2, state.Item3);
 
             e.State = new StateBase(m_igym.GetActionSpace().Count());
             e.State.Reward = obs.Reward;
-            e.State.Data = new SimpleDatum(true, nDataLen, 1, 1, -1, DateTime.Now, null, stateData.RealData.ToList(), 0, false, 0);
+            e.State.Data = new SimpleDatum(true, nDataLen, 1, 1, -1, DateTime.Now, stateData.RealDataD.ToList(), 0, false, 0);
             e.State.Done = obs.Done;
             e.State.IsValid = true;
 
@@ -1017,7 +1024,7 @@ namespace MyCaffeSample
             Tuple<Bitmap, SimpleDatum> data = m_igym.Render(bShowUi, 512, 512, true);
             int nDataLen = 0;
             SimpleDatum stateData = state.Item1.GetData(false, out nDataLen);
-            Observation obs = new Observation(data.Item1, ImageData.GetImage(data.Item2), m_igym.RequiresDisplayImage, stateData.RealData, state.Item2, state.Item3);
+            Observation obs = new Observation(data.Item1, ImageData.GetImage(data.Item2), m_igym.RequiresDisplayImage, stateData.RealDataD, state.Item2, state.Item3);
 
             e.State = new StateBase(m_igym.GetActionSpace().Count());
             e.State.Reward = obs.Reward;
@@ -1277,6 +1284,8 @@ namespace MyCaffeSample
         {
             if (evtCancel != null)
                 evtCancel.Reset();
+
+            MessageBox.Show("Welcome to the Recurrent CharRNN Sample - all output is sent to the Visual Studio Output window.", "CharRNN Sample");
 
             // Setup the MyCaffe output log.
             if (log == null)
@@ -1808,6 +1817,8 @@ namespace MyCaffeSample
         {
             if (evtCancel != null)
                 evtCancel.Reset();
+
+            MessageBox.Show("Welcome to the Neural Style Sample - all output is sent to the Visual Studio Output window.", "Neural Style Sample");
 
             // Setup the MyCaffe output log.
             if (log == null)

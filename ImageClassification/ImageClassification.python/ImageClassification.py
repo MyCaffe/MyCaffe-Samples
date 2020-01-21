@@ -1,5 +1,8 @@
-# This sample requires first installing the MyCaffe AI Platform which is located at
-# https://github.com/MyCaffe/MyCaffe/releases
+# == Image Classification Sample ==
+# IMPORTANT: This sample requires the MyCaffe AI Platform version 0.10.2.124 or greater.
+# This sample requires:
+#   * Installing and running the MyCaffe AI Platform which is located at
+#     https://github.com/MyCaffe/MyCaffe/releases
 # Once installed, make sure to create the database and load the MNIST dataset
 # which are completed by doing the following:
 #    a.) Install Microsoft SQL Express (or SQL)
@@ -9,6 +12,7 @@
 # After loading MNIST, you will need to then do the following:
 #    e.) Create a 64-bit Python environment.
 #    f.) Install PythonNet - run 'pip install pythonnet'
+
 import clr
 clr.AddReference('C:\Program Files\SignalPop\MyCaffe\MyCaffe.dll')
 from MyCaffe import *
