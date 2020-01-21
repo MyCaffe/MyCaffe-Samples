@@ -88,7 +88,7 @@ nIterations = 1200
 mycaffe.Train(nIterations)
 
 # Test the model for 100 iterations
-# (which uses the internal solver and internal testing net)
+# (which uses the internal testing net)
 nIterations = 100
 dfAccuracy = mycaffe.Test(nIterations)
 
