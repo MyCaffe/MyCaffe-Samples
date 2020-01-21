@@ -1,5 +1,5 @@
 # == Reinforcement Learning Sample ==
-# IMPORTANT: This sample requires MyCaffe version 0.10.2.120 or greater.
+# IMPORTANT: This sample requires the MyCaffe AI Platform version 0.10.2.124 or greater.
 # This sample requires:
 #   * Installing and running the MyCaffe AI Platform which is located at
 #     https://github.com/MyCaffe/MyCaffe/releases
@@ -12,6 +12,9 @@
 # After loading MNIST, you will need to then do the following:
 #    e.) Create a 64-bit Python environment.
 #    f.) Install PythonNet - run 'pip install pythonnet'
+#
+# NOTE: The MyCaffe Test Application must be running when using this script, for the
+# test application hosts the Cart-Pole gym used.
 
 import clr
 clr.AddReference('C:\Program Files\SignalPop\MyCaffe\MyCaffe.dll')
