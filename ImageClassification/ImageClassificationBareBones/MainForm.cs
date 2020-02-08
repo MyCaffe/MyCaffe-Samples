@@ -183,7 +183,17 @@ namespace ImageClassificationBareBones
 
             if (!Directory.Exists(m_strImageDirTraining) || !Directory.Exists(m_strImageDirTesting))
             {
-                MessageBox.Show("You must first 'export' the images by running the 'ImageClassification' sample and pressing the 'Export Images' button.", "Images Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                string strMsg = "You must first expand the MNIST dataset into the following directories:" + Environment.NewLine;
+                strMsg += "Training Images: '" + m_strImageDirTraining + "'" + Environment.NewLine;
+                strMsg += "Testing Images: '" + m_strImageDirTesting + "'" + Environment.NewLine + Environment.NewLine;
+
+                strMsg += "If you have Microsoft SQL or SQL Express installed, selecting the 'Export' button from the 'ImageClassification' project will export these images for you." + Environment.NewLine + Environment.NewLine;
+
+                strMsg += "If you DO NOT have Microsoft SQL or SQL Express, running the MyCaffe Test Application and selecting the 'Database | Load MNIST...' menu item with the 'Export to file only' check box checked, will export the images for you without SQL." + Environment.NewLine + Environment.NewLine;
+
+                strMsg += "To get the MNIST *.gz data files, please see http://yann.lecun.com/exdb/mnist/";
+
+                MessageBox.Show(strMsg, "Images Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
