@@ -11,6 +11,7 @@ using MyCaffe.param.beta;
 using MyCaffe.basecode;
 using MyCaffe.db.image;
 using MyCaffe.basecode.descriptors;
+using System.ServiceProcess;
 
 /// <summary>
 /// OneShot Learning Sample
@@ -30,6 +31,9 @@ namespace OneShotLearning
     {
         static void Main(string[] args)
         {
+            if (!sqlCheck())
+                return;
+
             Log log = new Log("test");
             log.OnWriteLine += Log_OnWriteLine;
             CancelEvent cancel = new CancelEvent();
@@ -83,6 +87,30 @@ namespace OneShotLearning
             log.WriteLine("Accuracy = " + dfAccuracy.ToString("P"));
 
             mycaffe.Dispose();
+        }
+
+        private static bool sqlCheck()
+        {
+            List<string> rgSqlInst = DatabaseInstanceQuery.GetInstances();
+
+            if (rgSqlInst == null || rgSqlInst.Count == 0)
+            {
+                string strMsg = "The ImageClassification sample requires Microsoft SQL or Microsoft SQL Express.  You must download and install 'Microsoft SQL' or 'Microsoft SQL Express' first!" + Environment.NewLine;
+                strMsg += "see 'https://www.microsoft.com/en-us/sql-server/sql-server-editions-express'";
+                Console.WriteLine("ERROR: " + strMsg);
+                return false;
+            }
+
+            string strService = rgSqlInst[0].TrimStart('.', '\\');
+            ServiceController sc = new ServiceController(strService);
+            if (sc.Status != ServiceControllerStatus.Running)
+            {
+                string strMsg = "We found the Microsoft SQL instance '" + rgSqlInst[0] + "', but it is not running.  You must start the SQL service to continue with this sample.";
+                Console.WriteLine("ERROR: " + strMsg);
+                return false;
+            }
+
+            return true;
         }
 
         private static void Log_OnWriteLine(object sender, LogArg e)
