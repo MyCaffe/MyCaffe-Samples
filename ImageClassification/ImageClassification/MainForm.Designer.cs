@@ -85,6 +85,7 @@
             this.Controls.Add(this.btnSimpleClassification);
             this.Name = "MainForm";
             this.Text = "Image Classification";
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.ResumeLayout(false);
 
         }

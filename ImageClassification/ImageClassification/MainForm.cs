@@ -15,6 +15,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -507,6 +508,30 @@ namespace ImageClassification
             m_log.WriteLine("Accuracy = " + dfAccuracy.ToString("P"));
 
             MessageBox.Show("Average Accuracy = " + dfAccuracy.ToString("P"), "Traing/Test on MNIST Completed", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            List<string> rgSqlInst = DatabaseInstanceQuery.GetInstances();
+
+            if (rgSqlInst == null || rgSqlInst.Count == 0)
+            {
+                string strMsg = "The ImageClassification sample requires Microsoft SQL or Microsoft SQL Express.  You must download and install 'Microsoft SQL' or 'Microsoft SQL Express' first!" + Environment.NewLine;
+                strMsg += "see 'https://www.microsoft.com/en-us/sql-server/sql-server-editions-express'";
+                MessageBox.Show(strMsg, "Microsoft SQL Not Found", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                Close();
+                return;
+            }
+
+            string strService = rgSqlInst[0].TrimStart('.', '\\');
+            ServiceController sc = new ServiceController(strService);
+            if (sc.Status != ServiceControllerStatus.Running)
+            {
+                string strMsg = "We found the Microsoft SQL instance '" + rgSqlInst[0] + "', but it is not running.  You must start the SQL service to continue.";
+                MessageBox.Show(strMsg, "Microsoft SQL Service NOT running", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                Close();
+                return;
+            }
         }
     }
 }
