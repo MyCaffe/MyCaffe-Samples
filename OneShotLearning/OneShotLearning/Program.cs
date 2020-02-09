@@ -102,10 +102,13 @@ namespace OneShotLearning
             }
 
             string strService = rgSqlInst[0].TrimStart('.', '\\');
+            if (strService == "SQLEXPRESS")
+                strService = "MSSQL$" + strService;
+
             ServiceController sc = new ServiceController(strService);
             if (sc.Status != ServiceControllerStatus.Running)
             {
-                string strMsg = "We found the Microsoft SQL instance '" + rgSqlInst[0] + "', but it is not running.  You must start the SQL service to continue with this sample.";
+                string strMsg = "Microsoft SQL instance '" + rgSqlInst[0] + "' found, but it is not running.  You must start the SQL service to continue with this sample.";
                 Console.WriteLine("ERROR: " + strMsg);
                 return false;
             }
