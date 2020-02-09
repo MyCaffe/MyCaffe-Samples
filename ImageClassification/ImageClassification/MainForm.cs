@@ -524,10 +524,13 @@ namespace ImageClassification
             }
 
             string strService = rgSqlInst[0].TrimStart('.', '\\');
+            if (strService == "SQLEXPRESS")
+                strService = "MSSQL$" + strService;
+
             ServiceController sc = new ServiceController(strService);
             if (sc.Status != ServiceControllerStatus.Running)
             {
-                string strMsg = "We found the Microsoft SQL instance '" + rgSqlInst[0] + "', but it is not running.  You must start the SQL service to continue.";
+                string strMsg = "Microsoft SQL instance '" + rgSqlInst[0] + "' found, but it is not running.  You must start the SQL service to continue.";
                 MessageBox.Show(strMsg, "Microsoft SQL Service NOT running", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 Close();
                 return;
