@@ -281,8 +281,20 @@ namespace ImageClassificationBareBones
             // Save the trained weights for use later.
             saveWeights(mycaffe, "my_weights");
 
+#if VER_10_2_160
+            Bitmap bmp = new Bitmap(m_rgstrTestingFiles[0]);
+            ResultCollection results = mycaffe.Run(bmp);
+
+            MyCaffeControl<float> mycaffe2 = mycaffe.Clone(0);
+            ResultCollection results2 = mycaffe2.Run(bmp);
+#endif
+
             // Release resources used.
             mycaffe.Dispose();
+
+#if VER_10_2_160
+            mycaffe2.Dispose();
+#endif
         }
 
 
@@ -353,6 +365,11 @@ namespace ImageClassificationBareBones
 
             // Save the trained weights for use later.
             saveWeights(mycaffe, "my_weights");
+
+#if VER_10_2_160
+            Bitmap bmp = new Bitmap(m_rgstrTestingFiles[0]);
+            ResultCollection results = mycaffe.Run(bmp);
+#endif
 
             // Release any resources used.
             mycaffe.Dispose();
@@ -480,8 +497,12 @@ namespace ImageClassificationBareBones
             string strDir = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\MyCaffe\\test_data\\models\\mnist\\";
             string strFile = strDir + strName + ".mycaffemodel";
 
+#if VER_10_2_160
+            byte[] rgWeights = mycaffe.GetWeights();
+#else
             Net<float> net = mycaffe.GetInternalNet(Phase.TRAIN);
             byte[] rgWeights = net.SaveWeights(mycaffe.Persist, false);
+#endif
 
             if (File.Exists(strFile))
                 File.Delete(strFile);
