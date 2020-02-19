@@ -275,8 +275,14 @@ namespace ImageClassificationBareBones
 
             double dfAccuracy = (double)fTotalAccuracy / (double)nIterations;
             m_log.WriteLine("Accuracy = " + dfAccuracy.ToString("P"));
-
+           
             MessageBox.Show("Average Accuracy = " + dfAccuracy.ToString("P"), "Traing/Test on MNIST Completed", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            // Save the trained weights for use later.
+            saveWeights(mycaffe, "my_weights");
+
+            // Release resources used.
+            mycaffe.Dispose();
         }
 
 
@@ -344,6 +350,10 @@ namespace ImageClassificationBareBones
             m_log.WriteLine("Accuracy = " + dfAccuracy.ToString("P"));
 
             MessageBox.Show("Average Accuracy = " + dfAccuracy.ToString("P"), "Traing/Test on MNIST Completed", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            // Save the trained weights for use later.
+            saveWeights(mycaffe, "my_weights");
+
             // Release any resources used.
             mycaffe.Dispose();
         }
@@ -378,6 +388,124 @@ namespace ImageClassificationBareBones
             Blob<float> labelBlob = net.blob_by_name("label");
 
             loadData(m_rgstrTestingFiles, 32, dataBlob, labelBlob);
+        }
+
+
+        //-----------------------------------------------------------------------------------------
+        //  Using trained weights.
+        //-----------------------------------------------------------------------------------------
+
+        private void btnTestTrainedWeights_Click(object sender, EventArgs e)
+        {
+            Stopwatch sw = new Stopwatch();
+            byte[] rgWeights = loadWeights("my_weights");
+            if (rgWeights == null)
+            {
+                MessageBox.Show("You must first run the 'Simple Classification' or 'Simpler Classification' first to save the weights.", "No Weights Found", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
+            if (!Directory.Exists(m_strImageDirTraining) || !Directory.Exists(m_strImageDirTesting))
+            {
+                MessageBox.Show("You must first 'export' the images by running the 'ImageClassification' sample and pressing the 'Export Images' button.", "Images Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (m_rgstrTestingFiles == null || m_rgstrTestingFiles.Length == 0)
+                m_rgstrTestingFiles = Directory.GetFiles(m_strImageDirTesting);
+
+            SettingsCaffe settings = new SettingsCaffe();
+            settings.GpuIds = "0";
+
+            string strSolver; // not used
+            string strModel;
+
+            // Load the descriptors from their respective files 
+            // (installed by MyCaffe Test Application install)
+            load_descriptors("mnist", out strSolver, out strModel);
+            strModel = fixup_model(strModel, 1);
+
+            // Create the MyCaffeControl.
+            MyCaffeControl<float> mycaffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel);
+            mycaffe.LoadToRun(strModel, rgWeights, new BlobShape(1, 1, 28, 28));
+
+            int nCorrectCount = 0;
+            int nTotalCount = 0;
+
+            sw.Start();
+
+            for (int i=0; i<m_rgstrTestingFiles.Length; i++)
+            {
+                string strFile = m_rgstrTestingFiles[i];
+                string strExt = Path.GetExtension(strFile).ToLower();
+
+                if (strExt == ".png")
+                {
+                    // Get the label from the image file name.
+                    int nLabel = getLabelFromFileName(strFile);
+
+                    // Load the image file into a datum.
+                    Bitmap bmp = new Bitmap(strFile);
+                    Datum d = ImageData.GetImageDataF(bmp, 1, false, nLabel);
+
+                    // Run the trained model on the datum.
+                    // Note, could also use mycaffe.Run(bmp) for same result.
+                    ResultCollection result = mycaffe.Run(d);
+                    if (result.DetectedLabel == d.Label)
+                        nCorrectCount++;
+
+                    nTotalCount++;
+                    bmp.Dispose();
+
+                    // Output progress
+                    if (sw.Elapsed.TotalMilliseconds >= 1000)
+                    {
+                        double dfProgressPct = ((double)i / m_rgstrTestingFiles.Length);
+                        double dfAccuracy = ((double)nCorrectCount / (double)nTotalCount);
+                        Trace.WriteLine("(" + dfProgressPct.ToString("P") + ") accuracy = " + dfAccuracy.ToString("P"));
+                        sw.Restart();
+                    }
+                }
+            }
+
+            double dfTotalAccuracy = ((double)nCorrectCount / (double)nTotalCount);
+            MessageBox.Show("Total accuracy = " + dfTotalAccuracy.ToString("P"), "Testing Weights", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            // Release all resources used.
+            mycaffe.Dispose();
+        }
+
+        private void saveWeights(MyCaffeControl<float> mycaffe, string strName)
+        {
+            string strDir = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\MyCaffe\\test_data\\models\\mnist\\";
+            string strFile = strDir + strName + ".mycaffemodel";
+
+            Net<float> net = mycaffe.GetInternalNet(Phase.TRAIN);
+            byte[] rgWeights = net.SaveWeights(mycaffe.Persist, false);
+
+            if (File.Exists(strFile))
+                File.Delete(strFile);
+
+            using (FileStream fs = File.OpenWrite(strFile))
+            using (BinaryWriter bw = new BinaryWriter(fs))
+            {
+                bw.Write(rgWeights);
+            }
+        }
+
+        private byte[] loadWeights(string strName)
+        {
+            string strDir = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\MyCaffe\\test_data\\models\\mnist\\";
+            string strFile = strDir + strName + ".mycaffemodel";
+
+            if (!File.Exists(strFile))
+                return null;
+
+            using (FileStream fs = File.OpenRead(strFile))
+            using (BinaryReader br = new BinaryReader(fs))
+            {
+                return br.ReadBytes((int)fs.Length);
+            }
         }
     }
 }

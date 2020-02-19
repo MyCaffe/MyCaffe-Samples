@@ -30,6 +30,7 @@
         {
             this.btnSimplerClassification = new System.Windows.Forms.Button();
             this.btnSimpleClassification = new System.Windows.Forms.Button();
+            this.btnTestTrainedWeights = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnSimplerClassification
@@ -52,11 +53,22 @@
             this.btnSimpleClassification.UseVisualStyleBackColor = true;
             this.btnSimpleClassification.Click += new System.EventHandler(this.btnSimpleClassification_Click);
             // 
+            // btnTestTrainedWeights
+            // 
+            this.btnTestTrainedWeights.Location = new System.Drawing.Point(12, 41);
+            this.btnTestTrainedWeights.Name = "btnTestTrainedWeights";
+            this.btnTestTrainedWeights.Size = new System.Drawing.Size(128, 23);
+            this.btnTestTrainedWeights.TabIndex = 4;
+            this.btnTestTrainedWeights.Text = "Test Trained Weights";
+            this.btnTestTrainedWeights.UseVisualStyleBackColor = true;
+            this.btnTestTrainedWeights.Click += new System.EventHandler(this.btnTestTrainedWeights_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnTestTrainedWeights);
             this.Controls.Add(this.btnSimplerClassification);
             this.Controls.Add(this.btnSimpleClassification);
             this.Name = "MainForm";
@@ -69,6 +81,7 @@
 
         private System.Windows.Forms.Button btnSimplerClassification;
         private System.Windows.Forms.Button btnSimpleClassification;
+        private System.Windows.Forms.Button btnTestTrainedWeights;
     }
 }
 
