@@ -31,6 +31,7 @@
             this.btnSimplerClassification = new System.Windows.Forms.Button();
             this.btnSimpleClassification = new System.Windows.Forms.Button();
             this.btnTestTrainedWeights = new System.Windows.Forms.Button();
+            this.btnSimplerClassificationWithProgrammableModels = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnSimplerClassification
@@ -63,12 +64,23 @@
             this.btnTestTrainedWeights.UseVisualStyleBackColor = true;
             this.btnTestTrainedWeights.Click += new System.EventHandler(this.btnTestTrainedWeights_Click);
             // 
+            // btnSimplerClassificationWithProgrammableModels
+            // 
+            this.btnSimplerClassificationWithProgrammableModels.Location = new System.Drawing.Point(280, 12);
+            this.btnSimplerClassificationWithProgrammableModels.Name = "btnSimplerClassificationWithProgrammableModels";
+            this.btnSimplerClassificationWithProgrammableModels.Size = new System.Drawing.Size(265, 23);
+            this.btnSimplerClassificationWithProgrammableModels.TabIndex = 3;
+            this.btnSimplerClassificationWithProgrammableModels.Text = "Simpler Classification with Programmable Models";
+            this.btnSimplerClassificationWithProgrammableModels.UseVisualStyleBackColor = true;
+            this.btnSimplerClassificationWithProgrammableModels.Click += new System.EventHandler(this.btnSimplerClassificationWithProgrammableModels_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.btnTestTrainedWeights);
+            this.Controls.Add(this.btnSimplerClassificationWithProgrammableModels);
             this.Controls.Add(this.btnSimplerClassification);
             this.Controls.Add(this.btnSimpleClassification);
             this.Name = "MainForm";
@@ -82,6 +94,7 @@
         private System.Windows.Forms.Button btnSimplerClassification;
         private System.Windows.Forms.Button btnSimpleClassification;
         private System.Windows.Forms.Button btnTestTrainedWeights;
+        private System.Windows.Forms.Button btnSimplerClassificationWithProgrammableModels;
     }
 }
 

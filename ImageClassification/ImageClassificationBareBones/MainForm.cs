@@ -375,6 +375,85 @@ namespace ImageClassificationBareBones
             mycaffe.Dispose();
         }
 
+
+        //-----------------------------------------------------------------------------------------
+        //  Simpler Classification with Programmable Models (using solver)
+        //-----------------------------------------------------------------------------------------
+
+        /// <summary>
+        /// The SimplerClassification with Programmable Models shows how programmatically build a model (instead of using
+        /// a text descriptor) which is then used with the solver which loads data via its OnStart (for training) and
+        /// OnTestStart (for testing) events.
+        /// </summary>
+        /// <param name="sender">Specifies the event sender.</param>
+        /// <param name="e">Specifies the event args.</param>
+        private void btnSimplerClassificationWithProgrammableModels_Click(object sender, EventArgs e)
+        {
+            Stopwatch sw = new Stopwatch();
+            int nBatchSize = 32;
+            SettingsCaffe settings = new SettingsCaffe();
+            settings.GpuIds = "0";
+
+            if (!Directory.Exists(m_strImageDirTraining) || !Directory.Exists(m_strImageDirTesting))
+            {
+                MessageBox.Show("You must first 'export' the images by running the 'ImageClassification' sample and pressing the 'Export Images' button.", "Images Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            m_rgstrTrainingFiles = Directory.GetFiles(m_strImageDirTraining);
+            m_rgstrTestingFiles = Directory.GetFiles(m_strImageDirTesting);
+
+            string strSolver;
+            string strModel;
+
+            // Create the model programmatically.
+            strModel = create_model_descriptor_programmatically("mnist", nBatchSize);
+
+            // Create the solver programmatically.
+            strSolver = create_solver_descriptor_programmatically(10000);
+
+            // Create the MyCaffeControl.
+            MyCaffeControl<float> mycaffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel);
+
+            // Load the solver and model descriptors without the Image Database.
+            mycaffe.LoadLite(Phase.TRAIN,   // using the training phase. 
+                         strSolver,         // solver descriptor, that specifies to use the SGD solver.
+                         strModel,          // simple LENET model descriptor.
+                         null);             // no weights are loaded.
+
+            // Load your own data via the OnStart and OnTestStart
+            // events each called at the start of the Training
+            // and Testing iterations respectively.
+            Solver<float> solver = mycaffe.GetInternalSolver();
+            solver.OnStart += Solver_OnStart;
+            solver.OnTestStart += Solver_OnTestStart;
+
+            // Run the solver to train the net.
+            int nIterations = 5000;
+            mycaffe.Train(nIterations);
+
+            // Run the solver to test the net (using its internal test net)
+            nIterations = 100;
+            double dfAccuracy = mycaffe.Test(nIterations);
+
+            // Report the testing accuracy.
+            m_log.WriteLine("Accuracy = " + dfAccuracy.ToString("P"));
+
+            MessageBox.Show("Average Accuracy = " + dfAccuracy.ToString("P"), "Traing/Test on MNIST Completed", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            // Save the trained weights for use later.
+            saveWeights(mycaffe, "my_weights");
+
+#if VER_10_2_160
+            Bitmap bmp = new Bitmap(m_rgstrTestingFiles[0]);
+            ResultCollection results = mycaffe.Run(bmp);
+#endif
+
+            // Release any resources used.
+            mycaffe.Dispose();
+        }
+
+
         /// <summary>
         /// Event called at the start of each testing pass.
         /// </summary>
@@ -405,6 +484,160 @@ namespace ImageClassificationBareBones
             Blob<float> labelBlob = net.blob_by_name("label");
 
             loadData(m_rgstrTestingFiles, 32, dataBlob, labelBlob);
+        }
+
+        //-----------------------------------------------------------------------------------------
+        //  Create descriptors programically
+        //-----------------------------------------------------------------------------------------
+
+        /// <summary>
+        /// Create the LeNet_train_test prototxt programmatically.
+        /// </summary>
+        /// <param name="strDataName">Specifies the dataset name.</param>
+        /// <param name="nBatchSize">Specifies the batch size.</param>
+        /// <returns>The model descriptor is returned as text.</returns>
+        private string create_model_descriptor_programmatically(string strDataName, int nBatchSize)
+        {
+            NetParameter net_param = new NetParameter();
+            net_param.name = "LeNet";
+
+            LayerParameter input_param_train = new LayerParameter(LayerParameter.LayerType.INPUT);
+            input_param_train.name = strDataName;
+            input_param_train.top.Add("data");
+            input_param_train.top.Add("label");
+            input_param_train.include.Add(new NetStateRule(Phase.TRAIN));
+            input_param_train.transform_param = new TransformationParameter();
+            input_param_train.transform_param.scale = 1.0 / 256.0;
+            input_param_train.input_param.shape = new List<BlobShape>()
+                { new BlobShape(nBatchSize, 1, 28, 28), // data (the images)
+                  new BlobShape(nBatchSize, 1, 1, 1) }; // label
+            net_param.layer.Add(input_param_train);
+
+            LayerParameter input_param_test = new LayerParameter(LayerParameter.LayerType.INPUT);
+            input_param_test.name = strDataName;
+            input_param_test.top.Add("data");
+            input_param_test.top.Add("label");
+            input_param_test.include.Add(new NetStateRule(Phase.TEST));
+            input_param_test.transform_param = new TransformationParameter();
+            input_param_test.transform_param.scale = 1.0 / 256.0;
+            input_param_train.input_param.shape = new List<BlobShape>()
+                { new BlobShape(nBatchSize, 1, 28, 28), // data (the images)
+                  new BlobShape(nBatchSize, 1, 1, 1) }; // label
+            net_param.layer.Add(input_param_test);
+
+            LayerParameter conv1 = new LayerParameter(LayerParameter.LayerType.CONVOLUTION);
+            conv1.name = "conv1";
+            conv1.bottom.Add("data");
+            conv1.top.Add("conv1");
+            conv1.parameters.Add(new ParamSpec(1, 2));
+            conv1.convolution_param.num_output = 20;
+            conv1.convolution_param.kernel_size.Add(5);
+            conv1.convolution_param.stride.Add(1);
+            conv1.convolution_param.weight_filler = new FillerParameter("xavier");
+            conv1.convolution_param.bias_filler = new FillerParameter("constant");
+            net_param.layer.Add(conv1);
+
+            LayerParameter pool1 = new LayerParameter(LayerParameter.LayerType.POOLING);
+            pool1.name = "pool1";
+            pool1.bottom.Add("conv1");
+            pool1.top.Add("pool1");
+            pool1.pooling_param.pool = PoolingParameter.PoolingMethod.MAX;
+            pool1.pooling_param.kernel_size.Add(2);
+            pool1.pooling_param.stride.Add(2);
+            net_param.layer.Add(pool1);
+
+            LayerParameter conv2 = new LayerParameter(LayerParameter.LayerType.CONVOLUTION);
+            conv2.name = "conv2";
+            conv2.bottom.Add("pool1");
+            conv2.top.Add("conv2");
+            conv2.parameters.Add(new ParamSpec(1, 2));
+            conv2.convolution_param.num_output = 50;
+            conv2.convolution_param.kernel_size.Add(5);
+            conv2.convolution_param.stride.Add(1);
+            conv2.convolution_param.weight_filler = new FillerParameter("xavier");
+            conv2.convolution_param.bias_filler = new FillerParameter("constant");
+            net_param.layer.Add(conv2);
+
+            LayerParameter pool2 = new LayerParameter(LayerParameter.LayerType.POOLING);
+            pool2.name = "pool2";
+            pool2.bottom.Add("conv2");
+            pool2.top.Add("pool2");
+            pool2.pooling_param.pool = PoolingParameter.PoolingMethod.MAX;
+            pool2.pooling_param.kernel_size.Add(2);
+            pool2.pooling_param.stride.Add(2);
+            net_param.layer.Add(pool2);
+
+            LayerParameter ip1 = new LayerParameter(LayerParameter.LayerType.INNERPRODUCT);
+            ip1.name = "ip1";
+            ip1.bottom.Add("pool2");
+            ip1.top.Add("ip1");
+            ip1.parameters.Add(new ParamSpec(1, 2));
+            ip1.inner_product_param.num_output = 500;
+            ip1.inner_product_param.weight_filler = new FillerParameter("xavier");
+            ip1.inner_product_param.bias_filler = new FillerParameter("constant");
+            net_param.layer.Add(ip1);
+
+            LayerParameter relu1 = new LayerParameter(LayerParameter.LayerType.RELU);
+            relu1.name = "relu1";
+            relu1.bottom.Add("ip1");
+            relu1.top.Add("ip1"); // inline.
+            net_param.layer.Add(relu1);
+
+            LayerParameter ip2 = new LayerParameter(LayerParameter.LayerType.INNERPRODUCT);
+            ip2.name = "ip2";
+            ip2.bottom.Add("ip1");
+            ip2.top.Add("ip2");
+            ip2.parameters.Add(new ParamSpec(1, 2));
+            ip2.inner_product_param.num_output = 10;
+            ip2.inner_product_param.weight_filler = new FillerParameter("xavier");
+            ip2.inner_product_param.bias_filler = new FillerParameter("constant");
+            net_param.layer.Add(ip2);
+
+            LayerParameter accuracy = new LayerParameter(LayerParameter.LayerType.ACCURACY);
+            accuracy.name = "accuracy";
+            accuracy.bottom.Add("ip2");
+            accuracy.bottom.Add("label");
+            accuracy.top.Add("accuracy");
+            accuracy.include.Add(new NetStateRule(Phase.TEST));
+            net_param.layer.Add(accuracy);
+
+            LayerParameter loss = new LayerParameter(LayerParameter.LayerType.SOFTMAXWITH_LOSS);
+            loss.name = "loss";
+            loss.bottom.Add("ip2");
+            loss.bottom.Add("label");
+            loss.top.Add("loss");
+            net_param.layer.Add(loss);
+
+            // Convert model to text descriptor.
+            RawProto proto = net_param.ToProto("root");
+            return proto.ToString();
+        }
+
+        /// <summary>
+        /// Create the LeNet solver prototxt programmatically.
+        /// </summary>
+        /// <param name="nIterations">Specifies the number of iterations to train.</param>
+        /// <returns>The solver descriptor is returned as text.</returns>
+        private string create_solver_descriptor_programmatically(int nIterations)
+        {
+            SolverParameter solver_param = new SolverParameter();
+            solver_param.max_iter = nIterations;
+            solver_param.test_iter = new List<int>();
+            solver_param.test_iter.Add(100);
+            solver_param.test_initialization = false;
+            solver_param.test_interval = 500;
+            solver_param.base_lr = 0.01;
+            solver_param.momentum = 0.9;
+            solver_param.weight_decay = 0.0005;
+            solver_param.LearningRatePolicy = SolverParameter.LearningRatePolicyType.INV;
+            solver_param.gamma = 0.0001;
+            solver_param.power = 0.75;
+            solver_param.display = 100;
+            solver_param.snapshot = 5000;
+
+            // Convert solver to text descriptor.
+            RawProto proto = solver_param.ToProto("root");
+            return proto.ToString();
         }
 
 
