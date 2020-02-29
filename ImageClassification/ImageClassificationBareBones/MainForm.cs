@@ -317,7 +317,7 @@ namespace ImageClassificationBareBones
 
             if (!Directory.Exists(m_strImageDirTraining) || !Directory.Exists(m_strImageDirTesting))
             {
-                MessageBox.Show("You must first 'export' the images by running the 'ImageClassification' sample and pressing the 'Export Images' button.", "Images Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("You must first 'export' the images by running the 'MyCaffe Test Application' and selecting the 'Load MNIST' with the 'Export to file only' check box checked.", "Images Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -396,7 +396,7 @@ namespace ImageClassificationBareBones
 
             if (!Directory.Exists(m_strImageDirTraining) || !Directory.Exists(m_strImageDirTesting))
             {
-                MessageBox.Show("You must first 'export' the images by running the 'ImageClassification' sample and pressing the 'Export Images' button.", "Images Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("You must first 'export' the images by running the 'MyCaffe Test Application' and selecting the 'Load MNIST' with the 'Export to file only' check box checked.", "Images Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -407,7 +407,7 @@ namespace ImageClassificationBareBones
             string strModel;
 
             // Create the model programmatically.
-            strModel = create_model_descriptor_programmatically("mnist", nBatchSize);
+            strModel = create_model_descriptor_programmatically("mnist", nBatchSize, LayerParameter.LayerType.INPUT);
 
             // Create the solver programmatically.
             strSolver = create_solver_descriptor_programmatically(10000);
@@ -486,9 +486,97 @@ namespace ImageClassificationBareBones
             loadData(m_rgstrTestingFiles, 32, dataBlob, labelBlob);
         }
 
+
+        //-----------------------------------------------------------------------------------------
+        //  Simplest Classification (using Programmable Models with the ImageData Layer)
+        //-----------------------------------------------------------------------------------------
+
+        /// <summary>
+        /// The SimplestClassification with ImageData Layer shows how programmatically build a model (instead of using
+        /// a text descriptor) using the ImageData Layer to automatically load the files from disk.
+        /// </summary>
+        /// <param name="sender">Specifies the event sender.</param>
+        /// <param name="e">Specifies the event args.</param>
+        private void btnSimplestClassification_Click(object sender, EventArgs e)
+        {
+#if VER_10_2_174
+            Stopwatch sw = new Stopwatch();
+            int nBatchSize = 32;
+            SettingsCaffe settings = new SettingsCaffe();
+            settings.GpuIds = "0";
+
+            if (!Directory.Exists(m_strImageDirTraining) || !Directory.Exists(m_strImageDirTesting))
+            {
+                MessageBox.Show("You must first 'export' the images by running the 'MyCaffe Test Application' and selecting the 'Load MNIST' with the 'Export to file only' check box checked.", "Images Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            string strSolver;
+            string strModel;
+
+            // Create the model programmatically.
+            strModel = create_model_descriptor_programmatically("mnist", nBatchSize, LayerParameter.LayerType.IMAGE_DATA);
+
+            // Create the solver programmatically.
+            strSolver = create_solver_descriptor_programmatically(10000);
+
+            // Used for sizing up the Run net.
+            SimpleDatum sdMean = new SimpleDatum(3, 28, 28);
+
+            // Create the MyCaffeControl.
+            MyCaffeControl<float> mycaffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel);
+    
+            // Load the solver and model descriptors without the Image Database.
+            mycaffe.LoadLite(Phase.TRAIN,   // using the training phase. 
+                         strSolver,         // solver descriptor, that specifies to use the SGD solver.
+                         strModel,          // simple LENET model descriptor.
+                         null,              // no weights loaded.
+                         false,             // don't reset the GPU.
+                         true,              // create the internal Run net.
+                         sdMean);           // used for sizing.
+
+            // Run the solver to train the net.
+            int nIterations = 5000;
+            mycaffe.Train(nIterations);
+
+            // Run the solver to test the net (using its internal test net)
+            nIterations = 100;
+            double dfAccuracy = mycaffe.Test(nIterations);
+
+            // Report the testing accuracy.
+            m_log.WriteLine("Accuracy = " + dfAccuracy.ToString("P"));
+
+            MessageBox.Show("Average Accuracy = " + dfAccuracy.ToString("P"), "Traing/Test on MNIST Completed", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            // Save the trained weights for use later.
+            saveWeights(mycaffe, "my_weights");
+
+            Bitmap bmp = new Bitmap(m_strImageDirTesting + "\\img_0-7.png");
+            ResultCollection results = mycaffe.Run(bmp);
+
+            // Release any resources used.
+            mycaffe.Dispose();
+#else
+            MessageBox.Show("This sample requires MyCaffe version 0.10.2.174 or greater.", "Not Supported", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+#endif
+        }
+
+
         //-----------------------------------------------------------------------------------------
         //  Create descriptors programically
         //-----------------------------------------------------------------------------------------
+
+        private bool verifyInputType(LayerParameter.LayerType inputType)
+        {
+            if (inputType == LayerParameter.LayerType.INPUT)
+                return true;
+#if VER_10_2_174
+            if (inputType == LayerParameter.LayerType.IMAGE_DATA)
+                return true;
+#endif
+
+            return false;
+        }
 
         /// <summary>
         /// Create the LeNet_train_test prototxt programmatically.
@@ -496,34 +584,68 @@ namespace ImageClassificationBareBones
         /// <param name="strDataName">Specifies the dataset name.</param>
         /// <param name="nBatchSize">Specifies the batch size.</param>
         /// <returns>The model descriptor is returned as text.</returns>
-        private string create_model_descriptor_programmatically(string strDataName, int nBatchSize)
+        private string create_model_descriptor_programmatically(string strDataName, int nBatchSize, LayerParameter.LayerType inputType)
         {
+            if (!verifyInputType(inputType))
+                throw new Exception("The input type " + inputType.ToString() + " is not supported by this sample.");
+
             NetParameter net_param = new NetParameter();
             net_param.name = "LeNet";
 
-            LayerParameter input_param_train = new LayerParameter(LayerParameter.LayerType.INPUT);
-            input_param_train.name = strDataName;
-            input_param_train.top.Add("data");
-            input_param_train.top.Add("label");
-            input_param_train.include.Add(new NetStateRule(Phase.TRAIN));
-            input_param_train.transform_param = new TransformationParameter();
-            input_param_train.transform_param.scale = 1.0 / 256.0;
-            input_param_train.input_param.shape = new List<BlobShape>()
-                { new BlobShape(nBatchSize, 1, 28, 28), // data (the images)
-                  new BlobShape(nBatchSize, 1, 1, 1) }; // label
-            net_param.layer.Add(input_param_train);
+            if (inputType == LayerParameter.LayerType.INPUT)
+            {
+                LayerParameter input_param_train = new LayerParameter(LayerParameter.LayerType.INPUT);
+                input_param_train.name = strDataName;
+                input_param_train.top.Add("data");
+                input_param_train.top.Add("label");
+                input_param_train.include.Add(new NetStateRule(Phase.TRAIN));
+                input_param_train.transform_param = new TransformationParameter();
+                input_param_train.transform_param.scale = 1.0 / 256.0;
+                input_param_train.input_param.shape = new List<BlobShape>()
+                    { new BlobShape(nBatchSize, 1, 28, 28), // data (the images)
+                      new BlobShape(nBatchSize, 1, 1, 1) }; // label
+                net_param.layer.Add(input_param_train);
 
-            LayerParameter input_param_test = new LayerParameter(LayerParameter.LayerType.INPUT);
-            input_param_test.name = strDataName;
-            input_param_test.top.Add("data");
-            input_param_test.top.Add("label");
-            input_param_test.include.Add(new NetStateRule(Phase.TEST));
-            input_param_test.transform_param = new TransformationParameter();
-            input_param_test.transform_param.scale = 1.0 / 256.0;
-            input_param_train.input_param.shape = new List<BlobShape>()
-                { new BlobShape(nBatchSize, 1, 28, 28), // data (the images)
-                  new BlobShape(nBatchSize, 1, 1, 1) }; // label
-            net_param.layer.Add(input_param_test);
+                LayerParameter input_param_test = new LayerParameter(LayerParameter.LayerType.INPUT);
+                input_param_test.name = strDataName;
+                input_param_test.top.Add("data");
+                input_param_test.top.Add("label");
+                input_param_test.include.Add(new NetStateRule(Phase.TEST));
+                input_param_test.transform_param = new TransformationParameter();
+                input_param_test.transform_param.scale = 1.0 / 256.0;
+                input_param_train.input_param.shape = new List<BlobShape>()
+                    { new BlobShape(nBatchSize, 1, 28, 28), // data (the images)
+                      new BlobShape(nBatchSize, 1, 1, 1) }; // label
+                net_param.layer.Add(input_param_test);
+            }
+#if VER_10_2_174
+            else if (inputType == LayerParameter.LayerType.IMAGE_DATA)
+            {
+                LayerParameter input_param_train = new LayerParameter(LayerParameter.LayerType.IMAGE_DATA);
+                input_param_train.name = strDataName;
+                input_param_train.top.Add("data");
+                input_param_train.top.Add("label");
+                input_param_train.include.Add(new NetStateRule(Phase.TRAIN));
+                input_param_train.transform_param = new TransformationParameter();
+                input_param_train.transform_param.scale = 1.0 / 256.0;
+                input_param_train.data_param.batch_size = (uint)nBatchSize;
+                input_param_train.data_param.source = m_strImageDirTraining + "\\file_list.txt";
+                input_param_train.image_data_param.is_color = false;
+                net_param.layer.Add(input_param_train);
+
+                LayerParameter input_param_test = new LayerParameter(LayerParameter.LayerType.IMAGE_DATA);
+                input_param_test.name = strDataName;
+                input_param_test.top.Add("data");
+                input_param_test.top.Add("label");
+                input_param_test.include.Add(new NetStateRule(Phase.TEST));
+                input_param_test.transform_param = new TransformationParameter();
+                input_param_test.transform_param.scale = 1.0 / 256.0;
+                input_param_test.data_param.batch_size = (uint)nBatchSize;
+                input_param_test.data_param.source = m_strImageDirTesting + "\\file_list.txt";
+                input_param_test.image_data_param.is_color = false;
+                net_param.layer.Add(input_param_test);
+            }
+#endif
 
             LayerParameter conv1 = new LayerParameter(LayerParameter.LayerType.CONVOLUTION);
             conv1.name = "conv1";
