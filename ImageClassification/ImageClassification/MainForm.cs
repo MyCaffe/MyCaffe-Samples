@@ -155,46 +155,16 @@ namespace ImageClassification
         /// <param name="strDir">Specifies the directory.</param>
         private void export_images(string strDsName, string strType, string strDir)
         {
-            if (!Directory.Exists(strDir))
-                Directory.CreateDirectory(strDir);
+            string strMsg = "Please export the MNIST images using the MyCaffe Test Application (found at https://github.com/MyCaffe/MyCaffe/releases)." + Environment.NewLine;
+            strMsg += Environment.NewLine;
+            strMsg += "From within the MyCaffe Test Application, do the following steps to export the MNIST images:" + Environment.NewLine;
+            strMsg += "  1.) Select the 'Database | Load MNIST...' menu (does not require SQL)." + Environment.NewLine;
+            strMsg += "  2.) Enter the paths to the MNIST files." + Environment.NewLine;
+            strMsg += "  3.) Check the 'Export to file only (SQL not needed)" + Environment.NewLine;
+            strMsg += "  4.) Press 'OK' to start the export.";
 
-            string[] rgstrFiles = Directory.GetFiles(strDir);
-            if (rgstrFiles.Length > 0)
-                return;
-
-            Stopwatch sw = new Stopwatch();
-            SettingsCaffe settings = new SettingsCaffe();
-            settings.ImageDbLoadMethod = IMAGEDB_LOAD_METHOD.LOAD_ON_DEMAND;
-
-            MyCaffeImageDatabase db = new MyCaffeImageDatabase(m_log);
-            db.InitializeWithDsName1(settings, strDsName);
-            DatasetDescriptor ds = db.GetDatasetByName(strDsName);
-            int nSrcId = (strType == "training") ? ds.TrainingSource.ID : ds.TestingSource.ID;
-
-            sw.Start();
-
-            // Save all testing images.
-            int nCount = db.ImageCount(nSrcId);
-            if (nCount == 0)
-            {
-                MessageBox.Show("You must run the MyCaffe Test Application (see https://github.com/MyCaffe/MyCaffe/releases), create the database and Load MNIST by selecting the 'Database | Load MNIST...' menu.", strDsName + " not found!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            for (int i = 0; i < nCount; i++)
-            {
-                SimpleDatum sd = db.QueryImage(nSrcId, i, IMGDB_LABEL_SELECTION_METHOD.NONE, IMGDB_IMAGE_SELECTION_METHOD.NONE);
-                string strFile = strDir + "\\" + getFileName(i, sd);
-                Bitmap bmp = ImageData.GetImage(sd);
-                bmp.Save(strFile);
-
-                if (sw.Elapsed.TotalMilliseconds > 1000)
-                {
-                    m_log.Progress = (double)i / (double)nCount;
-                    m_log.WriteLine("saving image " + i.ToString() + " of " + nCount.ToString() + "...");
-                    sw.Restart();
-                }
-            }
+            MessageBox.Show(strMsg, "Export MNIST Inmages", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
         }
 
         /// <summary>
@@ -236,10 +206,7 @@ namespace ImageClassification
         /// <param name="e"></param>
         private void btnExportImages_Click(object sender, EventArgs e)
         {
-            m_log.WriteLine("Exporting Training Images...");
             export_images("MNIST", "training", m_strImageDirTraining);
-            m_log.WriteLine("Exporting Testing Images...");
-            export_images("MNIST", "testing", m_strImageDirTesting);
         }
 
 
@@ -274,7 +241,9 @@ namespace ImageClassification
             }
 
             m_rgstrTrainingFiles = Directory.GetFiles(m_strImageDirTraining);
+            m_rgstrTrainingFiles = m_rgstrTrainingFiles.Where(p => p.Contains(".png")).ToArray();
             m_rgstrTestingFiles = Directory.GetFiles(m_strImageDirTesting);
+            m_rgstrTestingFiles = m_rgstrTestingFiles.Where(p => p.Contains(".png")).ToArray();
 
             string strSolver;
             string strModel;
@@ -385,7 +354,9 @@ namespace ImageClassification
             }
 
             m_rgstrTrainingFiles = Directory.GetFiles(m_strImageDirTraining);
+            m_rgstrTrainingFiles = m_rgstrTrainingFiles.Where(p => p.Contains(".png")).ToArray();
             m_rgstrTestingFiles = Directory.GetFiles(m_strImageDirTesting);
+            m_rgstrTestingFiles = m_rgstrTestingFiles.Where(p => p.Contains(".png")).ToArray();
 
             string strSolver;
             string strModel;

@@ -198,7 +198,9 @@ namespace ImageClassificationBareBones
             }
 
             m_rgstrTrainingFiles = Directory.GetFiles(m_strImageDirTraining);
+            m_rgstrTrainingFiles = m_rgstrTrainingFiles.Where(p => p.Contains(".png")).ToArray();
             m_rgstrTestingFiles = Directory.GetFiles(m_strImageDirTesting);
+            m_rgstrTestingFiles = m_rgstrTestingFiles.Where(p => p.Contains(".png")).ToArray();
 
             string strSolver;
             string strModel;
@@ -281,20 +283,15 @@ namespace ImageClassificationBareBones
             // Save the trained weights for use later.
             saveWeights(mycaffe, "my_weights");
 
-#if VER_10_2_160
             Bitmap bmp = new Bitmap(m_rgstrTestingFiles[0]);
             ResultCollection results = mycaffe.Run(bmp);
 
             MyCaffeControl<float> mycaffe2 = mycaffe.Clone(0);
             ResultCollection results2 = mycaffe2.Run(bmp);
-#endif
 
             // Release resources used.
             mycaffe.Dispose();
-
-#if VER_10_2_160
             mycaffe2.Dispose();
-#endif
         }
 
 
@@ -322,7 +319,9 @@ namespace ImageClassificationBareBones
             }
 
             m_rgstrTrainingFiles = Directory.GetFiles(m_strImageDirTraining);
+            m_rgstrTrainingFiles = m_rgstrTrainingFiles.Where(p => p.Contains(".png")).ToArray();
             m_rgstrTestingFiles = Directory.GetFiles(m_strImageDirTesting);
+            m_rgstrTestingFiles = m_rgstrTestingFiles.Where(p => p.Contains(".png")).ToArray();
 
             string strSolver;
             string strModel;
@@ -366,10 +365,8 @@ namespace ImageClassificationBareBones
             // Save the trained weights for use later.
             saveWeights(mycaffe, "my_weights");
 
-#if VER_10_2_160
             Bitmap bmp = new Bitmap(m_rgstrTestingFiles[0]);
             ResultCollection results = mycaffe.Run(bmp);
-#endif
 
             // Release any resources used.
             mycaffe.Dispose();
@@ -401,7 +398,9 @@ namespace ImageClassificationBareBones
             }
 
             m_rgstrTrainingFiles = Directory.GetFiles(m_strImageDirTraining);
+            m_rgstrTrainingFiles = m_rgstrTrainingFiles.Where(p => p.Contains(".png")).ToArray();
             m_rgstrTestingFiles = Directory.GetFiles(m_strImageDirTesting);
+            m_rgstrTestingFiles = m_rgstrTestingFiles.Where(p => p.Contains(".png")).ToArray();
 
             string strSolver;
             string strModel;
@@ -444,10 +443,8 @@ namespace ImageClassificationBareBones
             // Save the trained weights for use later.
             saveWeights(mycaffe, "my_weights");
 
-#if VER_10_2_160
             Bitmap bmp = new Bitmap(m_rgstrTestingFiles[0]);
             ResultCollection results = mycaffe.Run(bmp);
-#endif
 
             // Release any resources used.
             mycaffe.Dispose();
@@ -499,7 +496,6 @@ namespace ImageClassificationBareBones
         /// <param name="e">Specifies the event args.</param>
         private void btnSimplestClassification_Click(object sender, EventArgs e)
         {
-#if VER_10_2_174
             Stopwatch sw = new Stopwatch();
             int nBatchSize = 32;
             SettingsCaffe settings = new SettingsCaffe();
@@ -525,7 +521,7 @@ namespace ImageClassificationBareBones
 
             // Create the MyCaffeControl.
             MyCaffeControl<float> mycaffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel);
-    
+
             // Load the solver and model descriptors without the Image Database.
             mycaffe.LoadLite(Phase.TRAIN,   // using the training phase. 
                          strSolver,         // solver descriptor, that specifies to use the SGD solver.
@@ -556,11 +552,7 @@ namespace ImageClassificationBareBones
 
             // Release any resources used.
             mycaffe.Dispose();
-#else
-            MessageBox.Show("This sample requires MyCaffe version 0.10.2.174 or greater.", "Not Supported", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-#endif
         }
-
 
         //-----------------------------------------------------------------------------------------
         //  Create descriptors programically
@@ -570,10 +562,9 @@ namespace ImageClassificationBareBones
         {
             if (inputType == LayerParameter.LayerType.INPUT)
                 return true;
-#if VER_10_2_174
+
             if (inputType == LayerParameter.LayerType.IMAGE_DATA)
                 return true;
-#endif
 
             return false;
         }
@@ -618,7 +609,6 @@ namespace ImageClassificationBareBones
                       new BlobShape(nBatchSize, 1, 1, 1) }; // label
                 net_param.layer.Add(input_param_test);
             }
-#if VER_10_2_174
             else if (inputType == LayerParameter.LayerType.IMAGE_DATA)
             {
                 LayerParameter input_param_train = new LayerParameter(LayerParameter.LayerType.IMAGE_DATA);
@@ -645,7 +635,6 @@ namespace ImageClassificationBareBones
                 input_param_test.image_data_param.is_color = false;
                 net_param.layer.Add(input_param_test);
             }
-#endif
 
             LayerParameter conv1 = new LayerParameter(LayerParameter.LayerType.CONVOLUTION);
             conv1.name = "conv1";
@@ -852,12 +841,9 @@ namespace ImageClassificationBareBones
             string strDir = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\MyCaffe\\test_data\\models\\mnist\\";
             string strFile = strDir + strName + ".mycaffemodel";
 
-#if VER_10_2_160
-            byte[] rgWeights = mycaffe.GetWeights();
-#else
+//          byte[] rgWeights = mycaffe.GetWeights();
             Net<float> net = mycaffe.GetInternalNet(Phase.TRAIN);
             byte[] rgWeights = net.SaveWeights(mycaffe.Persist, false);
-#endif
 
             if (File.Exists(strFile))
                 File.Delete(strFile);
