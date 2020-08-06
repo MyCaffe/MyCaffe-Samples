@@ -56,11 +56,35 @@ namespace MyCaffeSample
     public class MyCaffeSample : IDisposable
     {
         MyCaffeControl<float> m_caffe = null;
-        CancelEvent m_evtCancel = new CancelEvent();    // Allows for cancelling training and testing operations.
+        CancelEvent m_evtCancel = null;                 // Allows for cancelling training and testing operations.
         Log m_log = null;                               // Provides output of testing and training operations.
 
-        public MyCaffeSample()
+        public enum SAMPLE
         {
+            LENET,
+            SIAMESE,
+            TRIPLET
+        }
+
+        /// <summary>
+        /// The constructor.
+        /// </summary>
+        /// <param name="log">Optionally, specifies the output log (default = null).</param>
+        /// <param name="evtCancel">Optionally, specifies the cancel event (default = null).</param>
+        public MyCaffeSample(Log log = null, CancelEvent evtCancel = null)
+        {
+            // Setup the MyCaffe output log.
+            m_log = log;
+            if (m_log == null)
+            {
+                m_log = new Log("Test");
+                m_log.OnWriteLine += Log_OnWriteLine;
+            }
+
+            if (evtCancel == null)
+                evtCancel = new CancelEvent();
+
+            m_evtCancel = evtCancel;
         }
 
         /// <summary>
@@ -74,6 +98,42 @@ namespace MyCaffeSample
                 m_caffe.Dispose();
                 m_caffe = null;
             }
+        }
+
+        private bool setSqlInstance()
+        {
+            // Initialize the connection to SQL (if it exists).
+            List<string> rgSqlInst = DatabaseInstanceQuery.GetInstances();
+
+            if (rgSqlInst == null || rgSqlInst.Count == 0)
+            {
+                string strErr = "For most operations, you must download and install 'Microsoft SQL' or 'Microsoft SQL Express' first!" + Environment.NewLine;
+                strErr += "see 'https://www.microsoft.com/en-us/sql-server/sql-server-editions-express'";
+                MessageBox.Show("ERROR: " + strErr, "Microsoft SQL or Microsoft SQL Express missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            int nIdx = 0;
+            if (rgSqlInst[nIdx] != ".\\MSSQLSERVER")
+                EntitiesConnection.GlobalDatabaseServerName = rgSqlInst[nIdx];
+
+            m_log.WriteLine("Using SQL Instance: " + rgSqlInst[nIdx]);
+
+            return true;
+        }
+
+        private void handleError(Exception excpt)
+        {
+            string strErr = excpt.Message + "\n";
+
+            if (excpt.InnerException != null)
+            {
+                strErr += excpt.InnerException.Message + "\n";
+                if (excpt.InnerException.InnerException != null)
+                    strErr += excpt.InnerException.InnerException.Message + "\n";
+            }
+
+            MessageBox.Show("ERROR: " + strErr + "\n\nMake sure that you are building this project for x64 and that you have copied all CUDA files from the 'Program Files\\SignalPop\\MyCaffe\\cuda_11.0' directory!\n\nTo download the MyCaffe Test Application (which installs 'Program Files\\SignalPop\\MyCaffe'), see https://github.com/MyCaffe/MyCaffe/releases.", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         /// <summary>
@@ -91,10 +151,14 @@ namespace MyCaffeSample
         /// on the MNIST dataset.
         /// </remarks>
         /// <param name="loadMethod">Specifies how the images are to be loaded (e.g. on demand, all at once, etc.)</param>
-        public void Initialize(IMAGEDB_LOAD_METHOD loadMethod)
+        /// <returns>On success, true is returned, otherwise false.</returns>
+        public bool Initialize(IMAGEDB_LOAD_METHOD loadMethod)
         {
             try
             {
+                if (!setSqlInstance())
+                    return false;
+
                 //---------------------------------------------------
                 // The Default SQL instance is used by 'default'.
                 // To change to a different instance, uncomment the
@@ -125,10 +189,6 @@ namespace MyCaffeSample
                 settings.GpuIds = "0";  // use GPU 0.
                 settings.ImageDbLoadMethod = loadMethod;
 
-                // Setup the MyCaffe output log.
-                m_log = new Log("Test");
-                m_log.OnWriteLine += Log_OnWriteLine;
-
                 // Create the MyCaffeControl 
                 m_caffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel);
 
@@ -139,8 +199,11 @@ namespace MyCaffeSample
             }
             catch (Exception excpt)
             {
-                MessageBox.Show("ERROR: " + excpt.Message + "\n\nMake sure that you are building this project for x64!", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                handleError(excpt);
+                return false;
             }
+
+            return true;
         }
 
         /// <summary>
@@ -158,10 +221,14 @@ namespace MyCaffeSample
         /// on the MNIST dataset.
         /// </remarks>
         /// <param name="loadMethod">Specifies how the images are to be loaded (e.g. on demand, all at once, etc.)</param>
-        public void InitializeSiamese(IMAGEDB_LOAD_METHOD loadMethod)
+        /// <returns>On success, true is returned, otherwise false.</returns>
+        public bool InitializeSiamese(IMAGEDB_LOAD_METHOD loadMethod)
         {
             try
             {
+                if (!setSqlInstance())
+                    return false;
+
                 //---------------------------------------------------
                 // The Default SQL instance is used by 'default'.
                 // To change to a different instance, uncomment the
@@ -177,7 +244,7 @@ namespace MyCaffeSample
                 // Create the LeNet project.
                 ProjectEx prj = new ProjectEx("SiameseNet");
 
-                // Load the LeNet model and solver desciptions into the project.
+                // Load the SiameseNet model and solver desciptions into the project.
                 string strDir = Path.GetFullPath("..\\..\\..\\models\\siamese\\mnist\\");
                 if (!Directory.Exists(strDir))
                     strDir = Path.GetFullPath("..\\..\\models\\siamese\\mnist\\");
@@ -192,9 +259,76 @@ namespace MyCaffeSample
                 settings.GpuIds = "0";  // use GPU 0.
                 settings.ImageDbLoadMethod = loadMethod;
 
-                // Setup the MyCaffe output log.
-                m_log = new Log("Test");
-                m_log.OnWriteLine += Log_OnWriteLine;
+                // Create the MyCaffeControl 
+                m_caffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel);
+
+                // Load the project into MyCaffe.  This steps will load the images
+                // into the MyCafffe in-memory Image Database and create a connection
+                // to the GPU used.
+                m_caffe.Load(Phase.TRAIN, prj);
+            }
+            catch (Exception excpt)
+            {
+                handleError(excpt);
+                return false;
+            }
+
+            return true;
+        }
+
+
+        /// <summary>
+        /// The Initialize function shows how to create MyCaffe and load a triplet net project into it. 
+        /// </summary>
+        /// <remarks>
+        /// MyCaffe organizes datasets and models by project where each project contains 
+        /// the following:
+        ///     a.) The Solver Description
+        ///     b.) The Model Descrption
+        ///     c.) The Dataset (a reference to the Dataset in the database)
+        ///     d.) The Model Results (trained weights)
+        ///     
+        /// The example function below loads a new project used to run the TripletNet model
+        /// on the MNIST dataset.
+        /// </remarks>
+        /// <param name="loadMethod">Specifies how the images are to be loaded (e.g. on demand, all at once, etc.)</param>
+        /// <returns>On success, true is returned, otherwise false.</returns>
+        public bool InitializeTripletNet(IMAGEDB_LOAD_METHOD loadMethod)
+        {
+            try
+            {
+                if (!setSqlInstance())
+                    return false;
+
+                //---------------------------------------------------
+                // The Default SQL instance is used by 'default'.
+                // To change to a different instance, uncomment the
+                //  line below which will then use the 'SQLEXPRESS' 
+                //  instance.
+                //---------------------------------------------------
+                // EntitiesConnection.GlobalDatabaseServerName = ".\\SQLEXPRESS";
+
+                // Load the MNIST dataset descriptor (not the images)
+                DatasetFactory factory = new DatasetFactory();
+                DatasetDescriptor ds = factory.LoadDataset("MNIST");
+
+                // Create the LeNet project.
+                ProjectEx prj = new ProjectEx("TripletNet");
+
+                // Load the TripletNet model and solver desciptions into the project.
+                string strDir = Path.GetFullPath("..\\..\\..\\models\\triplet\\mnist\\");
+                if (!Directory.Exists(strDir))
+                    strDir = Path.GetFullPath("..\\..\\models\\triplet\\mnist\\");
+
+                prj.LoadModelFile(strDir + "train_val.prototxt");
+                prj.LoadSolverFile(strDir + "solver.prototxt");
+                // Set the project dataset to the MNIST dataset.
+                prj.SetDataset(ds);
+
+                // Setup the MyCaffe initialization settings.
+                SettingsCaffe settings = new SettingsCaffe();
+                settings.GpuIds = "0";  // use GPU 0.
+                settings.ImageDbLoadMethod = loadMethod;
 
                 // Create the MyCaffeControl 
                 m_caffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel);
@@ -206,8 +340,11 @@ namespace MyCaffeSample
             }
             catch (Exception excpt)
             {
-                MessageBox.Show("ERROR: " + excpt.Message + "\n\nMake sure that you are building this project for x64!", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                handleError(excpt);
+                return false;
             }
+
+            return true;
         }
 
         /// <summary>
@@ -228,7 +365,9 @@ namespace MyCaffeSample
         /// </summary>
         public void Train()
         {
-            m_evtCancel.Reset();
+            if (m_evtCancel.WaitOne(0))
+                return;
+
             m_caffe.Train(2000);
         }
 
@@ -238,7 +377,9 @@ namespace MyCaffeSample
         /// <returns></returns>
         public double Test()
         {
-            m_evtCancel.Reset();
+            if (m_evtCancel.WaitOne(0))
+                return 0;
+
             return m_caffe.Test(1000);
         }
 
@@ -255,7 +396,9 @@ namespace MyCaffeSample
         /// </returns>
         public ResultCollection Run(Bitmap bmp)
         {
-            m_evtCancel.Reset();
+            if (m_evtCancel.WaitOne(0))
+                return null;
+
             return m_caffe.Run(bmp);
         }
 
@@ -271,40 +414,168 @@ namespace MyCaffeSample
         }
 
         /// <summary>
+        /// Run the classification samples.
+        /// </summary>
+        /// <param name="sample">Specifies the sample to run: LENET, SIAMESE or TRIPLET.</param>
+        /// <param name="log">Specifies the log for output, or null.</param>
+        /// <param name="evtCancel">Specifies the cancel event, or null.</param>
+        /// <param name="evtRunning">Specifies whether or not the sample is running.</param>
+        public static void RunClassificationSample(SAMPLE sample, Log log, CancelEvent evtCancel, ManualResetEvent evtRunning)
+        {
+            Task.Factory.StartNew(new Action<object>(runSample), new Tuple<Log, CancelEvent, SAMPLE, ManualResetEvent>(log, evtCancel, sample, evtRunning));
+        }
+
+        private static void runSample(object obj)
+        {
+            Tuple<Log, CancelEvent, SAMPLE, ManualResetEvent> args = obj as Tuple<Log, CancelEvent, SAMPLE, ManualResetEvent>;
+
+            args.Item4.Set();
+
+            try
+            {
+                if (args.Item3 == SAMPLE.TRIPLET)
+                    MyCaffeSample.RunTripletSample(args.Item1, args.Item2, IMAGEDB_LOAD_METHOD.LOAD_ALL, true);
+                else if (args.Item3 == SAMPLE.SIAMESE)
+                    MyCaffeSample.RunSiameseSample(args.Item1, args.Item2, IMAGEDB_LOAD_METHOD.LOAD_ALL, true);
+                else
+                    MyCaffeSample.RunSample(args.Item1, args.Item2, IMAGEDB_LOAD_METHOD.LOAD_ALL, true);
+            }
+            finally
+            {
+                args.Item4.Reset();
+            }
+        }
+
+
+        /// <summary>
         /// This static function puts it all together for a very simple sample.
         /// Call this function from your application.
         /// </summary>
+        /// <param name="log">Specifies the log for output, or null.</param>
+        /// <param name="evtCancel">Specifies the cancel event, or null.</param>
         /// <param name="loadMethod">Specifies how the images are to be loaded (default = LOAD_ALL).
         /// The following load methods are available:
         ///   LOAD_ON_DEMAND - loads the images into memory as they are needed during training (slower training).
         ///   LOAD_ALL - loads all images into memory first then trains (fastest training).
         /// </param>
-        public static void RunSample(IMAGEDB_LOAD_METHOD loadMethod = IMAGEDB_LOAD_METHOD.LOAD_ALL)
+        /// <param name="bRunningOnThread">Specifies whether or not the sample is run on a separate thread (default = false).</param>
+        public static void RunSample(Log log = null, CancelEvent evtCancel = null, IMAGEDB_LOAD_METHOD loadMethod = IMAGEDB_LOAD_METHOD.LOAD_ALL, bool bRunningOnThread = false)
         {
-            MyCaffeSample sample = new MyCaffeSample();
+            if (evtCancel != null)
+                evtCancel.Reset();
 
-            MessageBox.Show("Welcome to the LeNet Classification Sample - all output is sent to the Visual Studio Output window.", "LeNet Classification Sample");
+            MyCaffeSample sample = new MyCaffeSample(log, evtCancel);
 
-            sample.Initialize(loadMethod);
+            string strOutput = "Welcome to the LeNet Classification Sample";
+            strOutput += (log == null) ? " - all output is sent to the Visual Studio Output window." : "";
+            string strTitle = "LeNet Classification Sample";
+
+            if (bRunningOnThread)
+                Trace.WriteLine(strOutput);
+            else
+                MessageBox.Show(strOutput, strTitle);
+
+            if (!sample.Initialize(loadMethod))
+                return;
+
             sample.Train();
             double dfAccuracy = sample.Test();
             sample.Dispose();
 
-            MessageBox.Show("The MNIST trained accuracy = " + dfAccuracy.ToString("P"));
+            strOutput = "The LeNet MNIST trained accuracy = " + dfAccuracy.ToString("P");
+
+            if (bRunningOnThread)
+                Trace.WriteLine(strOutput);
+            else
+                MessageBox.Show(strOutput);
         }
 
-        public static void RunSiameseSample(IMAGEDB_LOAD_METHOD loadMethod = IMAGEDB_LOAD_METHOD.LOAD_ALL)
+        /// <summary>
+        /// This static function puts the SiameseNet example all together in a very simple sample.
+        /// Call this function from your application.
+        /// </summary>
+        /// <param name="log">Specifies the log for output, or null.</param>
+        /// <param name="evtCancel">Specifies the cancel event, or null.</param>
+        /// <param name="loadMethod">Specifies how the images are to be loaded (default = LOAD_ALL).
+        /// The following load methods are available:
+        ///   LOAD_ON_DEMAND - loads the images into memory as they are needed during training (slower training).
+        ///   LOAD_ALL - loads all images into memory first then trains (fastest training).
+        /// </param>
+        /// <param name="evtCancel">Specifies the cancel event, or null.</param>
+        /// <param name="log">Specifies the log for output, or null.</param>
+        /// <param name="bRunningOnThread">Specifies whether or not the sample is run on a separate thread (default = false).</param>
+        public static void RunSiameseSample(Log log = null, CancelEvent evtCancel = null, IMAGEDB_LOAD_METHOD loadMethod = IMAGEDB_LOAD_METHOD.LOAD_ALL, bool bRunningOnThread = false)
         {
-            MyCaffeSample sample = new MyCaffeSample();
+            if (evtCancel != null)
+                evtCancel.Reset();
 
-            MessageBox.Show("Welcome to the Siamese Classification Sample - all output is sent to the Visual Studio Output window.", "Siamese Classification Sample");
+            MyCaffeSample sample = new MyCaffeSample(log, evtCancel);
 
-            sample.InitializeSiamese(loadMethod);
+            string strOutput = "Welcome to the Siamese Classification Sample";
+            strOutput += (log == null) ? " - all output is sent to the Visual Studio Output window." : "";
+            string strTitle = "Siamese Classification Sample";
+
+            if (bRunningOnThread)
+                Trace.WriteLine(strOutput);
+            else
+                MessageBox.Show(strOutput, strTitle);
+
+            if (!sample.InitializeSiamese(loadMethod))
+                return;
+
             sample.Train();
             double dfAccuracy = sample.Test();
             sample.Dispose();
 
-            MessageBox.Show("The MNIST trained with SiameseNet accuracy = " + dfAccuracy.ToString("P"));
+            strOutput = "The Siamese MNIST trained accuracy = " + dfAccuracy.ToString("P");
+
+            if (bRunningOnThread)
+                Trace.WriteLine(strOutput);
+            else
+                MessageBox.Show(strOutput);
+        }
+
+        /// <summary>
+        /// This static function puts the TripletNet example all together in a very simple sample.
+        /// Call this function from your application.
+        /// </summary>
+        /// <param name="log">Specifies the log for output, or null.</param>
+        /// <param name="evtCancel">Specifies the cancel event, or null.</param>
+        /// <param name="loadMethod">Specifies how the images are to be loaded (default = LOAD_ALL).
+        /// The following load methods are available:
+        ///   LOAD_ON_DEMAND - loads the images into memory as they are needed during training (slower training).
+        ///   LOAD_ALL - loads all images into memory first then trains (fastest training).
+        /// </param>
+        /// <param name="bRunningOnThread">Specifies whether or not the sample is run on a separate thread (default = false).</param>
+        public static void RunTripletSample(Log log = null, CancelEvent evtCancel = null, IMAGEDB_LOAD_METHOD loadMethod = IMAGEDB_LOAD_METHOD.LOAD_ALL, bool bRunningOnThread = false)
+        {
+            if (evtCancel != null)
+                evtCancel.Reset();
+
+            MyCaffeSample sample = new MyCaffeSample(log, evtCancel);
+
+            string strOutput = "Welcome to the Triplet Classification Sample";
+            strOutput += (log == null) ? " - all output is sent to the Visual Studio Output window." : "";
+            string strTitle = "Triplet Classification Sample";
+
+            if (bRunningOnThread)
+                Trace.WriteLine(strOutput);
+            else
+                MessageBox.Show(strOutput, strTitle);
+
+            if (!sample.InitializeTripletNet(loadMethod))
+                return;
+
+            sample.Train();
+            double dfAccuracy = sample.Test();
+            sample.Dispose();
+
+            strOutput = "The Triplet MNIST trained accuracy = " + dfAccuracy.ToString("P");
+
+            if (bRunningOnThread)
+                Trace.WriteLine(strOutput);
+            else
+                MessageBox.Show(strOutput);
         }
     }
 
@@ -372,6 +643,41 @@ namespace MyCaffeSample
             }
         }
 
+        private bool setSqlInstance()
+        {
+            // Initialize the connection to SQL (if it exists).
+            List<string> rgSqlInst = DatabaseInstanceQuery.GetInstances();
+
+            if (rgSqlInst == null || rgSqlInst.Count == 0)
+            {
+                string strErr = "For most operations, you must download and install 'Microsoft SQL' or 'Microsoft SQL Express' first!" + Environment.NewLine;
+                strErr += "see 'https://www.microsoft.com/en-us/sql-server/sql-server-editions-express'";
+                MessageBox.Show("ERROR: " + strErr, "Microsoft SQL or Microsoft SQL Express missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            if (rgSqlInst[0] != ".\\MSSQLSERVER")
+                EntitiesConnection.GlobalDatabaseServerName = rgSqlInst[0];
+
+            m_log.WriteLine("Using SQL Instance: " + rgSqlInst[0]);
+
+            return true;
+        }
+
+        private void handleError(Exception excpt)
+        {
+            string strErr = excpt.Message + "\n";
+
+            if (excpt.InnerException != null)
+            {
+                strErr += excpt.InnerException.Message + "\n";
+                if (excpt.InnerException.InnerException != null)
+                    strErr += excpt.InnerException.InnerException.Message + "\n";
+            }
+
+            MessageBox.Show("ERROR: " + strErr + "\n\nMake sure that you are building this project for x64 and that you have copied all CUDA files from the 'Program Files\\SignalPop\\MyCaffe\\cuda_11.0' directory!\n\nTo download the MyCaffe Test Application (which installs 'Program Files\\SignalPop\\MyCaffe'), see https://github.com/MyCaffe/MyCaffe/releases.", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
         /// <summary>
         /// The Initialize function shows how to create MyCaffe and load a project into it. 
         /// </summary>
@@ -386,11 +692,14 @@ namespace MyCaffeSample
         /// The example function below loads a new project used to run the RL model
         /// on the GYM selected.
         /// </remarks>
-        /// <
-        public void Initialize(GYM gym = GYM.CARTPOLE)
+        /// <returns>On success, true is returned, otherwise false.</returns>
+        public bool Initialize(GYM gym = GYM.CARTPOLE)
         {
             try
             {
+                if (!setSqlInstance())
+                    return false;
+
                 string strName = "MyCaffeCartPoleTrainer";
 
                 // Setup the MyCaffe initialization settings.
@@ -462,8 +771,11 @@ namespace MyCaffeSample
             }
             catch (Exception excpt)
             {
-                MessageBox.Show("ERROR: " + excpt.Message + "\n\nMake sure that you are building this project for x64!", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                handleError(excpt);
+                return false;
             }
+
+            return true;
         }
 
         /// <summary>
@@ -520,7 +832,8 @@ namespace MyCaffeSample
         /// <param name="evtCancel">Optionally, specifies the cancel event used to abort the training.</param>
         /// <param name="gym">Optionally, specifies the gym to use: CARTPOLE or ATARI (default = CARTPOLE).</param>
         /// <param name="log">Optionally, specifies an external log to use.</param>
-        public static void RunSample(Control ctrlParent, CancelEvent evtCancel = null, GYM gym = GYM.CARTPOLE, Log log = null)
+        /// <param name="evtRunning">Optionally, specifies whether or not the sample is running.</param>
+        public static void RunSample(Control ctrlParent, CancelEvent evtCancel = null, GYM gym = GYM.CARTPOLE, Log log = null, ManualResetEvent evtRunning = null)
         {
             if (evtCancel != null)
                 evtCancel.Reset();
@@ -552,21 +865,34 @@ namespace MyCaffeSample
             // where the Gym is registered (e.g. the MyCaffeGymRegistrar.Initialize and trainer must
             // run on separate threads, with the MyCaffeGymRegistrar.Initialize being called on the main
             // user-interface thread that contains the message pump.
-            Task task = Task.Factory.StartNew(new Action<object>(run), new Tuple<Log, CancelEvent, GYM>(log, evtCancel, gym));
+            Task task = Task.Factory.StartNew(new Action<object>(run), new Tuple<Log, CancelEvent, GYM, ManualResetEvent>(log, evtCancel, gym, evtRunning));
         }
 
         private static void run(object obj)
         {
-            Tuple<Log, CancelEvent, GYM> args = obj as Tuple<Log, CancelEvent, GYM>;
+            Tuple<Log, CancelEvent, GYM, ManualResetEvent> args = obj as Tuple<Log, CancelEvent, GYM, ManualResetEvent>;
             MyCaffeRLpgSample sample = new MyCaffeRLpgSample(args.Item1);
 
-            // Use the cancel event passed in.
-            if (args.Item2 != null)
-                sample.m_evtCancel.AddCancelOverride(args.Item2);
+            if (args.Item4 != null)
+                args.Item4.Set();
 
-            sample.Initialize(args.Item3);
-            sample.Train(50000, true);
-            sample.Dispose();
+            try
+            {
+                // Use the cancel event passed in.
+                if (args.Item2 != null)
+                    sample.m_evtCancel.AddCancelOverride(args.Item2);
+
+                if (!sample.Initialize(args.Item3))
+                    return;
+
+                sample.Train(50000, true);
+                sample.Dispose();
+            }
+            finally
+            {
+                if (args.Item4 != null)
+                    args.Item4.Reset();
+            }
         }
     }
 
@@ -629,6 +955,41 @@ namespace MyCaffeSample
             }
         }
 
+        private bool setSqlInstance()
+        {
+            // Initialize the connection to SQL (if it exists).
+            List<string> rgSqlInst = DatabaseInstanceQuery.GetInstances();
+
+            if (rgSqlInst == null || rgSqlInst.Count == 0)
+            {
+                string strErr = "For most operations, you must download and install 'Microsoft SQL' or 'Microsoft SQL Express' first!" + Environment.NewLine;
+                strErr += "see 'https://www.microsoft.com/en-us/sql-server/sql-server-editions-express'";
+                MessageBox.Show("ERROR: " + strErr, "Microsoft SQL or Microsoft SQL Express missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            if (rgSqlInst[0] != ".\\MSSQLSERVER")
+                EntitiesConnection.GlobalDatabaseServerName = rgSqlInst[0];
+
+            m_log.WriteLine("Using SQL Instance: " + rgSqlInst[0]);
+
+            return true;
+        }
+
+        private void handleError(Exception excpt)
+        {
+            string strErr = excpt.Message + "\n";
+
+            if (excpt.InnerException != null)
+            {
+                strErr += excpt.InnerException.Message + "\n";
+                if (excpt.InnerException.InnerException != null)
+                    strErr += excpt.InnerException.InnerException.Message + "\n";
+            }
+
+            MessageBox.Show("ERROR: " + strErr + "\n\nMake sure that you are building this project for x64 and that you have copied all CUDA files from the 'Program Files\\SignalPop\\MyCaffe\\cuda_11.0' directory!\n\nTo download the MyCaffe Test Application (which installs 'Program Files\\SignalPop\\MyCaffe'), see https://github.com/MyCaffe/MyCaffe/releases.", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
         /// <summary>
         /// The Initialize function shows how to create MyCaffe and load a project into it. 
         /// </summary>
@@ -648,10 +1009,14 @@ namespace MyCaffeSample
         /// 500 or so, you should start to see the rewards slowly start to increase towards the positive and eventually
         /// move into the positive.
         /// </remarks>
-        public void Initialize(GYM gym = GYM.CARTPOLE)
+        /// <returns>On success, true is returned, otherwise false.</returns>
+        public bool Initialize(GYM gym = GYM.CARTPOLE)
         {
             try
             {
+                if (!setSqlInstance())
+                    return false;
+
                 string strName = "MyCaffeCartPoleTrainer";
 
                 // Setup the MyCaffe initialization settings.
@@ -733,8 +1098,11 @@ namespace MyCaffeSample
             }
             catch (Exception excpt)
             {
-                MessageBox.Show("ERROR: " + excpt.Message + "\n\nMake sure that you are building this project for x64!", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                handleError(excpt);
+                return false;
             }
+
+            return true;
         }
 
         /// <summary>
@@ -791,7 +1159,8 @@ namespace MyCaffeSample
         /// <param name="evtCancel">Optionally, specifies the cancel event used to abort the training.</param>
         /// <param name="gym">Optionally, specifies the gym to use: CARTPOLE or ATARI (default = CARTPOLE).</param>
         /// <param name="log">Optionally, specifies an external log to use.</param>
-        public static void RunSample(Control ctrlParent, CancelEvent evtCancel = null, GYM gym = GYM.CARTPOLE, Log log = null)
+        /// <param name="evtRunning">Optionally, specifies whether or not the sample is running.</param>
+        public static void RunSample(Control ctrlParent, CancelEvent evtCancel = null, GYM gym = GYM.CARTPOLE, Log log = null, ManualResetEvent evtRunning = null)
         {
             if (evtCancel != null)
                 evtCancel.Reset();
@@ -820,21 +1189,34 @@ namespace MyCaffeSample
             // where the Gym is registered (e.g. the MyCaffeGymRegistrar.Initialize and trainer must
             // run on separate threads, with the MyCaffeGymRegistrar.Initialize being called on the main
             // user-interface thread that contains the message pump.
-            Task task = Task.Factory.StartNew(new Action<object>(run), new Tuple<Log, CancelEvent, GYM>(log, evtCancel, gym));
+            Task task = Task.Factory.StartNew(new Action<object>(run), new Tuple<Log, CancelEvent, GYM, ManualResetEvent>(log, evtCancel, gym, evtRunning));
         }
 
         private static void run(object obj)
         {
-            Tuple<Log, CancelEvent, GYM> args = obj as Tuple<Log, CancelEvent, GYM>;
+            Tuple<Log, CancelEvent, GYM, ManualResetEvent> args = obj as Tuple<Log, CancelEvent, GYM, ManualResetEvent>;
             MyCaffeRLdqnSample sample = new MyCaffeRLdqnSample(args.Item1);
 
-            // Use the cancel event passed in.
-            if (args.Item2 != null)
-                sample.m_evtCancel.AddCancelOverride(args.Item2);
+            if (args.Item4 != null)
+                args.Item4.Set();
 
-            sample.Initialize(args.Item3);
-            sample.Train(50000, true);
-            sample.Dispose();
+            try
+            {
+                // Use the cancel event passed in.
+                if (args.Item2 != null)
+                    sample.m_evtCancel.AddCancelOverride(args.Item2);
+
+                if (!sample.Initialize(args.Item3))
+                    return;
+
+                sample.Train(50000, true);
+                sample.Dispose();
+            }
+            finally
+            {
+                if (args.Item4 != null)
+                    args.Item4.Reset();
+            }
         }
     }
 
@@ -1130,6 +1512,41 @@ namespace MyCaffeSample
             }
         }
 
+        private bool setSqlInstance()
+        {
+            // Initialize the connection to SQL (if it exists).
+            List<string> rgSqlInst = DatabaseInstanceQuery.GetInstances();
+
+            if (rgSqlInst == null || rgSqlInst.Count == 0)
+            {
+                string strErr = "For most operations, you must download and install 'Microsoft SQL' or 'Microsoft SQL Express' first!" + Environment.NewLine;
+                strErr += "see 'https://www.microsoft.com/en-us/sql-server/sql-server-editions-express'";
+                MessageBox.Show("ERROR: " + strErr, "Microsoft SQL or Microsoft SQL Express missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            if (rgSqlInst[0] != ".\\MSSQLSERVER")
+                EntitiesConnection.GlobalDatabaseServerName = rgSqlInst[0];
+
+            m_log.WriteLine("Using SQL Instance: " + rgSqlInst[0]);
+
+            return true;
+        }
+
+        private void handleError(Exception excpt)
+        {
+            string strErr = excpt.Message + "\n";
+
+            if (excpt.InnerException != null)
+            {
+                strErr += excpt.InnerException.Message + "\n";
+                if (excpt.InnerException.InnerException != null)
+                    strErr += excpt.InnerException.InnerException.Message + "\n";
+            }
+
+            MessageBox.Show("ERROR: " + strErr + "\n\nMake sure that you are building this project for x64 and that you have copied all CUDA files from the 'Program Files\\SignalPop\\MyCaffe\\cuda_11.0' directory!\n\nTo download the MyCaffe Test Application (which installs 'Program Files\\SignalPop\\MyCaffe'), see https://github.com/MyCaffe/MyCaffe/releases.", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
         /// <summary>
         /// The Initialize function shows how to create MyCaffe and load a project into it. 
         /// </summary>
@@ -1144,11 +1561,14 @@ namespace MyCaffeSample
         /// The example function below loads a new project used to run the RL model
         /// on the GYM selected.
         /// </remarks>
-        /// <
-        public void Initialize()
+        /// <returns>On success, returns true, and false otherwise.</returns>
+        public bool Initialize()
         {
             try
             {
+                if (!setSqlInstance())
+                    return false;
+
                 string strName = "MyCaffeRnnTrainer";
 
                 // Setup the MyCaffe initialization settings.
@@ -1221,8 +1641,11 @@ namespace MyCaffeSample
             }
             catch (Exception excpt)
             {
-                MessageBox.Show("ERROR: " + excpt.Message + "\n\nMake sure that you are building this project for x64!", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                handleError(excpt);
+                return false;
             }
+
+            return true;
         }
 
         /// <summary>
@@ -1280,7 +1703,8 @@ namespace MyCaffeSample
         /// <param name="ctrlParent">Specifies the parent control where the sample is run, typically use 'RunSample(this)' when running from within a Form.</param>
         /// <param name="evtCancel">Optionally, specifies the cancel event used to abort the training.</param>
         /// <param name="log">Optionally, specifies an external log to use.</param>
-        public static void RunSample(Control ctrlParent, CancelEvent evtCancel = null, Log log = null)
+        /// <param name="evtRunning">Optionally, specifies whether or not the sample is running.</param>
+        public static void RunSample(Control ctrlParent, CancelEvent evtCancel = null, Log log = null, ManualResetEvent evtRunning = null)
         {
             if (evtCancel != null)
                 evtCancel.Reset();
@@ -1294,32 +1718,43 @@ namespace MyCaffeSample
             log.OnWriteLine += Log_OnWriteLine;
 
             // Start training the gym.
-            Task task = Task.Factory.StartNew(new Action<object>(run), new Tuple<Log, CancelEvent, Control>(log, evtCancel, ctrlParent));
+            Task task = Task.Factory.StartNew(new Action<object>(run), new Tuple<Log, CancelEvent, Control, ManualResetEvent>(log, evtCancel, ctrlParent, evtRunning));
         }
 
         private static void run(object obj)
         {
-            Tuple<Log, CancelEvent, Control> args = obj as Tuple<Log, CancelEvent, Control>;
+            Tuple<Log, CancelEvent, Control, ManualResetEvent> args = obj as Tuple<Log, CancelEvent, Control, ManualResetEvent>;
             MyCaffeRNNSample sample = new MyCaffeRNNSample(args.Item1);
 
-            // Use the cancel event passed in.
-            if (args.Item2 != null)
+            if (args.Item4 != null)
+                args.Item4.Set();
+
+            try
             {
-                args.Item2.Reset();
-                sample.m_evtCancel.AddCancelOverride(args.Item2);
+                // Use the cancel event passed in.
+                if (args.Item2 != null)
+                {
+                    args.Item2.Reset();
+                    sample.m_evtCancel.AddCancelOverride(args.Item2);
+                }
+
+                // Initialize and train the model for 10,000 iterations.
+                sample.Initialize();
+                sample.Train(10000);
+
+                // Create a string of 1000 characters of Shakespeare-like text.
+                string strGeneratedShakespeare = sample.Run(1000);
+                args.Item1.WriteLine(strGeneratedShakespeare);
+
+                args.Item3.Invoke(new fnDone(done), strGeneratedShakespeare);
+
+                sample.Dispose();
             }
-
-            // Initialize and train the model for 10,000 iterations.
-            sample.Initialize();
-            sample.Train(10000);
-
-            // Create a string of 1000 characters of Shakespeare-like text.
-            string strGeneratedShakespeare = sample.Run(1000);
-            args.Item1.WriteLine(strGeneratedShakespeare);
-
-            args.Item3.Invoke(new fnDone(done), strGeneratedShakespeare);
-
-            sample.Dispose();
+            finally
+            {
+                if (args.Item4 != null)
+                    args.Item4.Reset();
+            }
         }
 
         private static void done(string strResult)
@@ -1575,6 +2010,43 @@ namespace MyCaffeSample
             }
         }
 
+        private bool setSqlInstance()
+        {
+            // Initialize the connection to SQL (if it exists).
+            List<string> rgSqlInst = DatabaseInstanceQuery.GetInstances();
+
+            if (rgSqlInst == null || rgSqlInst.Count == 0)
+            {
+                string strErr = "For most operations, you must download and install 'Microsoft SQL' or 'Microsoft SQL Express' first!" + Environment.NewLine;
+                strErr += "see 'https://www.microsoft.com/en-us/sql-server/sql-server-editions-express'";
+                MessageBox.Show("ERROR: " + strErr, "Microsoft SQL or Microsoft SQL Express missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            if (rgSqlInst[0] != ".\\MSSQLSERVER")
+                EntitiesConnection.GlobalDatabaseServerName = rgSqlInst[0];
+
+            m_log.WriteLine("Using SQL Instance: " + rgSqlInst[0]);
+
+            return true;
+        }
+
+        private string handleError(Exception excpt)
+        {
+            string strErr = excpt.Message + "\n";
+
+            if (excpt.InnerException != null)
+            {
+                strErr += excpt.InnerException.Message + "\n";
+                if (excpt.InnerException.InnerException != null)
+                    strErr += excpt.InnerException.InnerException.Message + "\n";
+            }
+
+            strErr += "\n\nMake sure that you are building this project for x64 and that you have copied all CUDA files from the 'Program Files\\SignalPop\\MyCaffe\\cuda_11.0' directory!\n\nTo download the MyCaffe Test Application (which installs 'Program Files\\SignalPop\\MyCaffe'), see https://github.com/MyCaffe/MyCaffe/releases.";
+
+            return strErr;
+        }
+
         /// <summary>
         /// Returns the style image path.
         /// </summary>
@@ -1653,7 +2125,7 @@ namespace MyCaffeSample
                 {
                     double dfPct = (double)e.BytesReceived / (double)e.TotalBytesToReceive;
                     string strMsg = "(" + dfPct.ToString("P") + ") Downloading weight file...";
-                    Trace.WriteLine(strMsg);
+                    m_log.WriteLine(strMsg);
 
                     if (m_ctrlParent != null)
                         m_ctrlParent.Invoke(new fnBreathe(breathe));
@@ -1689,6 +2161,9 @@ namespace MyCaffeSample
         {
             try
             {
+                if (!setSqlInstance())
+                    return "Failed to find SQL!";
+
                 m_ctrlParent = ctrlParent;
 
                 string strPath = Path.GetFullPath("..\\..\\..\\data\\neuralstyle\\");
@@ -1776,7 +2251,7 @@ namespace MyCaffeSample
             }
             catch (Exception excpt)
             {
-                return excpt.Message;
+                return handleError(excpt);
             }
 
             return null;
@@ -1813,7 +2288,8 @@ namespace MyCaffeSample
         /// <param name="ctrlParent">Specifies the parent control.</param>
         /// <param name="evtCancel">Specifies the CancelEvent used to abort the style transfer.</param>
         /// <param name="log">Optionally, specifies an external log to use.</param>
-        public static void RunSample(Control ctrlParent, CancelEvent evtCancel = null, Log log = null)
+        /// <param name="evtRunning">Optionally, specifies whether or not the sample is running.</param>
+        public static void RunSample(Control ctrlParent, CancelEvent evtCancel = null, Log log = null, ManualResetEvent evtRunning = null)
         {
             if (evtCancel != null)
                 evtCancel.Reset();
@@ -1827,64 +2303,75 @@ namespace MyCaffeSample
             log.OnWriteLine += Log_OnWriteLine;
 
             // Start training the gym.
-            Task task = Task.Factory.StartNew(new Action<object>(run), new Tuple<Log, CancelEvent, Control>(log, evtCancel, ctrlParent));
+            Task task = Task.Factory.StartNew(new Action<object>(run), new Tuple<Log, CancelEvent, Control, ManualResetEvent>(log, evtCancel, ctrlParent, evtRunning));
         }
 
         private static void run(object obj)
         {
-            Tuple<Log, CancelEvent, Control> args = obj as Tuple<Log, CancelEvent, Control>;
+            Tuple<Log, CancelEvent, Control, ManualResetEvent> args = obj as Tuple<Log, CancelEvent, Control, ManualResetEvent>;
             MyCaffeNeuralStyleSample sample = new MyCaffeNeuralStyleSample(args.Item1);
 
-            // Use the cancel event passed in.
-            if (args.Item2 != null)
+            if (args.Item4 != null)
+                args.Item4.Set();
+
+            try
             {
-                args.Item2.Reset();
-                sample.m_evtCancel.AddCancelOverride(args.Item2);
-            }
+                // Use the cancel event passed in.
+                if (args.Item2 != null)
+                {
+                    args.Item2.Reset();
+                    sample.m_evtCancel.AddCancelOverride(args.Item2);
+                }
 
-            // Initialize and run the model for 200 iterations.
-            string strErr = sample.Initialize(args.Item3);
-            if (!string.IsNullOrEmpty(strErr))
+                // Initialize and run the model for 200 iterations.
+                string strErr = sample.Initialize(args.Item3);
+                if (!string.IsNullOrEmpty(strErr))
+                {
+                    string strDone = "ERROR: " + strErr;
+                    args.Item3.Invoke(new fnDone(done), strDone, null);
+                    return;
+                }
+
+                string strStyleImg = sample.StyleImagePath;
+                string strContentImg = sample.ContentImagePath;
+                string strResultImg = sample.ResultImagePath;
+                Bitmap bmpStyle = new Bitmap(strStyleImg);
+                Bitmap bmpContent = new Bitmap(strContentImg);
+                Bitmap bmpResult = sample.Run(200, bmpStyle, bmpContent);
+
+                if (sample.m_evtCancel.WaitOne(0))
+                {
+                    string strDone = "Aborted the Neural Style Transfer!";
+                    args.Item3.Invoke(new fnDone(done), strDone, null);
+                }
+                else if (bmpResult != null)
+                {
+                    if (File.Exists(strResultImg))
+                        File.Delete(strResultImg);
+
+                    bmpResult.Save(strResultImg);
+
+                    string strDone = "Resulting style image located at: '" + strResultImg + "'";
+                    args.Item3.Invoke(new fnDone(done), strDone, strResultImg);
+                }
+                else
+                {
+                    string strDone = "The Neural Style Transfer failed to create an image!";
+                    args.Item3.Invoke(new fnDone(done), strDone, null);
+                }
+
+                if (bmpResult != null)
+                    bmpResult.Dispose();
+
+                bmpStyle.Dispose();
+                bmpContent.Dispose();
+                sample.Dispose();
+            }
+            finally
             {
-                string strDone = "ERROR: " + strErr;
-                args.Item3.Invoke(new fnDone(done), strDone, null);
-                return;
+                if (args.Item4 != null)
+                    args.Item4.Reset();
             }
-            
-            string strStyleImg = sample.StyleImagePath;
-            string strContentImg = sample.ContentImagePath;
-            string strResultImg = sample.ResultImagePath;
-            Bitmap bmpStyle = new Bitmap(strStyleImg);
-            Bitmap bmpContent = new Bitmap(strContentImg);
-            Bitmap bmpResult = sample.Run(200, bmpStyle, bmpContent);
-
-            if (sample.m_evtCancel.WaitOne(0))
-            {
-                string strDone = "Aborted the Neural Style Transfer!";
-                args.Item3.Invoke(new fnDone(done), strDone, null);
-            }
-            else if (bmpResult != null)
-            {
-                if (File.Exists(strResultImg))
-                    File.Delete(strResultImg);
-
-                bmpResult.Save(strResultImg);
-
-                string strDone = "Resulting style image located at: '" + strResultImg + "'";
-                args.Item3.Invoke(new fnDone(done), strDone, strResultImg);
-            }
-            else
-            {
-                string strDone = "The Neural Style Transfer failed to create an image!";
-                args.Item3.Invoke(new fnDone(done), strDone, null);
-            }
-
-            if (bmpResult != null)
-                bmpResult.Dispose();
-
-            bmpStyle.Dispose();
-            bmpContent.Dispose();
-            sample.Dispose();
         }
 
         private static void done(string strResult, string strImgFile)
