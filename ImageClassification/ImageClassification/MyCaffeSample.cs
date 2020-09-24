@@ -19,6 +19,7 @@ using System.Windows.Forms;
 using MyCaffe.db.stream;
 using MyCaffe.extras;
 using System.Net;
+using System.Reflection;
 
 namespace MyCaffeSample
 {
@@ -34,7 +35,7 @@ namespace MyCaffeSample
     /// This sample expects that the following configuration steps have been completed.
     /// 
     /// 1.) Download and install Microsoft SQL Express 2016 (or Standard, etc.),
-    ///     see https://www.microsoft.com/en-us/sql-server/sql-server-editions-express.
+    ///     see https://www.microsoft.com/en-us/sql-server/sql-server-downloads.
     /// 2.) Download and install the MyCaffe Test Application,
     ///     see https://github.com/MyCaffe/MyCaffe/releases.
     /// 3.) From the MyCaffe Test Application create the MyCaffe database by selecting
@@ -58,6 +59,7 @@ namespace MyCaffeSample
         MyCaffeControl<float> m_caffe = null;
         CancelEvent m_evtCancel = null;                 // Allows for cancelling training and testing operations.
         Log m_log = null;                               // Provides output of testing and training operations.
+        string m_strCudaPath = null;
 
         public enum SAMPLE
         {
@@ -71,7 +73,8 @@ namespace MyCaffeSample
         /// </summary>
         /// <param name="log">Optionally, specifies the output log (default = null).</param>
         /// <param name="evtCancel">Optionally, specifies the cancel event (default = null).</param>
-        public MyCaffeSample(Log log = null, CancelEvent evtCancel = null)
+        /// <param name="strCudaPath">Specifies the path where the CudaDnnDll.x.dll file resides.</param>
+        public MyCaffeSample(Log log = null, CancelEvent evtCancel = null, string strCudaPath = null)
         {
             // Setup the MyCaffe output log.
             m_log = log;
@@ -85,6 +88,7 @@ namespace MyCaffeSample
                 evtCancel = new CancelEvent();
 
             m_evtCancel = evtCancel;
+            m_strCudaPath = strCudaPath;
         }
 
         /// <summary>
@@ -108,14 +112,14 @@ namespace MyCaffeSample
             if (rgSqlInst == null || rgSqlInst.Count == 0)
             {
                 string strErr = "For most operations, you must download and install 'Microsoft SQL' or 'Microsoft SQL Express' first!" + Environment.NewLine;
-                strErr += "see 'https://www.microsoft.com/en-us/sql-server/sql-server-editions-express'";
+                strErr += "see 'https://www.microsoft.com/en-us/sql-server/sql-server-downloads'";
                 MessageBox.Show("ERROR: " + strErr, "Microsoft SQL or Microsoft SQL Express missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
             int nIdx = 0;
             if (rgSqlInst[nIdx] != ".\\MSSQLSERVER")
-                EntitiesConnection.GlobalDatabaseServerName = rgSqlInst[nIdx];
+                EntitiesConnection.GlobalDatabaseConnectInfo.Server = rgSqlInst[nIdx];
 
             m_log.WriteLine("Using SQL Instance: " + rgSqlInst[nIdx]);
 
@@ -159,6 +163,8 @@ namespace MyCaffeSample
                 if (!setSqlInstance())
                     return false;
 
+                Directory.SetCurrentDirectory(AssemblyInfo.AssemblyDirectory);
+
                 //---------------------------------------------------
                 // The Default SQL instance is used by 'default'.
                 // To change to a different instance, uncomment the
@@ -190,7 +196,7 @@ namespace MyCaffeSample
                 settings.ImageDbLoadMethod = loadMethod;
 
                 // Create the MyCaffeControl 
-                m_caffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel);
+                m_caffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel, null, null, null, null, m_strCudaPath);
 
                 // Load the project into MyCaffe.  This steps will load the images
                 // into the MyCafffe in-memory Image Database and create a connection
@@ -229,6 +235,8 @@ namespace MyCaffeSample
                 if (!setSqlInstance())
                     return false;
 
+                Directory.SetCurrentDirectory(AssemblyInfo.AssemblyDirectory);
+
                 //---------------------------------------------------
                 // The Default SQL instance is used by 'default'.
                 // To change to a different instance, uncomment the
@@ -260,7 +268,7 @@ namespace MyCaffeSample
                 settings.ImageDbLoadMethod = loadMethod;
 
                 // Create the MyCaffeControl 
-                m_caffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel);
+                m_caffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel, null, null, null, null, m_strCudaPath);
 
                 // Load the project into MyCaffe.  This steps will load the images
                 // into the MyCafffe in-memory Image Database and create a connection
@@ -300,6 +308,8 @@ namespace MyCaffeSample
                 if (!setSqlInstance())
                     return false;
 
+                Directory.SetCurrentDirectory(AssemblyInfo.AssemblyDirectory);
+
                 //---------------------------------------------------
                 // The Default SQL instance is used by 'default'.
                 // To change to a different instance, uncomment the
@@ -331,7 +341,7 @@ namespace MyCaffeSample
                 settings.ImageDbLoadMethod = loadMethod;
 
                 // Create the MyCaffeControl 
-                m_caffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel);
+                m_caffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel, null, null, null, null, m_strCudaPath);
 
                 // Load the project into MyCaffe.  This steps will load the images
                 // into the MyCafffe in-memory Image Database and create a connection
@@ -420,25 +430,26 @@ namespace MyCaffeSample
         /// <param name="log">Specifies the log for output, or null.</param>
         /// <param name="evtCancel">Specifies the cancel event, or null.</param>
         /// <param name="evtRunning">Specifies whether or not the sample is running.</param>
-        public static void RunClassificationSample(SAMPLE sample, Log log, CancelEvent evtCancel, ManualResetEvent evtRunning)
+        /// <param name="strCudaPath">Specifies the path where the CudaDnnDll.x.dll file resides.</param>
+        public static void RunClassificationSample(SAMPLE sample, Log log, CancelEvent evtCancel, ManualResetEvent evtRunning, string strCudaPath)
         {
-            Task.Factory.StartNew(new Action<object>(runSample), new Tuple<Log, CancelEvent, SAMPLE, ManualResetEvent>(log, evtCancel, sample, evtRunning));
+            Task.Factory.StartNew(new Action<object>(runSample), new Tuple<Log, CancelEvent, SAMPLE, ManualResetEvent, string>(log, evtCancel, sample, evtRunning, strCudaPath));
         }
 
         private static void runSample(object obj)
         {
-            Tuple<Log, CancelEvent, SAMPLE, ManualResetEvent> args = obj as Tuple<Log, CancelEvent, SAMPLE, ManualResetEvent>;
+            Tuple<Log, CancelEvent, SAMPLE, ManualResetEvent, string> args = obj as Tuple<Log, CancelEvent, SAMPLE, ManualResetEvent, string>;
 
             args.Item4.Set();
 
             try
             {
                 if (args.Item3 == SAMPLE.TRIPLET)
-                    MyCaffeSample.RunTripletSample(args.Item1, args.Item2, IMAGEDB_LOAD_METHOD.LOAD_ALL, true);
+                    MyCaffeSample.RunTripletSample(args.Item1, args.Item2, IMAGEDB_LOAD_METHOD.LOAD_ALL, true, args.Item5);
                 else if (args.Item3 == SAMPLE.SIAMESE)
-                    MyCaffeSample.RunSiameseSample(args.Item1, args.Item2, IMAGEDB_LOAD_METHOD.LOAD_ALL, true);
+                    MyCaffeSample.RunSiameseSample(args.Item1, args.Item2, IMAGEDB_LOAD_METHOD.LOAD_ALL, true, args.Item5);
                 else
-                    MyCaffeSample.RunSample(args.Item1, args.Item2, IMAGEDB_LOAD_METHOD.LOAD_ALL, true);
+                    MyCaffeSample.RunSample(args.Item1, args.Item2, IMAGEDB_LOAD_METHOD.LOAD_ALL, true, args.Item5);
             }
             finally
             {
@@ -459,12 +470,13 @@ namespace MyCaffeSample
         ///   LOAD_ALL - loads all images into memory first then trains (fastest training).
         /// </param>
         /// <param name="bRunningOnThread">Specifies whether or not the sample is run on a separate thread (default = false).</param>
-        public static void RunSample(Log log = null, CancelEvent evtCancel = null, IMAGEDB_LOAD_METHOD loadMethod = IMAGEDB_LOAD_METHOD.LOAD_ALL, bool bRunningOnThread = false)
+        /// <param name="strCudaPath">Specifies the path where the CudaDnnDll.x.dll file resides.</param>
+        public static void RunSample(Log log = null, CancelEvent evtCancel = null, IMAGEDB_LOAD_METHOD loadMethod = IMAGEDB_LOAD_METHOD.LOAD_ALL, bool bRunningOnThread = false, string strCudaPath = null)
         {
             if (evtCancel != null)
                 evtCancel.Reset();
 
-            MyCaffeSample sample = new MyCaffeSample(log, evtCancel);
+            MyCaffeSample sample = new MyCaffeSample(log, evtCancel, strCudaPath);
 
             string strOutput = "Welcome to the LeNet Classification Sample";
             strOutput += (log == null) ? " - all output is sent to the Visual Studio Output window." : "";
@@ -504,12 +516,13 @@ namespace MyCaffeSample
         /// <param name="evtCancel">Specifies the cancel event, or null.</param>
         /// <param name="log">Specifies the log for output, or null.</param>
         /// <param name="bRunningOnThread">Specifies whether or not the sample is run on a separate thread (default = false).</param>
-        public static void RunSiameseSample(Log log = null, CancelEvent evtCancel = null, IMAGEDB_LOAD_METHOD loadMethod = IMAGEDB_LOAD_METHOD.LOAD_ALL, bool bRunningOnThread = false)
+        /// <param name="strCudaPath">Specifies the path where the CudaDnnDll.x.dll file resides.</param>
+        public static void RunSiameseSample(Log log = null, CancelEvent evtCancel = null, IMAGEDB_LOAD_METHOD loadMethod = IMAGEDB_LOAD_METHOD.LOAD_ALL, bool bRunningOnThread = false, string strCudaPath = null)
         {
             if (evtCancel != null)
                 evtCancel.Reset();
 
-            MyCaffeSample sample = new MyCaffeSample(log, evtCancel);
+            MyCaffeSample sample = new MyCaffeSample(log, evtCancel, strCudaPath);
 
             string strOutput = "Welcome to the Siamese Classification Sample";
             strOutput += (log == null) ? " - all output is sent to the Visual Studio Output window." : "";
@@ -547,12 +560,13 @@ namespace MyCaffeSample
         ///   LOAD_ALL - loads all images into memory first then trains (fastest training).
         /// </param>
         /// <param name="bRunningOnThread">Specifies whether or not the sample is run on a separate thread (default = false).</param>
-        public static void RunTripletSample(Log log = null, CancelEvent evtCancel = null, IMAGEDB_LOAD_METHOD loadMethod = IMAGEDB_LOAD_METHOD.LOAD_ALL, bool bRunningOnThread = false)
+        /// <param name="strCudaPath">Specifies the path where the CudaDnnDll.x.dll file resides.</param>
+        public static void RunTripletSample(Log log = null, CancelEvent evtCancel = null, IMAGEDB_LOAD_METHOD loadMethod = IMAGEDB_LOAD_METHOD.LOAD_ALL, bool bRunningOnThread = false, string strCudaPath = null)
         {
             if (evtCancel != null)
                 evtCancel.Reset();
 
-            MyCaffeSample sample = new MyCaffeSample(log, evtCancel);
+            MyCaffeSample sample = new MyCaffeSample(log, evtCancel, strCudaPath);
 
             string strOutput = "Welcome to the Triplet Classification Sample";
             strOutput += (log == null) ? " - all output is sent to the Visual Studio Output window." : "";
@@ -593,7 +607,7 @@ namespace MyCaffeSample
     /// This sample expects that the following configuration steps have been completed.
     /// 
     /// 1.) Download and install Microsoft SQL Express 2016 (or Standard, etc.),
-    ///     see https://www.microsoft.com/en-us/sql-server/sql-server-editions-express.
+    ///     see https://www.microsoft.com/en-us/sql-server/sql-server-downloads.
     /// 2.) Download and install the MyCaffe Test Application,
     ///     see https://github.com/MyCaffe/MyCaffe/releases.
     /// 3.) From the MyCaffe Test Application create the MyCaffe database by selecting
@@ -617,6 +631,7 @@ namespace MyCaffeSample
         CancelEvent m_evtCancel = new CancelEvent();    // Allows for cancelling training and testing operations.
         Log m_log = null;
         string m_strInit;
+        string m_strCudaPath = null;
         ITERATOR_TYPE m_iteratorType = ITERATOR_TYPE.ITERATION;
 
         public enum GYM
@@ -625,9 +640,10 @@ namespace MyCaffeSample
             ATARI
         }
 
-        public MyCaffeRLpgSample(Log log)
+        public MyCaffeRLpgSample(Log log, string strCudaPath)
         {
             m_log = log;
+            m_strCudaPath = strCudaPath;
         }
 
         /// <summary>
@@ -651,13 +667,13 @@ namespace MyCaffeSample
             if (rgSqlInst == null || rgSqlInst.Count == 0)
             {
                 string strErr = "For most operations, you must download and install 'Microsoft SQL' or 'Microsoft SQL Express' first!" + Environment.NewLine;
-                strErr += "see 'https://www.microsoft.com/en-us/sql-server/sql-server-editions-express'";
+                strErr += "see 'https://www.microsoft.com/en-us/sql-server/sql-server-downloads'";
                 MessageBox.Show("ERROR: " + strErr, "Microsoft SQL or Microsoft SQL Express missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
             if (rgSqlInst[0] != ".\\MSSQLSERVER")
-                EntitiesConnection.GlobalDatabaseServerName = rgSqlInst[0];
+                EntitiesConnection.GlobalDatabaseConnectInfo.Server = rgSqlInst[0];
 
             m_log.WriteLine("Using SQL Instance: " + rgSqlInst[0]);
 
@@ -700,6 +716,8 @@ namespace MyCaffeSample
                 if (!setSqlInstance())
                     return false;
 
+                Directory.SetCurrentDirectory(AssemblyInfo.AssemblyDirectory);
+
                 string strName = "MyCaffeCartPoleTrainer";
 
                 // Setup the MyCaffe initialization settings.
@@ -708,7 +726,7 @@ namespace MyCaffeSample
                 settings.ImageDbLoadMethod = IMAGEDB_LOAD_METHOD.LOAD_ON_DEMAND; // images are not used.
 
                 // Create the MyCaffeControl 
-                m_mycaffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel);
+                m_mycaffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel, null, null, null, null, m_strCudaPath);
 
                 // Create the Policy Gradient project.
                 ProjectEx prj = new ProjectEx("test");
@@ -833,7 +851,8 @@ namespace MyCaffeSample
         /// <param name="gym">Optionally, specifies the gym to use: CARTPOLE or ATARI (default = CARTPOLE).</param>
         /// <param name="log">Optionally, specifies an external log to use.</param>
         /// <param name="evtRunning">Optionally, specifies whether or not the sample is running.</param>
-        public static void RunSample(Control ctrlParent, CancelEvent evtCancel = null, GYM gym = GYM.CARTPOLE, Log log = null, ManualResetEvent evtRunning = null)
+        /// <param name="strCudaPath">Specifies the path where the CudaDnnDll.x.dll file resides.</param>
+        public static void RunSample(Control ctrlParent, CancelEvent evtCancel = null, GYM gym = GYM.CARTPOLE, Log log = null, ManualResetEvent evtRunning = null, string strCudaPath = null)
         {
             if (evtCancel != null)
                 evtCancel.Reset();
@@ -865,13 +884,13 @@ namespace MyCaffeSample
             // where the Gym is registered (e.g. the MyCaffeGymRegistrar.Initialize and trainer must
             // run on separate threads, with the MyCaffeGymRegistrar.Initialize being called on the main
             // user-interface thread that contains the message pump.
-            Task task = Task.Factory.StartNew(new Action<object>(run), new Tuple<Log, CancelEvent, GYM, ManualResetEvent>(log, evtCancel, gym, evtRunning));
+            Task task = Task.Factory.StartNew(new Action<object>(run), new Tuple<Log, CancelEvent, GYM, ManualResetEvent, string>(log, evtCancel, gym, evtRunning, strCudaPath));
         }
 
         private static void run(object obj)
         {
-            Tuple<Log, CancelEvent, GYM, ManualResetEvent> args = obj as Tuple<Log, CancelEvent, GYM, ManualResetEvent>;
-            MyCaffeRLpgSample sample = new MyCaffeRLpgSample(args.Item1);
+            Tuple<Log, CancelEvent, GYM, ManualResetEvent, string> args = obj as Tuple<Log, CancelEvent, GYM, ManualResetEvent, string>;
+            MyCaffeRLpgSample sample = new MyCaffeRLpgSample(args.Item1, args.Item5);
 
             if (args.Item4 != null)
                 args.Item4.Set();
@@ -905,7 +924,7 @@ namespace MyCaffeSample
     /// This sample expects that the following configuration steps have been completed.
     /// 
     /// 1.) Download and install Microsoft SQL Express 2016 (or Standard, etc.),
-    ///     see https://www.microsoft.com/en-us/sql-server/sql-server-editions-express.
+    ///     see https://www.microsoft.com/en-us/sql-server/sql-server-downloads.
     /// 2.) Download and install the MyCaffe Test Application,
     ///     see https://github.com/MyCaffe/MyCaffe/releases.
     /// 3.) From the MyCaffe Test Application create the MyCaffe database by selecting
@@ -929,6 +948,7 @@ namespace MyCaffeSample
         CancelEvent m_evtCancel = new CancelEvent();    // Allows for cancelling training and testing operations.
         Log m_log = null;
         string m_strInit;
+        string m_strCudaPath = null;
         ITERATOR_TYPE m_iteratorType = ITERATOR_TYPE.ITERATION;
 
         public enum GYM
@@ -937,9 +957,10 @@ namespace MyCaffeSample
             ATARI
         }
 
-        public MyCaffeRLdqnSample(Log log)
+        public MyCaffeRLdqnSample(Log log, string strCudaPath)
         {
             m_log = log;
+            m_strCudaPath = strCudaPath;
         }
 
         /// <summary>
@@ -963,13 +984,13 @@ namespace MyCaffeSample
             if (rgSqlInst == null || rgSqlInst.Count == 0)
             {
                 string strErr = "For most operations, you must download and install 'Microsoft SQL' or 'Microsoft SQL Express' first!" + Environment.NewLine;
-                strErr += "see 'https://www.microsoft.com/en-us/sql-server/sql-server-editions-express'";
+                strErr += "see 'https://www.microsoft.com/en-us/sql-server/sql-server-downloads'";
                 MessageBox.Show("ERROR: " + strErr, "Microsoft SQL or Microsoft SQL Express missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
             if (rgSqlInst[0] != ".\\MSSQLSERVER")
-                EntitiesConnection.GlobalDatabaseServerName = rgSqlInst[0];
+                EntitiesConnection.GlobalDatabaseConnectInfo.Server = rgSqlInst[0];
 
             m_log.WriteLine("Using SQL Instance: " + rgSqlInst[0]);
 
@@ -1017,6 +1038,8 @@ namespace MyCaffeSample
                 if (!setSqlInstance())
                     return false;
 
+                Directory.SetCurrentDirectory(AssemblyInfo.AssemblyDirectory);
+
                 string strName = "MyCaffeCartPoleTrainer";
 
                 // Setup the MyCaffe initialization settings.
@@ -1025,7 +1048,7 @@ namespace MyCaffeSample
                 settings.ImageDbLoadMethod = IMAGEDB_LOAD_METHOD.LOAD_ON_DEMAND; // images are not used.
 
                 // Create the MyCaffeControl 
-                m_mycaffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel);
+                m_mycaffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel, null, null, null, null, m_strCudaPath);
 
                 // Create the Policy Gradient project.
                 ProjectEx prj = new ProjectEx("test");
@@ -1160,7 +1183,8 @@ namespace MyCaffeSample
         /// <param name="gym">Optionally, specifies the gym to use: CARTPOLE or ATARI (default = CARTPOLE).</param>
         /// <param name="log">Optionally, specifies an external log to use.</param>
         /// <param name="evtRunning">Optionally, specifies whether or not the sample is running.</param>
-        public static void RunSample(Control ctrlParent, CancelEvent evtCancel = null, GYM gym = GYM.CARTPOLE, Log log = null, ManualResetEvent evtRunning = null)
+        /// <param name="strCudaPath">Specifies the path where the CudaDnnDll.x.dll file resides.</param>
+        public static void RunSample(Control ctrlParent, CancelEvent evtCancel = null, GYM gym = GYM.CARTPOLE, Log log = null, ManualResetEvent evtRunning = null, string strCudaPath = null)
         {
             if (evtCancel != null)
                 evtCancel.Reset();
@@ -1189,13 +1213,13 @@ namespace MyCaffeSample
             // where the Gym is registered (e.g. the MyCaffeGymRegistrar.Initialize and trainer must
             // run on separate threads, with the MyCaffeGymRegistrar.Initialize being called on the main
             // user-interface thread that contains the message pump.
-            Task task = Task.Factory.StartNew(new Action<object>(run), new Tuple<Log, CancelEvent, GYM, ManualResetEvent>(log, evtCancel, gym, evtRunning));
+            Task task = Task.Factory.StartNew(new Action<object>(run), new Tuple<Log, CancelEvent, GYM, ManualResetEvent, string>(log, evtCancel, gym, evtRunning, strCudaPath));
         }
 
         private static void run(object obj)
         {
-            Tuple<Log, CancelEvent, GYM, ManualResetEvent> args = obj as Tuple<Log, CancelEvent, GYM, ManualResetEvent>;
-            MyCaffeRLdqnSample sample = new MyCaffeRLdqnSample(args.Item1);
+            Tuple<Log, CancelEvent, GYM, ManualResetEvent, string> args = obj as Tuple<Log, CancelEvent, GYM, ManualResetEvent, string>;
+            MyCaffeRLdqnSample sample = new MyCaffeRLdqnSample(args.Item1, args.Item5);
 
             if (args.Item4 != null)
                 args.Item4.Set();
@@ -1271,7 +1295,7 @@ namespace MyCaffeSample
             get { return "RL.Trainer"; }
         }
 
-        protected override DatasetDescriptor get_dataset_override(int nProjectID)
+        protected override DatasetDescriptor get_dataset_override(int nProjectID, ConnectInfo ci = null)
         {
             if (m_igym == null)
                 m_igym = m_colGyms.Find(m_strName);
@@ -1384,7 +1408,7 @@ namespace MyCaffeSample
             get { return "RL.Trainer"; }
         }
 
-        protected override DatasetDescriptor get_dataset_override(int nProjectID)
+        protected override DatasetDescriptor get_dataset_override(int nProjectID, ConnectInfo ci = null)
         {
             if (m_igym == null)
                 m_igym = m_colGyms.Find(m_strName);
@@ -1467,7 +1491,7 @@ namespace MyCaffeSample
     /// This sample expects that the following configuration steps have been completed.
     /// 
     /// 1.) Download and install Microsoft SQL Express 2016 (or Standard, etc.),
-    ///     see https://www.microsoft.com/en-us/sql-server/sql-server-editions-express.
+    ///     see https://www.microsoft.com/en-us/sql-server/sql-server-downloads.
     /// 2.) Download and install the MyCaffe Test Application,
     ///     see https://github.com/MyCaffe/MyCaffe/releases.
     /// 3.) From the MyCaffe Test Application create the MyCaffe database by selecting
@@ -1491,12 +1515,14 @@ namespace MyCaffeSample
         CancelEvent m_evtCancel = new CancelEvent();    // Allows for cancelling training and testing operations.
         Log m_log = null;
         string m_strInit;
+        string m_strCudaPath = null;
 
         delegate void fnDone(string strResult);
 
-        public MyCaffeRNNSample(Log log)
+        public MyCaffeRNNSample(Log log, string strCudaPath)
         {
             m_log = log;
+            m_strCudaPath = strCudaPath;
         }
 
         /// <summary>
@@ -1520,13 +1546,13 @@ namespace MyCaffeSample
             if (rgSqlInst == null || rgSqlInst.Count == 0)
             {
                 string strErr = "For most operations, you must download and install 'Microsoft SQL' or 'Microsoft SQL Express' first!" + Environment.NewLine;
-                strErr += "see 'https://www.microsoft.com/en-us/sql-server/sql-server-editions-express'";
+                strErr += "see 'https://www.microsoft.com/en-us/sql-server/sql-server-downloads'";
                 MessageBox.Show("ERROR: " + strErr, "Microsoft SQL or Microsoft SQL Express missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
             if (rgSqlInst[0] != ".\\MSSQLSERVER")
-                EntitiesConnection.GlobalDatabaseServerName = rgSqlInst[0];
+                EntitiesConnection.GlobalDatabaseConnectInfo.Server = rgSqlInst[0];
 
             m_log.WriteLine("Using SQL Instance: " + rgSqlInst[0]);
 
@@ -1569,6 +1595,8 @@ namespace MyCaffeSample
                 if (!setSqlInstance())
                     return false;
 
+                Directory.SetCurrentDirectory(AssemblyInfo.AssemblyDirectory);
+
                 string strName = "MyCaffeRnnTrainer";
 
                 // Setup the MyCaffe initialization settings.
@@ -1577,7 +1605,7 @@ namespace MyCaffeSample
                 settings.ImageDbLoadMethod = IMAGEDB_LOAD_METHOD.LOAD_ON_DEMAND; // images are not used.
 
                 // Create the MyCaffeControl 
-                m_mycaffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel);
+                m_mycaffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel, null, null, null, null, m_strCudaPath);
 
                 // Create the Policy Gradient project.
                 ProjectEx prj = new ProjectEx("test");
@@ -1704,7 +1732,8 @@ namespace MyCaffeSample
         /// <param name="evtCancel">Optionally, specifies the cancel event used to abort the training.</param>
         /// <param name="log">Optionally, specifies an external log to use.</param>
         /// <param name="evtRunning">Optionally, specifies whether or not the sample is running.</param>
-        public static void RunSample(Control ctrlParent, CancelEvent evtCancel = null, Log log = null, ManualResetEvent evtRunning = null)
+        /// <param name="strCudaPath">Specifies the path where the CudaDnnDll.x.dll file resides.</param>
+        public static void RunSample(Control ctrlParent, CancelEvent evtCancel = null, Log log = null, ManualResetEvent evtRunning = null, string strCudaPath = null)
         {
             if (evtCancel != null)
                 evtCancel.Reset();
@@ -1718,13 +1747,13 @@ namespace MyCaffeSample
             log.OnWriteLine += Log_OnWriteLine;
 
             // Start training the gym.
-            Task task = Task.Factory.StartNew(new Action<object>(run), new Tuple<Log, CancelEvent, Control, ManualResetEvent>(log, evtCancel, ctrlParent, evtRunning));
+            Task task = Task.Factory.StartNew(new Action<object>(run), new Tuple<Log, CancelEvent, Control, ManualResetEvent, string>(log, evtCancel, ctrlParent, evtRunning, strCudaPath));
         }
 
         private static void run(object obj)
         {
-            Tuple<Log, CancelEvent, Control, ManualResetEvent> args = obj as Tuple<Log, CancelEvent, Control, ManualResetEvent>;
-            MyCaffeRNNSample sample = new MyCaffeRNNSample(args.Item1);
+            Tuple<Log, CancelEvent, Control, ManualResetEvent, string> args = obj as Tuple<Log, CancelEvent, Control, ManualResetEvent, string>;
+            MyCaffeRNNSample sample = new MyCaffeRNNSample(args.Item1, args.Item5);
 
             if (args.Item4 != null)
                 args.Item4.Set();
@@ -1843,7 +1872,7 @@ namespace MyCaffeSample
             get { return "RNN.Trainer"; }
         }
 
-        protected override DatasetDescriptor get_dataset_override(int nProjectID)
+        protected override DatasetDescriptor get_dataset_override(int nProjectID, ConnectInfo ci = null)
         {
             IXMyCaffeGym igym = m_igym;
 
@@ -1915,7 +1944,7 @@ namespace MyCaffeSample
         {
         }
 
-        protected override BucketCollection preloaddata(Log log, CancelEvent evtCancel, int nProjectID, out bool bUsePreload)
+        protected override BucketCollection preloaddata(Log log, CancelEvent evtCancel, int nProjectID, out bool bUsePreload, ConnectInfo ci = null)
         {
             initialize(log);
             IXMyCaffeGymData igym = m_igym as IXMyCaffeGymData;
@@ -1978,6 +2007,7 @@ namespace MyCaffeSample
         string m_strContentImagePath;
         string m_strResultImagePath;
         CudaDnn<float> m_cuda = null;
+        string m_strCudaPath = null;
         NeuralStyleTransfer<float> m_neuralStyle = null;
 
         delegate void fnDone(string strResult, string strImgFile);
@@ -1987,9 +2017,10 @@ namespace MyCaffeSample
         /// The constructor.
         /// </summary>
         /// <param name="log">Specifies the output log, which current outputs to the Visual Studio output window.</param>
-        public MyCaffeNeuralStyleSample(Log log)
+        public MyCaffeNeuralStyleSample(Log log, string strCudaPath)
         {
             m_log = log;
+            m_strCudaPath = strCudaPath;
         }
 
         /// <summary>
@@ -2018,13 +2049,13 @@ namespace MyCaffeSample
             if (rgSqlInst == null || rgSqlInst.Count == 0)
             {
                 string strErr = "For most operations, you must download and install 'Microsoft SQL' or 'Microsoft SQL Express' first!" + Environment.NewLine;
-                strErr += "see 'https://www.microsoft.com/en-us/sql-server/sql-server-editions-express'";
+                strErr += "see 'https://www.microsoft.com/en-us/sql-server/sql-server-downloads'";
                 MessageBox.Show("ERROR: " + strErr, "Microsoft SQL or Microsoft SQL Express missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
             if (rgSqlInst[0] != ".\\MSSQLSERVER")
-                EntitiesConnection.GlobalDatabaseServerName = rgSqlInst[0];
+                EntitiesConnection.GlobalDatabaseConnectInfo.Server = rgSqlInst[0];
 
             m_log.WriteLine("Using SQL Instance: " + rgSqlInst[0]);
 
@@ -2164,6 +2195,8 @@ namespace MyCaffeSample
                 if (!setSqlInstance())
                     return "Failed to find SQL!";
 
+                Directory.SetCurrentDirectory(AssemblyInfo.AssemblyDirectory);
+
                 m_ctrlParent = ctrlParent;
 
                 string strPath = Path.GetFullPath("..\\..\\..\\data\\neuralstyle\\");
@@ -2184,8 +2217,13 @@ namespace MyCaffeSample
                 if (!Directory.Exists(strPath))
                     strPath = Path.GetFullPath("..\\..\\models\\vgg\\vgg19\\neuralstyle\\");
 
+                string strPathWts = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+                strPathWts += "\\MyCaffe\\test_data\\models\\vgg\\vgg19\\neuralstyle\\";
+                if (!Directory.Exists(strPathWts))
+                    Directory.CreateDirectory(strPathWts);
+
                 string strModelFile = strPath + "deploy.prototxt";
-                string strWeightFile = strPath + "weights.caffemodel";
+                string strWeightFile = strPathWts + "weights.caffemodel";
                 string strModelDesc;
                 byte[] rgWeights = null;
                 long nWeightFileSize = 0;
@@ -2245,7 +2283,7 @@ namespace MyCaffeSample
                 }
 
                 // Create the CUDA connection.
-                m_cuda = new CudaDnn<float>(0, DEVINIT.CUBLAS | DEVINIT.CURAND);
+                m_cuda = new CudaDnn<float>(0, DEVINIT.CUBLAS | DEVINIT.CURAND, null, m_strCudaPath);
                 // Create the MyCaffe NeuralStyleTransfer object.
                 m_neuralStyle = new NeuralStyleTransfer<float>(m_cuda, m_log, m_evtCancel, "vgg19", strModelDesc, rgWeights, false, MyCaffe.param.SolverParameter.SolverType.LBFGS, 1.5);
             }
@@ -2289,7 +2327,8 @@ namespace MyCaffeSample
         /// <param name="evtCancel">Specifies the CancelEvent used to abort the style transfer.</param>
         /// <param name="log">Optionally, specifies an external log to use.</param>
         /// <param name="evtRunning">Optionally, specifies whether or not the sample is running.</param>
-        public static void RunSample(Control ctrlParent, CancelEvent evtCancel = null, Log log = null, ManualResetEvent evtRunning = null)
+        /// <param name="strCudaPath">Specifies the path where the CudaDnnDll.x.dll file resides.</param>
+        public static void RunSample(Control ctrlParent, CancelEvent evtCancel = null, Log log = null, ManualResetEvent evtRunning = null, string strCudaPath = null)
         {
             if (evtCancel != null)
                 evtCancel.Reset();
@@ -2303,13 +2342,13 @@ namespace MyCaffeSample
             log.OnWriteLine += Log_OnWriteLine;
 
             // Start training the gym.
-            Task task = Task.Factory.StartNew(new Action<object>(run), new Tuple<Log, CancelEvent, Control, ManualResetEvent>(log, evtCancel, ctrlParent, evtRunning));
+            Task task = Task.Factory.StartNew(new Action<object>(run), new Tuple<Log, CancelEvent, Control, ManualResetEvent, string>(log, evtCancel, ctrlParent, evtRunning, strCudaPath));
         }
 
         private static void run(object obj)
         {
-            Tuple<Log, CancelEvent, Control, ManualResetEvent> args = obj as Tuple<Log, CancelEvent, Control, ManualResetEvent>;
-            MyCaffeNeuralStyleSample sample = new MyCaffeNeuralStyleSample(args.Item1);
+            Tuple<Log, CancelEvent, Control, ManualResetEvent, string> args = obj as Tuple<Log, CancelEvent, Control, ManualResetEvent, string>;
+            MyCaffeNeuralStyleSample sample = new MyCaffeNeuralStyleSample(args.Item1, args.Item5);
 
             if (args.Item4 != null)
                 args.Item4.Set();
@@ -2388,6 +2427,25 @@ namespace MyCaffeSample
                     p.StartInfo.FileName = strImgFile;
                     p.Start();
                 }
+            }
+        }
+    }
+
+
+    class AssemblyInfo
+    {
+        public AssemblyInfo()
+        {
+        }
+
+        public static string AssemblyDirectory
+        {
+            get
+            {
+                string codeBase = Assembly.GetExecutingAssembly().CodeBase;
+                UriBuilder uri = new UriBuilder(codeBase);
+                string path = Uri.UnescapeDataString(uri.Path);
+                return Path.GetDirectoryName(path);
             }
         }
     }
