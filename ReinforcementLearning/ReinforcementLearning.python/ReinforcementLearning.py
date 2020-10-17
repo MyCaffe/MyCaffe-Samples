@@ -214,7 +214,7 @@ strModel = file.read()
 try:
     ds = gym.GetDataset(DATA_TYPE.VALUES)
 except Exception as e:
-    print("You must have MyCaffe version 0.11.0.65 or greater to run this sample!")
+    print("You must have MyCaffe version 0.11.1.56 or greater to run this sample!")
     print(".")
     print(".")
     quit()
@@ -227,7 +227,7 @@ project.ModelDescription = strModel
 project.SolverDescription = strSolver
 
 # Create the MyCaffeControl (with the 'float' base type)
-strCudaPath = "C:\\Program Files\\SignalPop\\MyCaffe\\cuda_11.0\\CudaDnnDll.11.0.dll"
+strCudaPath = "C:\\Program Files\\SignalPop\\MyCaffe\\cuda_11.1\\CudaDnnDll.11.1.dll"
 mycaffe = MyCaffeControl[float](settings, log, cancel, None, None, None, None, strCudaPath)
 
 # Load the project, using the TRAIN phase
