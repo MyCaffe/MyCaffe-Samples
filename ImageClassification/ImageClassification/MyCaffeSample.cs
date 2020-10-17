@@ -137,7 +137,7 @@ namespace MyCaffeSample
                     strErr += excpt.InnerException.InnerException.Message + "\n";
             }
 
-            MessageBox.Show("ERROR: " + strErr + "\n\nMake sure that you are building this project for x64 and that you have copied all CUDA files from the 'Program Files\\SignalPop\\MyCaffe\\cuda_11.0' directory!\n\nTo download the MyCaffe Test Application (which installs 'Program Files\\SignalPop\\MyCaffe'), see https://github.com/MyCaffe/MyCaffe/releases.", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show("ERROR: " + strErr + "\n\nMake sure that you are building this project for x64 and that you have copied all CUDA files from the 'Program Files\\SignalPop\\MyCaffe\\cuda_11.1' directory!\n\nTo download the MyCaffe Test Application (which installs 'Program Files\\SignalPop\\MyCaffe'), see https://github.com/MyCaffe/MyCaffe/releases.", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         /// <summary>
@@ -691,7 +691,7 @@ namespace MyCaffeSample
                     strErr += excpt.InnerException.InnerException.Message + "\n";
             }
 
-            MessageBox.Show("ERROR: " + strErr + "\n\nMake sure that you are building this project for x64 and that you have copied all CUDA files from the 'Program Files\\SignalPop\\MyCaffe\\cuda_11.0' directory!\n\nTo download the MyCaffe Test Application (which installs 'Program Files\\SignalPop\\MyCaffe'), see https://github.com/MyCaffe/MyCaffe/releases.", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show("ERROR: " + strErr + "\n\nMake sure that you are building this project for x64 and that you have copied all CUDA files from the 'Program Files\\SignalPop\\MyCaffe\\cuda_11.1' directory!\n\nTo download the MyCaffe Test Application (which installs 'Program Files\\SignalPop\\MyCaffe'), see https://github.com/MyCaffe/MyCaffe/releases.", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         /// <summary>
@@ -1008,7 +1008,7 @@ namespace MyCaffeSample
                     strErr += excpt.InnerException.InnerException.Message + "\n";
             }
 
-            MessageBox.Show("ERROR: " + strErr + "\n\nMake sure that you are building this project for x64 and that you have copied all CUDA files from the 'Program Files\\SignalPop\\MyCaffe\\cuda_11.0' directory!\n\nTo download the MyCaffe Test Application (which installs 'Program Files\\SignalPop\\MyCaffe'), see https://github.com/MyCaffe/MyCaffe/releases.", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show("ERROR: " + strErr + "\n\nMake sure that you are building this project for x64 and that you have copied all CUDA files from the 'Program Files\\SignalPop\\MyCaffe\\cuda_11.1' directory!\n\nTo download the MyCaffe Test Application (which installs 'Program Files\\SignalPop\\MyCaffe'), see https://github.com/MyCaffe/MyCaffe/releases.", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         /// <summary>
@@ -1570,7 +1570,7 @@ namespace MyCaffeSample
                     strErr += excpt.InnerException.InnerException.Message + "\n";
             }
 
-            MessageBox.Show("ERROR: " + strErr + "\n\nMake sure that you are building this project for x64 and that you have copied all CUDA files from the 'Program Files\\SignalPop\\MyCaffe\\cuda_11.0' directory!\n\nTo download the MyCaffe Test Application (which installs 'Program Files\\SignalPop\\MyCaffe'), see https://github.com/MyCaffe/MyCaffe/releases.", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show("ERROR: " + strErr + "\n\nMake sure that you are building this project for x64 and that you have copied all CUDA files from the 'Program Files\\SignalPop\\MyCaffe\\cuda_11.1' directory!\n\nTo download the MyCaffe Test Application (which installs 'Program Files\\SignalPop\\MyCaffe'), see https://github.com/MyCaffe/MyCaffe/releases.", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         /// <summary>
@@ -2073,7 +2073,7 @@ namespace MyCaffeSample
                     strErr += excpt.InnerException.InnerException.Message + "\n";
             }
 
-            strErr += "\n\nMake sure that you are building this project for x64 and that you have copied all CUDA files from the 'Program Files\\SignalPop\\MyCaffe\\cuda_11.0' directory!\n\nTo download the MyCaffe Test Application (which installs 'Program Files\\SignalPop\\MyCaffe'), see https://github.com/MyCaffe/MyCaffe/releases.";
+            strErr += "\n\nMake sure that you are building this project for x64 and that you have copied all CUDA files from the 'Program Files\\SignalPop\\MyCaffe\\cuda_11.1' directory!\n\nTo download the MyCaffe Test Application (which installs 'Program Files\\SignalPop\\MyCaffe'), see https://github.com/MyCaffe/MyCaffe/releases.";
 
             return strErr;
         }
