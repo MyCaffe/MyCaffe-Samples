@@ -19,6 +19,13 @@ namespace CudaDnnTest
 
             try
             {
+                string strDeviceInfo = cuda.GetDeviceName(0);
+                Console.WriteLine(strDeviceInfo);
+                strDeviceInfo = cuda.GetDeviceP2PInfo(0);
+                Console.WriteLine(strDeviceInfo);
+                strDeviceInfo = cuda.GetDeviceInfo(0, true);
+                Console.WriteLine(strDeviceInfo);
+
                 List<long> rghGpuMem = new List<long>();
                 long lOffset = 0;
 
