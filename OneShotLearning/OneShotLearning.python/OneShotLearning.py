@@ -1,5 +1,5 @@
 # == OneShot Learning Sample ==
-# IMPORTANT: This sample requires the MyCaffe AI Platform version 0.10.2.124 or greater.
+# IMPORTANT: This sample requires the MyCaffe AI Platform version 0.11.2.9 or greater.
 # This sample requires:
 #   * Installing and running the MyCaffe AI Platform which is located at
 #     https://github.com/MyCaffe/MyCaffe/releases
@@ -76,7 +76,7 @@ project.ModelDescription = strModel
 project.SolverDescription = strSolver
 
 # Create the MyCaffeControl (with the 'float' base type)
-strCudaPath = "C:\\Program Files\\SignalPop\\MyCaffe\\cuda_11.1\\CudaDnnDll.11.1.dll"
+strCudaPath = "C:\\Program Files\\SignalPop\\MyCaffe\\cuda_11.2\\CudaDnnDll.11.2.dll"
 mycaffe = MyCaffeControl[float](settings, log, cancel, None, None, None, None, strCudaPath)
 
 # Load the project, using the TRAIN phase
