@@ -148,11 +148,11 @@ namespace Seq2Seq
             Dictionary<string, float[]> data = generateSample(null, null, m_param.Batch, m_param.Output, m_param.TimeSteps);
 
             float[] rgY = data["Y"];
-            rgY = SimpleDatum.Transpose(rgY, blobData.channels, blobData.num); // Transpose for Sequence Major ordering.
+            rgY = SimpleDatum.Transpose(rgY, blobData.channels, blobData.num, blobData.count(2)); // Transpose for Sequence Major ordering.
             blobData.mutable_cpu_data = rgY;
 
             float[] rgFY = data["FY"];
-            rgFY = SimpleDatum.Transpose(rgFY, blobLabel.channels, blobLabel.num); // Transpose for Sequence Major ordering.
+            rgFY = SimpleDatum.Transpose(rgFY, blobLabel.channels, blobLabel.num, blobData.count(2)); // Transpose for Sequence Major ordering.
             blobLabel.mutable_cpu_data = rgFY;
 
             blobClip1.SetData(1);
