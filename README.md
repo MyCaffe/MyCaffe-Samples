@@ -14,7 +14,7 @@ models using Python.
 
 <b>OnnxEeamples</b> demonstrates how to use the OnnxControl to load [ONNX](https://onnx.ai/) model files.
 
-<b>ReinforcementLearning> demonstrates how to implement a reinforcement learning solution to solve the Cart-Pole gym by programming MyCaffe using Python.
+<b>ReinforcementLearning</b> demonstrates how to implement a reinforcement learning solution to solve the Cart-Pole gym by programming MyCaffe using Python.
 
 <b>Seq2Seq</b> has several demonstrations that show how to learn a Sin curve using an encoder/decoder model and also how to learn a Sin curve using MNIST hand-written
 characters that are associated with different parts of the Sin curve.
