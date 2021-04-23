@@ -38,7 +38,9 @@ namespace Seq2SeqImageToSin
         PlotCollection m_plotsSequenceLoss = new PlotCollection("Sequence Training");
         List<ConfigurationTargetLine> m_rgZeroLine = new List<ConfigurationTargetLine>();
         string m_strInputOutputBlobName = "ip1";
-        List<Tuple<Image, bool>> m_rgInputImg = new List<Tuple<Image, bool>>();
+        List<Tuple<Image, int>> m_rgInputImg = new List<Tuple<Image, int>>();
+        AutoResetEvent m_evtForceError = new AutoResetEvent(false);
+        OPERATION m_operation = OPERATION.TRAIN;
 
         /// <summary>
         /// The setstatus delegate is used to output text to the status window
@@ -137,6 +139,7 @@ namespace Seq2SeqImageToSin
             btnTrain.Enabled = !m_bw.IsBusy;
             btnStop.Enabled = m_bw.IsBusy && !m_bStopping;
             btnDeleteWeights.Enabled = !m_bw.IsBusy;
+            btnForceError.Enabled = (m_operation == OPERATION.RUN && m_bw.IsBusy);
         }
 
         /// <summary>
@@ -165,7 +168,8 @@ namespace Seq2SeqImageToSin
             OPERATION op = (OPERATION)e.Argument;
             SettingsCaffe s = new SettingsCaffe();
             s.ImageDbLoadMethod = IMAGEDB_LOAD_METHOD.LOAD_ALL;
-            
+
+            m_operation = op;
             m_mycaffe = new MyCaffeControl<float>(s, m_log, m_evtCancel);
             m_mycaffeInput = new MyCaffeControl<float>(s, m_log, m_evtCancel);
             m_imgDb = new MyCaffeImageDatabase2(m_log);
@@ -286,6 +290,7 @@ namespace Seq2SeqImageToSin
         /// <param name="bw">Specifies the background worker.</param>
         private void runModel(MyCaffeControl<float> mycaffe, BackgroundWorker bw)
         {
+            Random random = new Random((int)DateTime.Now.Ticks);
             // Get the internal RUN net and associated blobs.
             Net<float> net = m_mycaffe.GetInternalNet(Phase.RUN);
             Blob<float> blobData = net.FindBlob("data");
@@ -298,13 +303,26 @@ namespace Seq2SeqImageToSin
             m_mycaffeInput.UpdateRunWeights();
             blobClip1.SetData(0);
 
+            bool bForcedError = false;
+
             for (int i = 0; i < 100; i++)
             {
                 if (m_evtCancel.WaitOne(0))
                     return;
 
+                int nLabelSeq = m_nLabelSeq;
+                if (m_evtForceError.WaitOne(0))
+                {
+                    nLabelSeq = random.Next(10);
+                    bForcedError = true;
+                }
+                else
+                {
+                    bForcedError = false;
+                }
+
                 // Get images one number at a time, in order by label, but randomly selected.
-                SimpleDatum sd = m_imgDb.QueryImage(m_ds.TrainingSource.ID, 0, null, IMGDB_IMAGE_SELECTION_METHOD.RANDOM, m_nLabelSeq);
+                SimpleDatum sd = m_imgDb.QueryImage(m_ds.TrainingSource.ID, 0, null, IMGDB_IMAGE_SELECTION_METHOD.RANDOM, nLabelSeq);
                 ResultCollection res = m_mycaffeInput.Run(sd);
 
                 Net<float> inputNet = m_mycaffeInput.GetInternalNet(Phase.RUN);
@@ -342,7 +360,7 @@ namespace Seq2SeqImageToSin
 
                 // Create the graph image and display
                 Image img = SimpleGraphingControl.QuickRender(set, pbImage.Width, pbImage.Height);
-                img = drawInput(img, sd, res.DetectedLabel);
+                img = drawInput(img, sd, res.DetectedLabel, bForcedError);
 
                 bw.ReportProgress(0, img);
                 Thread.Sleep(1000);
@@ -360,10 +378,10 @@ namespace Seq2SeqImageToSin
         /// <param name="sd">Specifies the current hand written character data.</param>
         /// <param name="nPredictedLabel">Specifies the predicted label.</param>
         /// <returns>The image with the input images drawn on it is returned.</returns>
-        private Image drawInput(Image img, SimpleDatum sd, int nPredictedLabel)
+        private Image drawInput(Image img, SimpleDatum sd, int nPredictedLabel, bool bForcedError)
         {
             Image imgInput = ImageData.GetImage(sd);
-            m_rgInputImg.Add(new Tuple<Image, bool>(imgInput, (sd.Label == nPredictedLabel) ? true : false));
+            m_rgInputImg.Add(new Tuple<Image, int>(imgInput, (sd.Label == nPredictedLabel) ? (bForcedError) ? 1 : 0 : -1));
 
             while (m_rgInputImg.Count * 50 > (pbImage.Width - 30))
             {
@@ -377,10 +395,12 @@ namespace Seq2SeqImageToSin
                 for (int i = 0; i < m_rgInputImg.Count; i++)
                 {
                     Image img1 = m_rgInputImg[i].Item1;
-                    bool bCorrect = m_rgInputImg[i].Item2;
+                    int nResult = m_rgInputImg[i].Item2;
 
-                    if (!bCorrect)
+                    if (nResult < 0)
                         g.FillRectangle(Brushes.Red, nX - 4, nY - 4, img1.Width + 8, img1.Height + 8);
+                    else if (nResult > 0)
+                        g.FillRectangle(Brushes.Yellow, nX - 4, nY - 4, img1.Width + 8, img1.Height + 8);
 
                     g.DrawImage(img1, nX, nY);
                     nX += 50;
@@ -641,6 +661,11 @@ namespace Seq2SeqImageToSin
             clearWeights("input");
             clearWeights("sequence");
             setStatus("All weights are cleared.");
+        }
+
+        private void btnForceError_Click(object sender, EventArgs e)
+        {
+            m_evtForceError.Set();
         }
     }
 }

@@ -48,6 +48,7 @@ namespace Seq2SeqImageToSin
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.m_bw = new System.ComponentModel.BackgroundWorker();
             this.timerUI = new System.Windows.Forms.Timer(this.components);
+            this.btnForceError = new System.Windows.Forms.ToolStripButton();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
@@ -126,10 +127,11 @@ namespace Seq2SeqImageToSin
             this.btnTrain,
             this.btnRun,
             this.btnStop,
-            this.btnDeleteWeights});
+            this.btnDeleteWeights,
+            this.btnForceError});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(104, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(158, 25);
             this.toolStrip1.TabIndex = 0;
             // 
             // btnTrain
@@ -244,6 +246,16 @@ namespace Seq2SeqImageToSin
             this.timerUI.Interval = 250;
             this.timerUI.Tick += new System.EventHandler(this.timerUI_Tick);
             // 
+            // btnForceError
+            // 
+            this.btnForceError.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnForceError.Image = ((System.Drawing.Image)(resources.GetObject("btnForceError.Image")));
+            this.btnForceError.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnForceError.Name = "btnForceError";
+            this.btnForceError.Size = new System.Drawing.Size(23, 22);
+            this.btnForceError.Text = "Force an Error";
+            this.btnForceError.Click += new System.EventHandler(this.btnForceError_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -298,6 +310,7 @@ namespace Seq2SeqImageToSin
         private System.Windows.Forms.ToolStripStatusLabel lblProgress;
         private System.Windows.Forms.PictureBox pbImage;
         private System.Windows.Forms.ToolStripButton btnDeleteWeights;
+        private System.Windows.Forms.ToolStripButton btnForceError;
     }
 }
 
