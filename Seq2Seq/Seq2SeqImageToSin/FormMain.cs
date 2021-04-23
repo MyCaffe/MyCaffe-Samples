@@ -477,6 +477,7 @@ namespace Seq2SeqImageToSin
                 {
                     MessageBox.Show("You must stop the running operation first!", "Operation Running", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     e.Cancel = true;
+                    return;
                 }
             }
 
