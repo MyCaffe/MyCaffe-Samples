@@ -65,7 +65,7 @@ namespace Seq2Seq
 
         static bool checkMyCaffeVersion()
         {
-            string strMinVer = "0.11.2.57"; // Requires MyCaffe version 0.11.2.57 or greater.
+            string strMinVer = "0.11.3.23"; // Requires MyCaffe version 0.11.3.23 or greater.
 
             try
             {
