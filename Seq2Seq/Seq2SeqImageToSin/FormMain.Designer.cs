@@ -29,7 +29,6 @@ namespace Seq2SeqImageToSin
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -40,6 +39,7 @@ namespace Seq2SeqImageToSin
             this.btnRun = new System.Windows.Forms.ToolStripButton();
             this.btnStop = new System.Windows.Forms.ToolStripButton();
             this.btnDeleteWeights = new System.Windows.Forms.ToolStripButton();
+            this.btnForceError = new System.Windows.Forms.ToolStripButton();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.pbProgress = new System.Windows.Forms.ToolStripProgressBar();
             this.lblProgress = new System.Windows.Forms.ToolStripStatusLabel();
@@ -47,8 +47,7 @@ namespace Seq2SeqImageToSin
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.m_bw = new System.ComponentModel.BackgroundWorker();
-            this.timerUI = new System.Windows.Forms.Timer(this.components);
-            this.btnForceError = new System.Windows.Forms.ToolStripButton();
+            this.timerUI = new System.Windows.Forms.Timer();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
@@ -117,6 +116,7 @@ namespace Seq2SeqImageToSin
             this.edtStatus.Location = new System.Drawing.Point(0, 0);
             this.edtStatus.Multiline = true;
             this.edtStatus.Name = "edtStatus";
+            this.edtStatus.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.edtStatus.Size = new System.Drawing.Size(848, 319);
             this.edtStatus.TabIndex = 0;
             // 
@@ -131,7 +131,7 @@ namespace Seq2SeqImageToSin
             this.btnForceError});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(158, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(127, 25);
             this.toolStrip1.TabIndex = 0;
             // 
             // btnTrain
@@ -177,6 +177,16 @@ namespace Seq2SeqImageToSin
             this.btnDeleteWeights.Size = new System.Drawing.Size(23, 22);
             this.btnDeleteWeights.Text = "Delete Weights";
             this.btnDeleteWeights.Click += new System.EventHandler(this.btnDeleteWeights_Click);
+            // 
+            // btnForceError
+            // 
+            this.btnForceError.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnForceError.Image = ((System.Drawing.Image)(resources.GetObject("btnForceError.Image")));
+            this.btnForceError.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnForceError.Name = "btnForceError";
+            this.btnForceError.Size = new System.Drawing.Size(23, 22);
+            this.btnForceError.Text = "Force an Error";
+            this.btnForceError.Click += new System.EventHandler(this.btnForceError_Click);
             // 
             // statusStrip1
             // 
@@ -245,16 +255,6 @@ namespace Seq2SeqImageToSin
             this.timerUI.Enabled = true;
             this.timerUI.Interval = 250;
             this.timerUI.Tick += new System.EventHandler(this.timerUI_Tick);
-            // 
-            // btnForceError
-            // 
-            this.btnForceError.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnForceError.Image = ((System.Drawing.Image)(resources.GetObject("btnForceError.Image")));
-            this.btnForceError.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnForceError.Name = "btnForceError";
-            this.btnForceError.Size = new System.Drawing.Size(23, 22);
-            this.btnForceError.Text = "Force an Error";
-            this.btnForceError.Click += new System.EventHandler(this.btnForceError_Click);
             // 
             // FormMain
             // 
