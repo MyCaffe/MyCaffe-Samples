@@ -10,3 +10,8 @@ style LSTM model to learn the Sin curve.
 inspired by the 2015 article [Sequence to Sequence - Video to Text](https://arxiv.org/abs/1505.00487) by Subhashini Venugopalan, Marcus Rohrbach, Jeff Donahue, Raymond Mooney, Trevor Darrell, 
 and Kate Saenko.  In addition, the 2014 article [On the Properties of Neural Machine Translation: Encoder-Decoder Approaches](https://arxiv.org/abs/1409.1259) by Kyunghyun Cho, 
 Bart van Merrienboer, Dzmitry Bahdanau, and Yoshua Bengio inspired the encoder/decoder model design used in this sample.
+
+<b>Seq2SeqChatBot</b> chat-bot sample provides a MyCaffe Sequence-to-Sequence model that encodes the inputs from a questioner and maps the probabilities to the encoding
+of the chat-bot and uses attention to learn the link between the two.  This sample is a re-write of the original open-source sample Seq2SeqLearn from 
+[mashmawy/Seq2SeqLearn](https://github.com/mashmawy/Seq2SeqLearn) distributed under MIT license and the chat-bot sample from
+[HectorPulido/Chatbot-seq2seq-C-](https://github.com/HectorPulido/Chatbot-seq2seq-C-) also distributed under [MIT license](https://github.com/HectorPulido/Chatbot-seq2seq-C-/blob/master/LICENSE).
