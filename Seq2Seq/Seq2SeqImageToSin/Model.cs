@@ -132,7 +132,7 @@ namespace Seq2SeqImageToSin
 
             solver.random_seed = 0xCAFFE;
             solver.test_interval = m_nIterations + 1;
-            solver.test_iter.Add(100);
+            solver.test_iter[0] = 100;
             solver.max_iter = m_nIterations;
             solver.snapshot = m_nIterations;
             solver.test_initialization = false;
