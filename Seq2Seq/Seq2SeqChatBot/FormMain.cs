@@ -194,7 +194,8 @@ namespace Seq2SeqChatBot
                 // Run the train or run operation.
                 if (m_input.Operation == InputData.OPERATION.TRAIN)
                 {
-                    m_model.Iterations = (m_input.Epochs * m_input.Input.Count) / m_model.Batch;
+                    double dfAveInputLen = m_input.Input.Average(p => p.Count);
+                    m_model.Iterations = (int)((m_input.Epochs * m_input.Input.Count * dfAveInputLen) / m_model.Batch);
                     m_log.WriteLine("Training for " + m_input.Epochs.ToString() + " epochs (" + m_model.Iterations.ToString("N0") + " iterations).", true);
                     m_log.WriteLine("INFO: " + m_model.Iterations.ToString("N0") + " iterations.", true);
 
