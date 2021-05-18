@@ -62,8 +62,11 @@ namespace Seq2SeqChatBot
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.pbImageLoss = new System.Windows.Forms.PictureBox();
             this.pbImageAccuracy = new System.Windows.Forms.PictureBox();
+            this.splitContainer4 = new System.Windows.Forms.SplitContainer();
             this.lvStatus = new Seq2SeqChatBot.ListViewEx();
             this.colStatus = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lvDiscussion = new Seq2SeqChatBot.ListViewEx();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.btnTrain = new System.Windows.Forms.ToolStripButton();
             this.btnRun = new System.Windows.Forms.ToolStripButton();
@@ -71,9 +74,6 @@ namespace Seq2SeqChatBot
             this.btnDeleteWeights = new System.Windows.Forms.ToolStripButton();
             this.btnEnableVerboseOutput = new System.Windows.Forms.ToolStripButton();
             this.openFileDialogTxt = new System.Windows.Forms.OpenFileDialog();
-            this.splitContainer4 = new System.Windows.Forms.SplitContainer();
-            this.lvDiscussion = new Seq2SeqChatBot.ListViewEx();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
@@ -93,11 +93,11 @@ namespace Seq2SeqChatBot
             this.splitContainer3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbImageLoss)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbImageAccuracy)).BeginInit();
-            this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).BeginInit();
             this.splitContainer4.Panel1.SuspendLayout();
             this.splitContainer4.Panel2.SuspendLayout();
             this.splitContainer4.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -333,7 +333,7 @@ namespace Seq2SeqChatBot
             this.edtIterations.Name = "edtIterations";
             this.edtIterations.Size = new System.Drawing.Size(52, 20);
             this.edtIterations.TabIndex = 7;
-            this.edtIterations.Text = "300";
+            this.edtIterations.Text = "100";
             this.edtIterations.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // edtInput
@@ -429,6 +429,23 @@ namespace Seq2SeqChatBot
             this.pbImageAccuracy.TabIndex = 1;
             this.pbImageAccuracy.TabStop = false;
             // 
+            // splitContainer4
+            // 
+            this.splitContainer4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer4.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer4.Name = "splitContainer4";
+            // 
+            // splitContainer4.Panel1
+            // 
+            this.splitContainer4.Panel1.Controls.Add(this.lvStatus);
+            // 
+            // splitContainer4.Panel2
+            // 
+            this.splitContainer4.Panel2.Controls.Add(this.lvDiscussion);
+            this.splitContainer4.Size = new System.Drawing.Size(987, 248);
+            this.splitContainer4.SplitterDistance = 523;
+            this.splitContainer4.TabIndex = 1;
+            // 
             // lvStatus
             // 
             this.lvStatus.BackColor = System.Drawing.Color.Aqua;
@@ -452,6 +469,29 @@ namespace Seq2SeqChatBot
             // 
             this.colStatus.Text = "Status";
             this.colStatus.Width = 962;
+            // 
+            // lvDiscussion
+            // 
+            this.lvDiscussion.BackColor = System.Drawing.Color.Aquamarine;
+            this.lvDiscussion.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1});
+            this.lvDiscussion.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvDiscussion.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lvDiscussion.FullRowSelect = true;
+            this.lvDiscussion.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.lvDiscussion.HideSelection = false;
+            this.lvDiscussion.Location = new System.Drawing.Point(0, 0);
+            this.lvDiscussion.Name = "lvDiscussion";
+            this.lvDiscussion.RowHeight = 14;
+            this.lvDiscussion.Size = new System.Drawing.Size(460, 248);
+            this.lvDiscussion.TabIndex = 1;
+            this.lvDiscussion.UseCompatibleStateImageBehavior = false;
+            this.lvDiscussion.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Status";
+            this.columnHeader1.Width = 962;
             // 
             // toolStrip1
             // 
@@ -527,46 +567,6 @@ namespace Seq2SeqChatBot
             this.openFileDialogTxt.Filter = "Text Files (*.txt)|*.txt||";
             this.openFileDialogTxt.Title = "Select the Input Text File";
             // 
-            // splitContainer4
-            // 
-            this.splitContainer4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer4.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer4.Name = "splitContainer4";
-            // 
-            // splitContainer4.Panel1
-            // 
-            this.splitContainer4.Panel1.Controls.Add(this.lvStatus);
-            // 
-            // splitContainer4.Panel2
-            // 
-            this.splitContainer4.Panel2.Controls.Add(this.lvDiscussion);
-            this.splitContainer4.Size = new System.Drawing.Size(987, 248);
-            this.splitContainer4.SplitterDistance = 523;
-            this.splitContainer4.TabIndex = 1;
-            // 
-            // lvDiscussion
-            // 
-            this.lvDiscussion.BackColor = System.Drawing.Color.Aquamarine;
-            this.lvDiscussion.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1});
-            this.lvDiscussion.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lvDiscussion.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lvDiscussion.FullRowSelect = true;
-            this.lvDiscussion.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.lvDiscussion.HideSelection = false;
-            this.lvDiscussion.Location = new System.Drawing.Point(0, 0);
-            this.lvDiscussion.Name = "lvDiscussion";
-            this.lvDiscussion.RowHeight = 14;
-            this.lvDiscussion.Size = new System.Drawing.Size(460, 248);
-            this.lvDiscussion.TabIndex = 1;
-            this.lvDiscussion.UseCompatibleStateImageBehavior = false;
-            this.lvDiscussion.View = System.Windows.Forms.View.Details;
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "Status";
-            this.columnHeader1.Width = 962;
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -604,12 +604,12 @@ namespace Seq2SeqChatBot
             this.splitContainer3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pbImageLoss)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbImageAccuracy)).EndInit();
-            this.toolStrip1.ResumeLayout(false);
-            this.toolStrip1.PerformLayout();
             this.splitContainer4.Panel1.ResumeLayout(false);
             this.splitContainer4.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).EndInit();
             this.splitContainer4.ResumeLayout(false);
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
