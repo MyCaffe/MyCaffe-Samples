@@ -19,7 +19,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Seq2SeqImageToSin
+namespace ImageToSin
 {
     public partial class FormMain : Form
     {
@@ -543,7 +543,11 @@ namespace Seq2SeqImageToSin
         /// <returns>The file name is returned.</returns>
         private string getWeightFileName(string strTag = "")
         {
-            return m_strOutputPath + "\\" + strTag + ".weights_" + LayerParameter.LayerType.LSTM.ToString() + "_" + m_model.LstmEngine.ToString() + "_" + m_model.Layers.ToString() + "_" + m_model.Hidden.ToString() + ".mycaffemodel";
+            string strDir = m_strOutputPath + "\\MyCaffe-Samples\\Seq2SeqImageToSin";
+            if (!Directory.Exists(strDir))
+                Directory.CreateDirectory(strDir);
+
+            return strDir + "\\" + strTag + ".weights_" + LayerParameter.LayerType.LSTM.ToString() + "_" + m_model.LstmEngine.ToString() + "_" + m_model.Layers.ToString() + "_" + m_model.Hidden.ToString() + ".bin";
         }
 
         /// <summary>

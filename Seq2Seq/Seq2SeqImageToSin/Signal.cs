@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Seq2SeqImageToSin
+namespace ImageToSin
 {
     /// <summary>
     /// The Signal class is used to generate the Sin curve.

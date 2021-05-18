@@ -1,5 +1,5 @@
 ﻿
-namespace Seq2SeqImageToSin
+namespace ImageToSin
 {
     partial class FormMain
     {
@@ -29,6 +29,7 @@ namespace Seq2SeqImageToSin
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -47,7 +48,7 @@ namespace Seq2SeqImageToSin
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.m_bw = new System.ComponentModel.BackgroundWorker();
-            this.timerUI = new System.Windows.Forms.Timer();
+            this.timerUI = new System.Windows.Forms.Timer(this.components);
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
@@ -266,7 +267,7 @@ namespace Seq2SeqImageToSin
             this.Controls.Add(this.toolStripContainer1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "FormMain";
-            this.Text = "Seq2Se2 - MNIST Image to Sin Curve";
+            this.Text = "MNIST Image to Sin Curve";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Load += new System.EventHandler(this.FormMain_Load);
             this.toolStripContainer1.ContentPanel.ResumeLayout(false);

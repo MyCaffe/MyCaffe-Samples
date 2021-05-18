@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Seq2SeqImageToSin
+namespace ImageToSin
 {
     /// <summary>
     /// The Model class manages the model and solver configurations.

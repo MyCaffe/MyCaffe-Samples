@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Seq2SeqImageToSin
+namespace ImageToSin
 {
     static class Program
     {
