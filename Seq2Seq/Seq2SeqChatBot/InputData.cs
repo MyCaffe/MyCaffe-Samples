@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Seq2SeqChatBot
 {
+    /// <summary>
+    /// The InputData manages the input and target data sets.
+    /// </summary>
     public class InputData
     {
         Vocabulary m_vocab;
@@ -37,60 +40,102 @@ namespace Seq2SeqChatBot
             RUN
         }
 
+        /// <summary>
+        /// The constructor.
+        /// </summary>
         public InputData()
         {
         }
 
+        /// <summary>
+        /// Returns the input data as a list of list of strings where each inner list is an input sentence 
+        /// broken up into words.
+        /// </summary>
         public List<List<string>> Input
         {
             get { return m_rgrgstrInput; }
         }
 
+        /// <summary>
+        /// Returns the target data as a list of list of strings where each inner list is an target sentence 
+        /// broken up into words.
+        /// </summary>
         public List<List<string>> Target
         {
             get { return m_rgrgstrTarget; }
         }
 
+        /// <summary>
+        /// Returns the input text file name.
+        /// </summary>
         public string InputFileName
         {
             get { return m_strInputFileName; }
             set { m_strInputFileName = value; }
         }
 
+        /// <summary>
+        /// Returns the target text file name.
+        /// </summary>
         public string TargetFileName
         {
             get { return m_strTargetFileName; }
             set { m_strTargetFileName = value; }
         }
 
+        /// <summary>
+        /// Get/set the number of epochs where one epoch equals
+        /// one pass through the list of senetences in the training set.
+        /// </summary>
         public int Epochs
         {
             get { return m_nEpochs; }
             set { m_nEpochs = value; }
         }
 
+        /// <summary>
+        /// Returns the number of sentences in the training set.
+        /// </summary>
         public int EpochSize
         {
             get { return m_nEpochSize; }
         }
 
+        /// <summary>
+        /// Returns the batch size, current = 1.
+        /// </summary>
         public int Batch
         {
             get { return m_nBatch; }
             set { m_nBatch = value; }
         }
 
+        /// <summary>
+        /// Get/set the input text use when running the trainied model.
+        /// </summary>
         public string InputText
         {
             get { return m_strInput; }
             set { m_strInput = value; }
         }
 
+        /// <summary>
+        /// Returns the operation to run.
+        /// </summary>
         public OPERATION Operation
         {
             get { return m_operation; }
         }
 
+        /// <summary>
+        /// Sets the initial input and target data files which are then loaded into the data sets.
+        /// </summary>
+        /// <param name="op">Specifies the operation to perform.</param>
+        /// <param name="strInputFile">Specifies the input file containing the input sentences.</param>
+        /// <param name="strTargetFile">Specifies the target file containing the target sentences.</param>
+        /// <param name="strIter">Specifies the iterations to run.</param>
+        /// <param name="strInput">Specifies the input text used when running the model.</param>
+        /// <param name="strBatch">Specifies the batch size, current = "1"</param>
         public void SetData(OPERATION op, string strInputFile, string strTargetFile, string strIter, string strInput, string strBatch)
         {
             m_operation = op;

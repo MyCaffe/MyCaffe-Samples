@@ -19,6 +19,9 @@ using System.Windows.Forms;
 
 namespace Seq2SeqChatBot
 {
+    /// <summary>
+    /// The FormMain class manages the main window of the application.
+    /// </summary>
     public partial class FormMain : Form
     {
         bool m_bStopping = false;
@@ -57,6 +60,9 @@ namespace Seq2SeqChatBot
         /// <param name="e"></param>
         public delegate void fnSetStatus(LogArg e);
 
+        /// <summary>
+        /// The constructor.
+        /// </summary>
         public FormMain()
         {
             m_strOutputPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -144,6 +150,11 @@ namespace Seq2SeqChatBot
             }
         }
 
+        /// <summary>
+        /// Train the model.
+        /// </summary>
+        /// <param name="sender">Specifies the sender</param>
+        /// <param name="e">specifies the arguments.</param>
         private void btnTrain_Click(object sender, EventArgs e)
         {
             m_evtCancel.Reset();
@@ -153,6 +164,11 @@ namespace Seq2SeqChatBot
                 m_bw.RunWorkerAsync(input);
         }
 
+        /// <summary>
+        /// Run the trained model.
+        /// </summary>
+        /// <param name="sender">Specifies the sender</param>
+        /// <param name="e">specifies the arguments.</param>
         private void btnRun_Click(object sender, EventArgs e)
         {
             m_evtCancel.Reset();
@@ -162,6 +178,11 @@ namespace Seq2SeqChatBot
                 m_bw.RunWorkerAsync(input);
         }
 
+        /// <summary>
+        /// Stop training or running.
+        /// </summary>
+        /// <param name="sender">Specifies the sender</param>
+        /// <param name="e">specifies the arguments.</param>
         private void btnStop_Click(object sender, EventArgs e)
         {
             m_evtCancel.Set();
@@ -169,6 +190,11 @@ namespace Seq2SeqChatBot
             m_bStopping = true;
         }
 
+        /// <summary>
+        /// Delete all saved weights.
+        /// </summary>
+        /// <param name="sender">Specifies the sender</param>
+        /// <param name="e">specifies the arguments.</param>
         private void btnDeleteWeights_Click(object sender, EventArgs e)
         {
             clearWeights("sequence");
@@ -176,6 +202,11 @@ namespace Seq2SeqChatBot
             setStatus("All weights are cleared.");
         }
 
+        /// <summary>
+        /// The DoWork thread is the main tread used to train or run the model depending on the operation selected.
+        /// </summary>
+        /// <param name="sender">Specifies the sender</param>
+        /// <param name="e">specifies the arguments.</param>
         private void m_bw_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker bw = sender as BackgroundWorker;
@@ -191,7 +222,7 @@ namespace Seq2SeqChatBot
 
                 m_data = m_input.PreProcessInputFiles();
 
-                // Run the train or run operation.
+                // Train the model.
                 if (m_input.Operation == InputData.OPERATION.TRAIN)
                 {
                     double dfAveInputLen = m_input.Input.Average(p => p.Count);
@@ -231,6 +262,8 @@ namespace Seq2SeqChatBot
                     m_mycaffe.Train(m_model.Iterations);
                     saveWeights("sequence", m_mycaffe);
                 }
+
+                // Run a trained model.
                 else
                 {
                     Data data = m_input.PreProcessInputText();
@@ -306,7 +339,11 @@ namespace Seq2SeqChatBot
             cuda.denan(nCount, blobTop.mutable_gpu_data, 0);
         }
 
-
+        /// <summary>
+        /// Calculate the loss when training.
+        /// </summary>
+        /// <param name="sender">Specifies the sender</param>
+        /// <param name="e">specifies the arguments.</param>
         private void LossLayer_OnGetLossTraining(object sender, MemoryLossLayerGetLossArgs<float> e)
         {
             Phase phase = (e.Tag == null) ? Phase.TRAIN : (Phase)e.Tag;
@@ -346,6 +383,11 @@ namespace Seq2SeqChatBot
             e.EnableLossUpdate = false;
         }
 
+        /// <summary>
+        /// Calculate the loss when testing.
+        /// </summary>
+        /// <param name="sender">Specifies the sender</param>
+        /// <param name="e">specifies the arguments.</param>
         private void LossLayer_OnGetLossTesting(object sender, MemoryLossLayerGetLossArgs<float> e)
         {
             e.Tag = Phase.TEST;
@@ -388,6 +430,13 @@ namespace Seq2SeqChatBot
             loadData(Phase.TRAIN, rgInput, nIxInput, nIxTarget);
         }
 
+        /// <summary>
+        /// Load the data into the model.
+        /// </summary>
+        /// <param name="phase">Specifies the current phase.</param>
+        /// <param name="rgInput">Specifies the encoder input sentence word indexes.</param>
+        /// <param name="nIxInput">Specifies the decoder current input word index.</param>
+        /// <param name="nIxTarget">Specifies the decoder current target word index for teacher training.</param>
         private void loadData(Phase phase, List<int> rgInput, int nIxInput, int? nIxTarget)
         {
             Net<float> net = m_mycaffe.GetInternalNet(phase);
@@ -452,6 +501,7 @@ namespace Seq2SeqChatBot
         /// </summary>
         /// <param name="mycaffe">Specifies the mycaffe instance running the sequence run model.</param>
         /// <param name="bw">Specifies the background worker.</param>
+        /// <param name="data">Specifies the data to run the model on.</param>
         private void runModel(MyCaffeControl<float> mycaffe, BackgroundWorker bw, Data data)
         {
             Net<float> net = m_mycaffe.GetInternalNet(Phase.RUN);
@@ -554,6 +604,11 @@ namespace Seq2SeqChatBot
             }
         }
 
+        /// <summary>
+        /// Called on each testing iteration of the sequence model.
+        /// </summary>
+        /// <param name="sender">Specifies the event sender.</param>
+        /// <param name="e">Specifies the event args.</param>
         private void m_mycaffe_OnTestingIteration(object sender, TestingIterationArgs<float> e)
         {
             float fAccuracy = m_rgAccuracy1.Average();
@@ -693,6 +748,7 @@ namespace Seq2SeqChatBot
         /// </summary>
         /// <param name="strTag">Specifies an identifying tag.</param>
         /// <param name="rg">Specifies the weight data.</param>
+        /// <remarks>Curently, the weights are saved directly.</remarks>
         private void saveWeights(string strTag, MyCaffeControl<float> mycaffe)
         {
             string strFile = getWeightFileName(strTag);
@@ -738,6 +794,7 @@ namespace Seq2SeqChatBot
         /// </summary>
         /// <param name="strTag">Specifies an identifying tag.</param>
         /// <returns>The weight data is returned.</returns>
+        /// <remarks>Currently, the weights are loaded directly.</remarks>
         private void loadWeights(string strTag, MyCaffeControl<float> mycaffe, Phase phase)
         {
             string strFile = getWeightFileName(strTag);
