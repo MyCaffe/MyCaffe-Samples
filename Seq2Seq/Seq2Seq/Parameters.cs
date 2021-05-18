@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Seq2Seq
+namespace SinCurve
 {
     /// <summary>
     /// Specifies and manages the command line parameters that are available.

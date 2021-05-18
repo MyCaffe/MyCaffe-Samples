@@ -13,7 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Seq2Seq
+namespace SinCurve
 {
     /// <summary>
     /// The Trainer is a complete rewrite of the Caffe-LSTM-Mini-Tutorial which demonstrates how to use an LSTM model to learn a generated Sin curve
@@ -109,6 +109,7 @@ namespace Seq2Seq
             string strModel = model.ToProto("root").ToString();
             Console.WriteLine("Using Train Model:");
             Console.WriteLine(strModel);
+            Console.WriteLine("Starting training...");
 
             m_mycaffeTrain.LoadLite(Phase.TRAIN, solver.ToProto("root").ToString(), model.ToProto("root").ToString(), rgWts, false, false);
             m_mycaffeTrain.SetOnTrainingStartOverride(new EventHandler(onTrainingStart));
@@ -516,7 +517,11 @@ namespace Seq2Seq
         /// <param name="strFile">Specifies the name of the file where the image is saved temporarily.</param>
         private void showImage(Image img, string strFile)
         {
-            strFile = m_strOutputPath + strFile;
+            string strDir = m_strOutputPath + "\\MyCaffe-Samples\\SinCurve\\";
+            if (!Directory.Exists(strDir))
+                Directory.CreateDirectory(strDir);
+
+            strFile = strDir + strFile;
             img.Save(strFile);
 
             Process p = new Process();
@@ -531,7 +536,11 @@ namespace Seq2Seq
         /// <returns>The file name is returned.</returns>
         private string getWeightFileName(string strTag = "")
         {
-            return m_strOutputPath + "\\" + strTag + ".weights_" + LayerParameter.LayerType.LSTM.ToString() + "_" + m_param.LstmEngine.ToString() + "_" + m_param.Layers.ToString() + "_" + m_param.Hidden.ToString() + ".mycaffemodel";
+            string strDir = m_strOutputPath + "\\MyCaffe-Samples\\SinCurve";
+            if (!Directory.Exists(strDir))
+                Directory.CreateDirectory(strDir);
+
+            return strDir + "\\" + strTag + ".weights_" + LayerParameter.LayerType.LSTM.ToString() + "_" + m_param.LstmEngine.ToString() + "_" + m_param.Layers.ToString() + "_" + m_param.Hidden.ToString() + ".bin";
         }
 
         /// <summary>

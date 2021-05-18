@@ -7,8 +7,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{735BC118-E2C1-4ADF-BDD3-1F923CCE963B}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Seq2Seq</RootNamespace>
-    <AssemblyName>Seq2Seq</AssemblyName>
+    <RootNamespace>SinCurve</RootNamespace>
+    <AssemblyName>SinCurve</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

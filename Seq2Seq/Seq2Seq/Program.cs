@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 /// @see [Corvus/Caffe-LSTM-Mini-Tutorial](https://github.com/CorvusCorax/Caffe-LSTM-Mini-Tutorial) open-source project distributed under
 /// the [GNU License](https://github.com/CorvusCorax/Caffe-LSTM-Mini-Tutorial/blob/master/LICENSE).
 /// </remarks>
-namespace Seq2Seq
+namespace SinCurve
 {
     class Program
     {
@@ -65,7 +65,7 @@ namespace Seq2Seq
 
         static bool checkMyCaffeVersion()
         {
-            string strMinVer = "0.11.3.23"; // Requires MyCaffe version 0.11.3.23 or greater.
+            string strMinVer = "0.11.3.24"; // Requires MyCaffe version 0.11.3.24 or greater.
 
             try
             {
