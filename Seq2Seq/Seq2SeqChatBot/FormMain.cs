@@ -217,8 +217,7 @@ namespace Seq2SeqChatBot
             try
             {
                 m_model.Batch = m_input.Batch;
-                string strCudaPath = @"C:\Data\Data\SS_Projects\Intelligence\GitHub\MyCaffe\MyCaffe.app\bin\Release\cuda_11.3\CudaDnnDll.11.3.dll";
-                m_mycaffe = new MyCaffeControl<float>(s, m_log, m_evtCancel, null, null, null, null, strCudaPath);
+                m_mycaffe = new MyCaffeControl<float>(s, m_log, m_evtCancel);
 
                 m_data = m_input.PreProcessInputFiles();
 
@@ -740,7 +739,11 @@ namespace Seq2SeqChatBot
         /// <returns>The file name is returned.</returns>
         private string getWeightFileName(string strTag = "")
         {
-            return m_strOutputPath + "\\" + strTag + ".weights_" + LayerParameter.LayerType.LSTM.ToString() + "_ATTN_" + m_model.Layers.ToString() + "_" + m_model.Hidden.ToString() + ".mycaffemodel";
+            string strDir = m_strOutputPath + "\\MyCaffe-Samples\\Seq2SeqChatBot";
+            if (!Directory.Exists(strDir))
+                Directory.CreateDirectory(strDir);
+
+            return strDir + "\\" + strTag + ".weights_" + LayerParameter.LayerType.LSTM.ToString() + "_ATTN_" + m_model.Layers.ToString() + "_" + m_model.Hidden.ToString() + ".bin";
         }
 
         /// <summary>
