@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seq2SeqSinEncodeDecode", "Seq2Seq\Seq2SeqSinEncodeDecode.csproj", "{735BC118-E2C1-4ADF-BDD3-1F923CCE963B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SinCurve", "Seq2Seq\SinCurve.csproj", "{735BC118-E2C1-4ADF-BDD3-1F923CCE963B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seq2SeqImageToSin", "Seq2SeqImageToSin\Seq2SeqImageToSin.csproj", "{205F0149-EF8F-4B0E-B5F5-5BA6EA30F85A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageToSin", "Seq2SeqImageToSin\ImageToSin.csproj", "{205F0149-EF8F-4B0E-B5F5-5BA6EA30F85A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seq2SeqChatBot", "Seq2SeqChatBot\Seq2SeqChatBot.csproj", "{1311B5CB-45FD-43FB-8C45-670128E56875}"
 EndProject
