@@ -99,6 +99,9 @@ namespace OnnxExamples
             // Cleanup.
             cuda.Dispose();
             convert.Dispose();
+
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
         }
     }
 }
