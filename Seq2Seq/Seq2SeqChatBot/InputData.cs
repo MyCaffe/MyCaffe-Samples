@@ -22,7 +22,6 @@ namespace Seq2SeqChatBot
         OPERATION m_operation = OPERATION.TRAIN;
         List<List<string>> m_rgrgstrInput = new List<List<string>>();
         List<List<string>> m_rgrgstrTarget = new List<List<string>>();
-        int m_nIdx = 0;
         int m_nEpochSize = 1000;
 
         /// <summary>
