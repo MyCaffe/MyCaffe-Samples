@@ -92,6 +92,9 @@ namespace MemoryDataLayer
             blobData.Dispose();
             blobLabel.Dispose();
             cuda.Dispose();
+
+            Console.WriteLine("Press any key...");
+            Console.ReadKey();
         }
 
         static MemoryDataLayer<float> createMemoryDataLayer(CudaDnn<float> cuda, Log log)
