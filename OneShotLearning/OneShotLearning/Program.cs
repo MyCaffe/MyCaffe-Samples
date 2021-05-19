@@ -48,11 +48,10 @@ namespace OneShotLearning
             string strSolver = load_file("C:\\ProgramData\\MyCaffe\\test_data\\models\\siamese\\mnist\\solver.prototxt");
             string strModel = load_file("C:\\ProgramData\\MyCaffe\\test_data\\models\\siamese\\mnist\\train_val.prototxt");
 
-            // Change Decode to KNN (from default CENTROID)
             RawProto proto = RawProto.Parse(strModel);
             NetParameter net_param = NetParameter.FromProto(proto);
             LayerParameter layer = net_param.FindLayer(LayerParameter.LayerType.DECODE);
-            layer.decode_param.target = DecodeParameter.TARGET.KNN;
+            layer.decode_param.target = DecodeParameter.TARGET.CENTROID;
             proto = net_param.ToProto("root");
             strModel = proto.ToString();
 
@@ -67,15 +66,15 @@ namespace OneShotLearning
             project.SolverDescription = strSolver;
 
             // Crate the MyCaffeControl (with the 'float' base type)
-            string strCudaPath = "C:\\Program Files\\SignalPop\\MyCaffe\\cuda_11.1\\CudaDnnDll.11.1.dll";
+            string strCudaPath = "C:\\Program Files\\SignalPop\\MyCaffe\\cuda_11.3\\CudaDnnDll.11.3.dll";
             MyCaffeControl<float> mycaffe = new MyCaffeControl<float>(settings, log, cancel, null, null, null, null, strCudaPath);
 
             // Load the project, using the TRAIN phase.
             mycaffe.Load(Phase.TRAIN, project);
 
-            // Train the model for 1200 iterations
+            // Train the model for 4000 iterations
             // (which uses the internal solver and internal training net)
-            int nIterations = 1200;
+            int nIterations = 4000;
             mycaffe.Train(nIterations);
 
             // Test the model for 100 iterations
@@ -87,6 +86,9 @@ namespace OneShotLearning
             log.WriteLine("Accuracy = " + dfAccuracy.ToString("P"));
 
             mycaffe.Dispose();
+
+            Console.Write("Press any key...");
+            Console.ReadKey();
         }
 
         private static bool sqlCheck()
