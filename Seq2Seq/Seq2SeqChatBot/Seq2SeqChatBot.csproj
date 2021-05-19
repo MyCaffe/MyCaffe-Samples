@@ -56,8 +56,8 @@
     <Reference Include="MyCaffe.basecode, Version=0.11.3.24, Culture=neutral, PublicKeyToken=da09778f48a756ef, processorArchitecture=MSIL">
       <HintPath>..\packages\MyCaffe.0.11.3.24-beta1\lib\net40\MyCaffe.basecode.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.layers.beta, Version=0.11.3.24, Culture=neutral, PublicKeyToken=03bdd70d8dfe8321, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.11.3.24-beta1\lib\net40\MyCaffe.layers.beta.dll</HintPath>
+    <Reference Include="MyCaffe.layers.beta">
+      <HintPath>..\..\..\..\..\..\..\Binaries\SS_Projects\_Debug\MyCaffe.layers.beta.dll</HintPath>
     </Reference>
     <Reference Include="SimpleGraphing, Version=0.11.3.24, Culture=neutral, PublicKeyToken=2720ee5a6bece8ff, processorArchitecture=MSIL">
       <HintPath>..\packages\SimpleGraphingControl.0.11.3.24-beta1\lib\net40\SimpleGraphing.dll</HintPath>

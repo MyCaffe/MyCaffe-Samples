@@ -405,10 +405,11 @@ namespace Seq2SeqChatBot
             bool bNewEpoch;
             bool bNewSequence;
             int nOldOutputCount = m_nOutputCount;
-            Tuple<List<int>, int, int> data = m_data.GetNextData(out bNewEpoch, out bNewSequence, ref m_nOutputCount);
+            Tuple<List<int>, int, int, int> data = m_data.GetNextData(out bNewEpoch, out bNewSequence, ref m_nOutputCount);
             List<int> rgInput = data.Item1;
             int nIxInput = data.Item2;
             int nIxTarget = data.Item3;
+            int nDecClip = data.Item4;
 
             if (bNewSequence)
             {
@@ -426,7 +427,7 @@ namespace Seq2SeqChatBot
                     m_nTotalEpochs++;
             }
 
-            loadData(Phase.TRAIN, rgInput, nIxInput, nIxTarget);
+            loadData(Phase.TRAIN, rgInput, nIxInput, nIxTarget, nDecClip);
         }
 
         /// <summary>
@@ -436,7 +437,8 @@ namespace Seq2SeqChatBot
         /// <param name="rgInput">Specifies the encoder input sentence word indexes.</param>
         /// <param name="nIxInput">Specifies the decoder current input word index.</param>
         /// <param name="nIxTarget">Specifies the decoder current target word index for teacher training.</param>
-        private void loadData(Phase phase, List<int> rgInput, int nIxInput, int? nIxTarget)
+        /// <param name="nDecClip">Specifies the clip for the dec input.</param>
+        private void loadData(Phase phase, List<int> rgInput, int nIxInput, int? nIxTarget, int nDecClip)
         {
             Net<float> net = m_mycaffe.GetInternalNet(phase);
             Blob<float> blobData = net.FindBlob("data");
@@ -488,7 +490,7 @@ namespace Seq2SeqChatBot
             blobClipAttn.mutable_cpu_data = m_rgClipAttn;
 
             // Load the decoder data.
-            blobClipD.SetData(1, 0);
+            blobClipD.SetData(nDecClip, 0);
             blobDecInput.SetData(nIxInput, 0);
 
             if (blobTarget != null && nIxTarget.HasValue)
@@ -505,6 +507,7 @@ namespace Seq2SeqChatBot
         {
             Net<float> net = m_mycaffe.GetInternalNet(Phase.RUN);
             Blob<float> blobDecInput = net.FindBlob("dec_input");
+            Blob<float> blobDecClip = net.FindBlob("clipD");
             Blob<float> blobIp1 = net.FindBlob("ip1");
             int nDecInputLayerIdx = net.layer_index_by_name("dec_input_embed");
 
@@ -514,7 +517,7 @@ namespace Seq2SeqChatBot
                 List<int> rgInput = input.Item1;
                 int nIxInput = input.Item2;
 
-                loadData(Phase.RUN, rgInput, nIxInput, null);
+                loadData(Phase.RUN, rgInput, nIxInput, null, 0);
 
                 net.Forward();
 
@@ -544,6 +547,8 @@ namespace Seq2SeqChatBot
                     nCount++;
                     if (nCount > 80)
                         break;
+
+                    blobDecClip.SetData(1, 0);
                 }
 
                 m_log.WriteLine("Robot: " + strOut.Trim(), true);

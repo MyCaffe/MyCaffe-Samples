@@ -45,8 +45,10 @@ namespace Seq2SeqChatBot
             return new Tuple<List<int>, int>(rgInput, 1);
         }
 
-        public Tuple<List<int>, int, int> GetNextData(out bool bNewEpoch, out bool bNewSequence, ref int nOutputCount)
+        public Tuple<List<int>, int, int, int> GetNextData(out bool bNewEpoch, out bool bNewSequence, ref int nOutputCount)
         {
+            int nDecClip = 1;
+
             bNewSequence = false;
             bNewEpoch = false;
 
@@ -56,6 +58,7 @@ namespace Seq2SeqChatBot
                 bNewSequence = true;
                 m_nCurrentSequence = m_random.Next(m_rgInput.Count);
                 nOutputCount = m_rgOutput[m_nCurrentSequence].Count;
+                nDecClip = 0;
 
                 if (m_nIterations == m_rgOutput.Count)
                 {
@@ -79,7 +82,7 @@ namespace Seq2SeqChatBot
                 nIxTarget = m_vocab.WordToIndex(strTarget);
             }
 
-            Tuple<List<int>, int, int> data = new Tuple<List<int>, int, int>(rgInput, m_nIxInput, nIxTarget);
+            Tuple<List<int>, int, int, int> data = new Tuple<List<int>, int, int, int>(rgInput, m_nIxInput, nIxTarget, nDecClip);
             m_nIxInput = nIxTarget;
 
             m_nCurrentOutputIdx++;
