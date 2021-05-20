@@ -188,8 +188,8 @@ namespace Seq2SeqChatBot
             embed1.embed_param.num_output = (uint)nWordSize; // Word size.
             embed1.embed_param.bias_term = true;
             embed1.embed_param.weight_filler = m_fillerParam;
-            embed1.parameters.Add(new ParamSpec("enc_wts"));
-            embed1.parameters.Add(new ParamSpec("enc_bias"));
+            embed1.parameters.Add(new ParamSpec("embed_wts"));
+            embed1.parameters.Add(new ParamSpec("embed_bias"));
             embed1.bottom.Add("data");
             embed1.top.Add("embed1");
             net.layer.Add(embed1);
@@ -214,8 +214,8 @@ namespace Seq2SeqChatBot
             embed2.embed_param.num_output = (uint)nWordSize; // Word size.
             embed2.embed_param.bias_term = true;
             embed2.embed_param.weight_filler = m_fillerParam;
-            embed2.parameters.Add(new ParamSpec("enc_wts"));  // share wts with embed1
-            embed2.parameters.Add(new ParamSpec("enc_bias")); // share bias with embed1
+            embed2.parameters.Add(new ParamSpec("embed_wts"));
+            embed2.parameters.Add(new ParamSpec("embed_bias"));
             embed2.bottom.Add("datar");
             embed2.top.Add("embed2");
             net.layer.Add(embed2);
@@ -247,6 +247,8 @@ namespace Seq2SeqChatBot
             embed3.embed_param.num_output = (uint)nWordSize; // Word size.
             embed3.embed_param.bias_term = false;
             embed3.embed_param.weight_filler = m_fillerParam;
+            embed3.parameters.Add(new ParamSpec("embed_wts"));
+            embed3.parameters.Add(new ParamSpec("embed_bias"));
             embed3.bottom.Add("dec_input");
             embed3.top.Add("dec_input_embed");
             net.layer.Add(embed3);
