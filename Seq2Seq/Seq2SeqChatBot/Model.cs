@@ -245,7 +245,7 @@ namespace Seq2SeqChatBot
             embed3.name = "dec_input_embed";
             embed3.embed_param.input_dim = (uint)nVocabCount + 2;
             embed3.embed_param.num_output = (uint)nWordSize; // Word size.
-            embed3.embed_param.bias_term = false;
+            embed3.embed_param.bias_term = true;
             embed3.embed_param.weight_filler = m_fillerParam;
             embed3.parameters.Add(new ParamSpec("embed_wts"));
             embed3.parameters.Add(new ParamSpec("embed_bias"));
