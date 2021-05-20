@@ -16,7 +16,7 @@ namespace Seq2SeqChatBot
     {
         int m_nIterations = 400000;
         int m_nDisplay = 100;
-        int m_nHidden = 16;
+        int m_nHidden = 64; // default = 16
         int m_nBatch = 1;
         double m_dfLearningRate = 0.001;
         double m_dfDecayRate = 0.000001;
@@ -188,6 +188,8 @@ namespace Seq2SeqChatBot
             embed1.embed_param.num_output = (uint)nWordSize; // Word size.
             embed1.embed_param.bias_term = true;
             embed1.embed_param.weight_filler = m_fillerParam;
+            embed1.parameters.Add(new ParamSpec("enc_wts"));
+            embed1.parameters.Add(new ParamSpec("enc_bias"));
             embed1.bottom.Add("data");
             embed1.top.Add("embed1");
             net.layer.Add(embed1);
@@ -212,6 +214,8 @@ namespace Seq2SeqChatBot
             embed2.embed_param.num_output = (uint)nWordSize; // Word size.
             embed2.embed_param.bias_term = true;
             embed2.embed_param.weight_filler = m_fillerParam;
+            embed2.parameters.Add(new ParamSpec("enc_wts"));  // share wts with embed1
+            embed2.parameters.Add(new ParamSpec("enc_bias")); // share bias with embed1
             embed2.bottom.Add("datar");
             embed2.top.Add("embed2");
             net.layer.Add(embed2);
