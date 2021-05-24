@@ -16,7 +16,7 @@ namespace Seq2SeqChatBot
     {
         int m_nIterations = 400000;
         int m_nDisplay = 100;
-        int m_nHidden = 64; // default = 16
+        int m_nHidden = 128; // default = 16
         int m_nBatch = 1;
         double m_dfLearningRate = 0.001;
         double m_dfDecayRate = 0.000001;
