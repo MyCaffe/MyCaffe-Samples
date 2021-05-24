@@ -230,7 +230,7 @@ namespace Seq2SeqChatBot
                     m_log.WriteLine("INFO: " + m_model.Iterations.ToString("N0") + " iterations.", true);
 
                     // Load the Seq2Seq training model.
-                    NetParameter netParam = m_model.CreateModel(16, 32, m_data.VocabularyCount);
+                    NetParameter netParam = m_model.CreateModel(64, 128, m_data.VocabularyCount);
                     string strModel = netParam.ToProto("root").ToString();
                     SolverParameter solverParam = m_model.CreateSolver();
                     string strSolver = solverParam.ToProto("root").ToString();
