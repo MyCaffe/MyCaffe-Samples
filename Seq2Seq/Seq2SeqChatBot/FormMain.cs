@@ -80,6 +80,8 @@ namespace Seq2SeqChatBot
 
             edtIterations.Text = Properties.Settings.Default.Iterations.ToString();
             edtBatch.Text = Properties.Settings.Default.Batch.ToString();
+            edtHidden.Text = Properties.Settings.Default.Hidden.ToString();
+            edtWordSize.Text = Properties.Settings.Default.WordSize.ToString();
 
             edtInputTextFile.Text = AssemblyDirectory + "\\human_text.txt";
             edtTargetTextFile.Text = AssemblyDirectory + "\\robot_text.txt";
@@ -132,8 +134,21 @@ namespace Seq2SeqChatBot
             try
             {
                 input = new InputData();
-                input.SetData(op, edtInputTextFile.Text, edtTargetTextFile.Text, edtIterations.Text, edtInput.Text, edtBatch.Text);
+                input.SetData(op, edtInputTextFile.Text, edtTargetTextFile.Text, edtIterations.Text, edtInput.Text, edtBatch.Text, edtHidden.Text, edtWordSize.Text);
                 edtInput.Text = "";
+
+                if (input.HiddenSize != Properties.Settings.Default.Hidden ||
+                    input.WordSize != Properties.Settings.Default.WordSize)
+                {
+                    if (MessageBox.Show("The hidden size and/or word size have changed which requires deleting any previously trained weights - do you want to proceed?", "Sizing Change", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) != DialogResult.Yes)
+                        return null;
+
+                    btnDeleteWeights_Click(this, new EventArgs());
+                }
+
+                Properties.Settings.Default.Hidden = input.HiddenSize;
+                Properties.Settings.Default.WordSize = input.WordSize;
+                Properties.Settings.Default.Save();
 
                 for (int i = 0; i < input.EpochSize; i++)
                 {
@@ -209,9 +224,6 @@ namespace Seq2SeqChatBot
         /// <param name="e">specifies the arguments.</param>
         private void m_bw_DoWork(object sender, DoWorkEventArgs e)
         {
-            const int HIDDEN_COUNT = 256;
-            const int WORD_SIZE = 128;
-
             BackgroundWorker bw = sender as BackgroundWorker;
             m_input = e.Argument as InputData;
             SettingsCaffe s = new SettingsCaffe();
@@ -231,9 +243,10 @@ namespace Seq2SeqChatBot
                     m_model.Iterations = (int)((m_input.Epochs * m_input.Input.Count * dfAveInputLen) / m_model.Batch);
                     m_log.WriteLine("Training for " + m_input.Epochs.ToString() + " epochs (" + m_model.Iterations.ToString("N0") + " iterations).", true);
                     m_log.WriteLine("INFO: " + m_model.Iterations.ToString("N0") + " iterations.", true);
+                    m_log.WriteLine("Using hidden = " + m_input.HiddenSize.ToString() + ", and word size = " + m_input.WordSize.ToString() + ".", true);
 
                     // Load the Seq2Seq training model.
-                    NetParameter netParam = m_model.CreateModel(HIDDEN_COUNT, WORD_SIZE, m_data.VocabularyCount);
+                    NetParameter netParam = m_model.CreateModel(m_input.HiddenSize, m_input.WordSize, m_data.VocabularyCount);
                     string strModel = netParam.ToProto("root").ToString();
                     SolverParameter solverParam = m_model.CreateSolver();
                     string strSolver = solverParam.ToProto("root").ToString();
@@ -270,7 +283,7 @@ namespace Seq2SeqChatBot
                 {
                     Data data = m_input.PreProcessInputText();
 
-                    NetParameter netParam = m_model.CreateModel(HIDDEN_COUNT, WORD_SIZE, m_data.VocabularyCount, Phase.RUN);
+                    NetParameter netParam = m_model.CreateModel(m_input.HiddenSize, m_input.WordSize, m_data.VocabularyCount, Phase.RUN);
                     string strModel = netParam.ToProto("root").ToString();
                     byte[] rgWts = null;
 

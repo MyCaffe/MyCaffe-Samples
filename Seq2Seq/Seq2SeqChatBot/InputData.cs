@@ -23,6 +23,8 @@ namespace Seq2SeqChatBot
         List<List<string>> m_rgrgstrInput = new List<List<string>>();
         List<List<string>> m_rgrgstrTarget = new List<List<string>>();
         int m_nEpochSize = 1000;
+        int m_nHidden = 256;
+        int m_nWordSize = 128;
 
         /// <summary>
         /// Defines the OPERATION to run.
@@ -101,6 +103,22 @@ namespace Seq2SeqChatBot
         }
 
         /// <summary>
+        /// Returns the hidden size of each LSTM layer.
+        /// </summary>
+        public int HiddenSize
+        {
+            get { return m_nHidden; }
+        }
+
+        /// <summary>
+        /// Returns the word size used to size the output of each embedding layer.
+        /// </summary>
+        public int WordSize
+        {
+            get { return m_nWordSize; }
+        }
+
+        /// <summary>
         /// Returns the batch size, current = 1.
         /// </summary>
         public int Batch
@@ -135,7 +153,9 @@ namespace Seq2SeqChatBot
         /// <param name="strIter">Specifies the iterations to run.</param>
         /// <param name="strInput">Specifies the input text used when running the model.</param>
         /// <param name="strBatch">Specifies the batch size, current = "1"</param>
-        public void SetData(OPERATION op, string strInputFile, string strTargetFile, string strIter, string strInput, string strBatch)
+        /// <param name="strHidden">Specifies the hidden size.</param>
+        /// <param name="strWordSize">Specifies the word size.</param>
+        public void SetData(OPERATION op, string strInputFile, string strTargetFile, string strIter, string strInput, string strBatch, string strHidden, string strWordSize)
         {
             m_operation = op;
             m_strInput = strInput;
@@ -155,6 +175,12 @@ namespace Seq2SeqChatBot
 
             if (!int.TryParse(strBatch, out m_nBatch) || m_nBatch < 1)
                 throw new Exception("Invalid batch, please enter a valid integer in the range [1,+].");
+
+            if (!int.TryParse(strHidden, out m_nHidden) || m_nHidden < 1)
+                throw new Exception("Invalid hidden size, please enter a valid integer in the range [1,+].");
+
+            if (!int.TryParse(strWordSize, out m_nWordSize) || m_nWordSize < 1)
+                throw new Exception("Invalid word size, please enter a valid integer in the range [1,+].");
         }
 
         /// <summary>

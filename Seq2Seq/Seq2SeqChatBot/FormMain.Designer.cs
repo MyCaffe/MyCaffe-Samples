@@ -74,6 +74,11 @@ namespace Seq2SeqChatBot
             this.btnDeleteWeights = new System.Windows.Forms.ToolStripButton();
             this.btnEnableVerboseOutput = new System.Windows.Forms.ToolStripButton();
             this.openFileDialogTxt = new System.Windows.Forms.OpenFileDialog();
+            this.edtHidden = new System.Windows.Forms.TextBox();
+            this.lblHidden = new System.Windows.Forms.Label();
+            this.edtWordSize = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
@@ -241,10 +246,14 @@ namespace Seq2SeqChatBot
             this.splitContainer2.Panel1.BackColor = System.Drawing.SystemColors.Control;
             this.splitContainer2.Panel1.Controls.Add(this.lblIterations);
             this.splitContainer2.Panel1.Controls.Add(this.label4);
+            this.splitContainer2.Panel1.Controls.Add(this.label7);
+            this.splitContainer2.Panel1.Controls.Add(this.lblHidden);
             this.splitContainer2.Panel1.Controls.Add(this.label6);
             this.splitContainer2.Panel1.Controls.Add(this.label3);
             this.splitContainer2.Panel1.Controls.Add(this.btnBrowseTargetTextFile);
             this.splitContainer2.Panel1.Controls.Add(this.btnBrowseInputTextFile);
+            this.splitContainer2.Panel1.Controls.Add(this.edtWordSize);
+            this.splitContainer2.Panel1.Controls.Add(this.edtHidden);
             this.splitContainer2.Panel1.Controls.Add(this.edtBatch);
             this.splitContainer2.Panel1.Controls.Add(this.edtIterations);
             this.splitContainer2.Panel1.Controls.Add(this.edtInput);
@@ -320,12 +329,14 @@ namespace Seq2SeqChatBot
             // 
             // edtBatch
             // 
+            this.edtBatch.Enabled = false;
             this.edtBatch.Location = new System.Drawing.Point(363, 63);
             this.edtBatch.Name = "edtBatch";
             this.edtBatch.Size = new System.Drawing.Size(37, 20);
             this.edtBatch.TabIndex = 11;
             this.edtBatch.Text = "1";
             this.edtBatch.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.toolTip1.SetToolTip(this.edtBatch, "Currently, only batch size 1 supported.");
             // 
             // edtIterations
             // 
@@ -343,7 +354,7 @@ namespace Seq2SeqChatBot
             this.edtInput.Location = new System.Drawing.Point(97, 89);
             this.edtInput.Name = "edtInput";
             this.edtInput.Size = new System.Drawing.Size(847, 20);
-            this.edtInput.TabIndex = 13;
+            this.edtInput.TabIndex = 17;
             this.edtInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.edtInput_KeyPress);
             // 
             // label5
@@ -352,7 +363,7 @@ namespace Seq2SeqChatBot
             this.label5.Location = new System.Drawing.Point(33, 92);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(58, 13);
-            this.label5.TabIndex = 12;
+            this.label5.TabIndex = 16;
             this.label5.Text = "Input Text:";
             // 
             // edtTargetTextFile
@@ -567,6 +578,44 @@ namespace Seq2SeqChatBot
             this.openFileDialogTxt.Filter = "Text Files (*.txt)|*.txt||";
             this.openFileDialogTxt.Title = "Select the Input Text File";
             // 
+            // edtHidden
+            // 
+            this.edtHidden.Location = new System.Drawing.Point(456, 63);
+            this.edtHidden.Name = "edtHidden";
+            this.edtHidden.Size = new System.Drawing.Size(37, 20);
+            this.edtHidden.TabIndex = 13;
+            this.edtHidden.Text = "256";
+            this.edtHidden.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.toolTip1.SetToolTip(this.edtHidden, "Specifies the hidden size of each LSTM layer output.");
+            // 
+            // lblHidden
+            // 
+            this.lblHidden.AutoSize = true;
+            this.lblHidden.Location = new System.Drawing.Point(406, 66);
+            this.lblHidden.Name = "lblHidden";
+            this.lblHidden.Size = new System.Drawing.Size(44, 13);
+            this.lblHidden.TabIndex = 12;
+            this.lblHidden.Text = "Hidden:";
+            // 
+            // edtWordSize
+            // 
+            this.edtWordSize.Location = new System.Drawing.Point(562, 63);
+            this.edtWordSize.Name = "edtWordSize";
+            this.edtWordSize.Size = new System.Drawing.Size(37, 20);
+            this.edtWordSize.TabIndex = 15;
+            this.edtWordSize.Text = "128";
+            this.edtWordSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.toolTip1.SetToolTip(this.edtWordSize, "Specifies the word embedding size of each embedding layer.");
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(499, 66);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(57, 13);
+            this.label7.TabIndex = 14;
+            this.label7.Text = "Word size:";
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -660,6 +709,11 @@ namespace Seq2SeqChatBot
         private System.Windows.Forms.SplitContainer splitContainer4;
         private ListViewEx lvDiscussion;
         private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label lblHidden;
+        private System.Windows.Forms.TextBox edtWordSize;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.TextBox edtHidden;
     }
 }
 

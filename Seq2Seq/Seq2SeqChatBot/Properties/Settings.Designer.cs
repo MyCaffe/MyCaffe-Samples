@@ -46,5 +46,29 @@ namespace Seq2SeqChatBot.Properties {
                 this["Batch"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("256")]
+        public int Hidden {
+            get {
+                return ((int)(this["Hidden"]));
+            }
+            set {
+                this["Hidden"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("128")]
+        public int WordSize {
+            get {
+                return ((int)(this["WordSize"]));
+            }
+            set {
+                this["WordSize"] = value;
+            }
+        }
     }
 }
