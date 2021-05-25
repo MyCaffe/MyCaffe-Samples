@@ -209,6 +209,9 @@ namespace Seq2SeqChatBot
         /// <param name="e">specifies the arguments.</param>
         private void m_bw_DoWork(object sender, DoWorkEventArgs e)
         {
+            const int HIDDEN_COUNT = 256;
+            const int WORD_SIZE = 128;
+
             BackgroundWorker bw = sender as BackgroundWorker;
             m_input = e.Argument as InputData;
             SettingsCaffe s = new SettingsCaffe();
@@ -230,7 +233,7 @@ namespace Seq2SeqChatBot
                     m_log.WriteLine("INFO: " + m_model.Iterations.ToString("N0") + " iterations.", true);
 
                     // Load the Seq2Seq training model.
-                    NetParameter netParam = m_model.CreateModel(64, 128, m_data.VocabularyCount);
+                    NetParameter netParam = m_model.CreateModel(HIDDEN_COUNT, WORD_SIZE, m_data.VocabularyCount);
                     string strModel = netParam.ToProto("root").ToString();
                     SolverParameter solverParam = m_model.CreateSolver();
                     string strSolver = solverParam.ToProto("root").ToString();
@@ -267,12 +270,13 @@ namespace Seq2SeqChatBot
                 {
                     Data data = m_input.PreProcessInputText();
 
-                    NetParameter netParam = m_model.CreateModel(16, 32, m_data.VocabularyCount, Phase.RUN);
+                    NetParameter netParam = m_model.CreateModel(HIDDEN_COUNT, WORD_SIZE, m_data.VocabularyCount, Phase.RUN);
                     string strModel = netParam.ToProto("root").ToString();
                     byte[] rgWts = null;
 
                     int nN = m_model.TimeSteps;
                     m_mycaffe.LoadToRun(strModel, rgWts, new BlobShape(new List<int>() { nN, 1, 1, 1 }), null, null, false, false);
+                    
                     loadWeights("sequence", m_mycaffe, Phase.RUN);
 
                     m_blobProbs = new Blob<float>(m_mycaffe.Cuda, m_mycaffe.Log);
