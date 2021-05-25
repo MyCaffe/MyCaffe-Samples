@@ -16,7 +16,7 @@ namespace Seq2SeqChatBot
     {
         int m_nIterations = 400000;
         int m_nDisplay = 100;
-        int m_nHidden = 128; // default = 16
+        int m_nHidden = 16;
         int m_nBatch = 1;
         double m_dfLearningRate = 0.001;
         double m_dfDecayRate = 0.000001;
@@ -146,6 +146,7 @@ namespace Seq2SeqChatBot
         /// <returns>The NetParameter of the model is returned.</returns>
         public NetParameter CreateModel(int nHiddenCount, int nWordSize, int nVocabCount, Phase phase = Phase.TRAIN)
         {
+            m_nHidden = nHiddenCount;
             NetParameter net = new NetParameter();
 
             // Encoder Data inputs
@@ -247,8 +248,6 @@ namespace Seq2SeqChatBot
             embed3.embed_param.num_output = (uint)nWordSize; // Word size.
             embed3.embed_param.bias_term = true;
             embed3.embed_param.weight_filler = m_fillerParam;
-            embed3.parameters.Add(new ParamSpec("embed_wts"));
-            embed3.parameters.Add(new ParamSpec("embed_bias"));
             embed3.bottom.Add("dec_input");
             embed3.top.Add("dec_input_embed");
             net.layer.Add(embed3);
