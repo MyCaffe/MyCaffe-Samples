@@ -47,10 +47,14 @@ namespace Seq2SeqChatBot
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.lblIterations = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.lblHidden = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.btnBrowseTargetTextFile = new System.Windows.Forms.Button();
             this.btnBrowseInputTextFile = new System.Windows.Forms.Button();
+            this.edtWordSize = new System.Windows.Forms.TextBox();
+            this.edtHidden = new System.Windows.Forms.TextBox();
             this.edtBatch = new System.Windows.Forms.TextBox();
             this.edtIterations = new System.Windows.Forms.TextBox();
             this.edtInput = new System.Windows.Forms.TextBox();
@@ -74,10 +78,6 @@ namespace Seq2SeqChatBot
             this.btnDeleteWeights = new System.Windows.Forms.ToolStripButton();
             this.btnEnableVerboseOutput = new System.Windows.Forms.ToolStripButton();
             this.openFileDialogTxt = new System.Windows.Forms.OpenFileDialog();
-            this.edtHidden = new System.Windows.Forms.TextBox();
-            this.lblHidden = new System.Windows.Forms.Label();
-            this.edtWordSize = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -287,6 +287,24 @@ namespace Seq2SeqChatBot
             this.label4.TabIndex = 8;
             this.label4.Text = "epochs";
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(499, 66);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(57, 13);
+            this.label7.TabIndex = 14;
+            this.label7.Text = "Word size:";
+            // 
+            // lblHidden
+            // 
+            this.lblHidden.AutoSize = true;
+            this.lblHidden.Location = new System.Drawing.Point(406, 66);
+            this.lblHidden.Name = "lblHidden";
+            this.lblHidden.Size = new System.Drawing.Size(44, 13);
+            this.lblHidden.TabIndex = 12;
+            this.lblHidden.Text = "Hidden:";
+            // 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -326,6 +344,28 @@ namespace Seq2SeqChatBot
             this.btnBrowseInputTextFile.Text = "...";
             this.btnBrowseInputTextFile.UseVisualStyleBackColor = true;
             this.btnBrowseInputTextFile.Click += new System.EventHandler(this.btnBrowseInputTextFile_Click);
+            // 
+            // edtWordSize
+            // 
+            this.edtWordSize.Enabled = false;
+            this.edtWordSize.Location = new System.Drawing.Point(562, 63);
+            this.edtWordSize.Name = "edtWordSize";
+            this.edtWordSize.Size = new System.Drawing.Size(37, 20);
+            this.edtWordSize.TabIndex = 15;
+            this.edtWordSize.Text = "256";
+            this.edtWordSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.toolTip1.SetToolTip(this.edtWordSize, "Specifies the word embedding size of each embedding layer.");
+            // 
+            // edtHidden
+            // 
+            this.edtHidden.Location = new System.Drawing.Point(456, 63);
+            this.edtHidden.Name = "edtHidden";
+            this.edtHidden.Size = new System.Drawing.Size(37, 20);
+            this.edtHidden.TabIndex = 13;
+            this.edtHidden.Text = "128";
+            this.edtHidden.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.toolTip1.SetToolTip(this.edtHidden, "Specifies the hidden size of each LSTM layer output.");
+            this.edtHidden.TextChanged += new System.EventHandler(this.edtHidden_TextChanged);
             // 
             // edtBatch
             // 
@@ -577,44 +617,6 @@ namespace Seq2SeqChatBot
             this.openFileDialogTxt.DefaultExt = "txt";
             this.openFileDialogTxt.Filter = "Text Files (*.txt)|*.txt||";
             this.openFileDialogTxt.Title = "Select the Input Text File";
-            // 
-            // edtHidden
-            // 
-            this.edtHidden.Location = new System.Drawing.Point(456, 63);
-            this.edtHidden.Name = "edtHidden";
-            this.edtHidden.Size = new System.Drawing.Size(37, 20);
-            this.edtHidden.TabIndex = 13;
-            this.edtHidden.Text = "256";
-            this.edtHidden.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.toolTip1.SetToolTip(this.edtHidden, "Specifies the hidden size of each LSTM layer output.");
-            // 
-            // lblHidden
-            // 
-            this.lblHidden.AutoSize = true;
-            this.lblHidden.Location = new System.Drawing.Point(406, 66);
-            this.lblHidden.Name = "lblHidden";
-            this.lblHidden.Size = new System.Drawing.Size(44, 13);
-            this.lblHidden.TabIndex = 12;
-            this.lblHidden.Text = "Hidden:";
-            // 
-            // edtWordSize
-            // 
-            this.edtWordSize.Location = new System.Drawing.Point(562, 63);
-            this.edtWordSize.Name = "edtWordSize";
-            this.edtWordSize.Size = new System.Drawing.Size(37, 20);
-            this.edtWordSize.TabIndex = 15;
-            this.edtWordSize.Text = "128";
-            this.edtWordSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.toolTip1.SetToolTip(this.edtWordSize, "Specifies the word embedding size of each embedding layer.");
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(499, 66);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(57, 13);
-            this.label7.TabIndex = 14;
-            this.label7.Text = "Word size:";
             // 
             // FormMain
             // 

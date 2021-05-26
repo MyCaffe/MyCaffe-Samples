@@ -940,5 +940,13 @@ namespace Seq2SeqChatBot
                 edtInput.Select();
             }
         }
+
+        private void edtHidden_TextChanged(object sender, EventArgs e)
+        {
+            int nVal;
+
+            if (int.TryParse(edtHidden.Text, out nVal))
+                edtWordSize.Text = (nVal * 2).ToString();
+        }
     }
 }
