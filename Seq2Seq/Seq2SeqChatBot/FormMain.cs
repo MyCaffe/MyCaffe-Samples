@@ -140,10 +140,14 @@ namespace Seq2SeqChatBot
                 if (input.HiddenSize != Properties.Settings.Default.Hidden ||
                     input.WordSize != Properties.Settings.Default.WordSize)
                 {
-                    if (MessageBox.Show("The hidden size and/or word size have changed which requires deleting any previously trained weights - do you want to proceed?", "Sizing Change", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) != DialogResult.Yes)
+                    DialogResult res = MessageBox.Show("The hidden size and/or word size have changed which requires deleting any previously trained weights - do you want to delete the weights?", "Sizing Change", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation);
+                    if (res == DialogResult.Cancel)
                         return null;
 
-                    btnDeleteWeights_Click(this, new EventArgs());
+                    if (res == DialogResult.Yes)
+                        btnDeleteWeights_Click(this, new EventArgs());
+                    else
+                        m_log.WriteLine("The weights were not deleted - sizing errors may occur.");
                 }
 
                 Properties.Settings.Default.Hidden = input.HiddenSize;
@@ -212,8 +216,11 @@ namespace Seq2SeqChatBot
         /// <param name="e">specifies the arguments.</param>
         private void btnDeleteWeights_Click(object sender, EventArgs e)
         {
-            clearWeights("sequence");
-            clearWeights("sequence.run");
+            int nHidden = m_model.Hidden;
+            int.TryParse(edtHidden.Text, out nHidden);
+
+            clearWeights("sequence", nHidden);
+            clearWeights("sequence.run", nHidden);
             setStatus("All weights are cleared.");
         }
 
@@ -758,14 +765,17 @@ namespace Seq2SeqChatBot
         /// Get the weight file name for the model.
         /// </summary>
         /// <param name="strTag">Specifies a special tag used to designate the model file name.</param>
+        /// <param name="nHiddenOverride">Specifies the hidden override.</param>
         /// <returns>The file name is returned.</returns>
-        private string getWeightFileName(string strTag = "")
+        private string getWeightFileName(string strTag = "", int? nHiddenOverride = null)
         {
+            int nHidden = nHiddenOverride.GetValueOrDefault(m_model.Hidden);
+
             string strDir = m_strOutputPath + "\\MyCaffe-Samples\\Seq2SeqChatBot";
             if (!Directory.Exists(strDir))
                 Directory.CreateDirectory(strDir);
 
-            return strDir + "\\" + strTag + ".weights_" + LayerParameter.LayerType.LSTM.ToString() + "_ATTN_" + m_model.Layers.ToString() + "_" + m_model.Hidden.ToString() + ".bin";
+            return strDir + "\\" + strTag + ".weights_" + LayerParameter.LayerType.LSTM.ToString() + "_ATTN_" + m_model.Layers.ToString() + "_" + nHidden.ToString() + ".bin";
         }
 
         /// <summary>
@@ -794,7 +804,9 @@ namespace Seq2SeqChatBot
         {
             bw.Write(b.Name);
             bw.Write(b.shape_string);
-            bw.Write(b.count());
+
+            long lCount = b.count();
+            bw.Write(lCount);
             float[] rgData = b.mutable_cpu_data;
 
             for (int i = 0; i < rgData.Length; i++)
@@ -807,9 +819,10 @@ namespace Seq2SeqChatBot
         /// Delete the weights file.
         /// </summary>
         /// <param name="strTag">Specifies the identifying tag for the file.</param>
-        private void clearWeights(string strTag)
+        /// <param name="nHiddenOverride">Specifies the hidden size override.</param>
+        private void clearWeights(string strTag, int? nHiddenOverride = null)
         {
-            string strFile = getWeightFileName(strTag);
+            string strFile = getWeightFileName(strTag, nHiddenOverride);
             if (File.Exists(strFile))
                 File.Delete(strFile);
         }
@@ -842,7 +855,7 @@ namespace Seq2SeqChatBot
         {
             string strName = br.ReadString();
             string strShape = br.ReadString();
-            int nCount = br.ReadInt32();
+            long nCount = br.ReadInt64();
             float[] rgData = new float[nCount];
 
             for (int i = 0; i < rgData.Length; i++)
