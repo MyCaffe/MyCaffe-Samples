@@ -134,7 +134,7 @@ namespace Seq2SeqChatBot
             try
             {
                 input = new InputData();
-                input.SetData(op, edtInputTextFile.Text, edtTargetTextFile.Text, edtIterations.Text, edtInput.Text, edtBatch.Text, edtHidden.Text, edtWordSize.Text);
+                input.SetData(op, edtInputTextFile.Text, edtTargetTextFile.Text, edtIterations.Text, edtInput.Text, edtBatch.Text, edtHidden.Text, edtWordSize.Text, edtLearningRate.Text);
                 edtInput.Text = "";
 
                 if (input.HiddenSize != Properties.Settings.Default.Hidden ||
@@ -255,7 +255,7 @@ namespace Seq2SeqChatBot
                     // Load the Seq2Seq training model.
                     NetParameter netParam = m_model.CreateModel(m_input.HiddenSize, m_input.WordSize, m_data.VocabularyCount);
                     string strModel = netParam.ToProto("root").ToString();
-                    SolverParameter solverParam = m_model.CreateSolver();
+                    SolverParameter solverParam = m_model.CreateSolver(m_input.LearningRate);
                     string strSolver = solverParam.ToProto("root").ToString();
                     byte[] rgWts = null;
 
@@ -960,6 +960,14 @@ namespace Seq2SeqChatBot
 
             if (int.TryParse(edtHidden.Text, out nVal))
                 edtWordSize.Text = (nVal * 2).ToString();
+        }
+
+        private void btnSetDefaults_Click(object sender, EventArgs e)
+        {
+            edtIterations.Text = "300";
+            edtBatch.Text = "1";
+            edtHidden.Text = "128";
+            edtLearningRate.Text = "0.001";
         }
     }
 }

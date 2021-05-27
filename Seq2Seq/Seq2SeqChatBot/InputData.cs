@@ -25,6 +25,7 @@ namespace Seq2SeqChatBot
         int m_nEpochSize = 1000;
         int m_nHidden = 256;
         int m_nWordSize = 128;
+        double m_dfLearningRate = 0.001;
 
         /// <summary>
         /// Defines the OPERATION to run.
@@ -128,6 +129,14 @@ namespace Seq2SeqChatBot
         }
 
         /// <summary>
+        /// Returns the learning rate.
+        /// </summary>
+        public double LearningRate
+        {
+            get { return m_dfLearningRate; }
+        }
+
+        /// <summary>
         /// Get/set the input text use when running the trainied model.
         /// </summary>
         public string InputText
@@ -155,7 +164,8 @@ namespace Seq2SeqChatBot
         /// <param name="strBatch">Specifies the batch size, current = "1"</param>
         /// <param name="strHidden">Specifies the hidden size.</param>
         /// <param name="strWordSize">Specifies the word size.</param>
-        public void SetData(OPERATION op, string strInputFile, string strTargetFile, string strIter, string strInput, string strBatch, string strHidden, string strWordSize)
+        /// <param name="strLr">Specifies the learning rate.</param>
+        public void SetData(OPERATION op, string strInputFile, string strTargetFile, string strIter, string strInput, string strBatch, string strHidden, string strWordSize, string strLr)
         {
             m_operation = op;
             m_strInput = strInput;
@@ -181,6 +191,9 @@ namespace Seq2SeqChatBot
 
             if (!int.TryParse(strWordSize, out m_nWordSize) || m_nWordSize < 1)
                 throw new Exception("Invalid word size, please enter a valid integer in the range [1,+].");
+
+            if (!double.TryParse(strLr, out m_dfLearningRate) || m_dfLearningRate < 0)
+                throw new Exception("Invalid learning rate, please enter a valid integer in the range [0,+].");
         }
 
         /// <summary>

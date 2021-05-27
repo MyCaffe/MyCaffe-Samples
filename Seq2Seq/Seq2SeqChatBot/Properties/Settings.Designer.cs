@@ -70,5 +70,17 @@ namespace Seq2SeqChatBot.Properties {
                 this["WordSize"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.001")]
+        public double LearningRate {
+            get {
+                return ((double)(this["LearningRate"]));
+            }
+            set {
+                this["LearningRate"] = value;
+            }
+        }
     }
 }

@@ -110,10 +110,13 @@ namespace Seq2SeqChatBot
         /// Create the ADAM solver used, setting the test interval > than the
         /// iterations to avoid testing.
         /// </summary>
+        /// <param name="dfLr">Specifies the learning rate.</param>
         /// <returns>The SolverParameter is returned.</returns>
-        public SolverParameter CreateSolver()
+        public SolverParameter CreateSolver(double dfLr)
         {
             SolverParameter solver = new SolverParameter();
+
+            m_dfLearningRate = dfLr;
 
             solver.random_seed = 0xCAFFE;
             solver.test_interval = 100;
