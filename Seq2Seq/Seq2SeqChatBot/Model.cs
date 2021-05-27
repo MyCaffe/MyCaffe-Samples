@@ -131,7 +131,9 @@ namespace Seq2SeqChatBot
             solver.clip_gradients = 5;
             solver.regularization_type = "L2";
             solver.type = SolverParameter.SolverType.RMSPROP;
-            solver.lr_policy = "fixed";
+            solver.lr_policy = "multistep";
+            solver.stepvalue = new List<int>() { 100000, 200000 };
+            solver.gamma = 0.5;
             solver.base_lr = m_dfLearningRate;
 
             return solver;
