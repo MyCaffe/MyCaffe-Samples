@@ -257,15 +257,13 @@ namespace Seq2SeqChatBot
                     string strModel = netParam.ToProto("root").ToString();
                     SolverParameter solverParam = m_model.CreateSolver(m_input.LearningRate);
                     string strSolver = solverParam.ToProto("root").ToString();
-                    byte[] rgWts = null;
+                    byte[] rgWts = loadWeights("sequence");
 
                     m_mycaffe.OnTrainingIteration += m_mycaffe_OnTrainingIteration;
                     m_mycaffe.OnTestingIteration += m_mycaffe_OnTestingIteration;
                     m_mycaffe.LoadLite(Phase.TRAIN, strSolver, strModel, rgWts, false, false);
                     m_mycaffe.SetOnTrainingStartOverride(new EventHandler(onTrainingStart));
                     m_mycaffe.SetOnTestingStartOverride(new EventHandler(onTrainingStart));
-
-                    loadWeights("sequence", m_mycaffe, Phase.TRAIN);
 
                     m_blobProbs = new Blob<float>(m_mycaffe.Cuda, m_mycaffe.Log);
                     m_blobScale = new Blob<float>(m_mycaffe.Cuda, m_mycaffe.Log);
@@ -292,12 +290,10 @@ namespace Seq2SeqChatBot
 
                     NetParameter netParam = m_model.CreateModel(m_input.HiddenSize, m_input.WordSize, m_data.VocabularyCount, Phase.RUN);
                     string strModel = netParam.ToProto("root").ToString();
-                    byte[] rgWts = null;
+                    byte[] rgWts = loadWeights("sequence_b");
 
                     int nN = m_model.TimeSteps;
                     m_mycaffe.LoadToRun(strModel, rgWts, new BlobShape(new List<int>() { nN, 1, 1, 1 }), null, null, false, false);
-                    
-                    loadWeights("sequence", m_mycaffe, Phase.RUN);
 
                     m_blobProbs = new Blob<float>(m_mycaffe.Cuda, m_mycaffe.Log);
                     m_blobScale = new Blob<float>(m_mycaffe.Cuda, m_mycaffe.Log);
@@ -779,39 +775,41 @@ namespace Seq2SeqChatBot
         }
 
         /// <summary>
-        /// Save the model weights.
+        /// Save the weights to a file.
         /// </summary>
-        /// <param name="strTag">Specifies an identifying tag.</param>
-        /// <param name="rg">Specifies the weight data.</param>
-        /// <remarks>Curently, the weights are saved directly.</remarks>
+        /// <param name="strTag">Specifies the tag applied to the filename.</param>
+        /// <param name="mycaffe">Specifies the instance of mycaffe whos weights are to be saved.</param>
         private void saveWeights(string strTag, MyCaffeControl<float> mycaffe)
         {
             string strFile = getWeightFileName(strTag);
 
-            Net<float> net = mycaffe.GetInternalNet(Phase.TRAIN);
+            byte[] rgWts = mycaffe.GetWeights();
 
             using (FileStream fs = File.Create(strFile))
             using (BinaryWriter bw = new BinaryWriter(fs))
             {
-                foreach (Blob<float> b in net.learnable_parameters)
-                {
-                    saveBlob(bw, b);
-                }
+                bw.Write(rgWts);
             }
         }
 
-        private void saveBlob(BinaryWriter bw, Blob<float> b)
+        /// <summary>
+        /// Load the weights from file into a byte array.
+        /// </summary>
+        /// <param name="strTag">Specifies the tag applied to the filename.</param>
+        /// <returns>The byte array of weights is returned.</returns>
+        private byte[] loadWeights(string strTag)
         {
-            bw.Write(b.Name);
-            bw.Write(b.shape_string);
+            string strFile = getWeightFileName(strTag);
 
-            long lCount = b.count();
-            bw.Write(lCount);
-            float[] rgData = b.mutable_cpu_data;
+            if (!File.Exists(strFile))
+                return null;
 
-            for (int i = 0; i < rgData.Length; i++)
+            using (FileStream fs = File.OpenRead(strFile))
+            using (BinaryReader br = new BinaryReader(fs))
             {
-                bw.Write(rgData[i]);
+                byte[] rgWts = new byte[fs.Length];
+                br.Read(rgWts, 0, (int)fs.Length);
+                return rgWts;
             }
         }
 
@@ -825,45 +823,6 @@ namespace Seq2SeqChatBot
             string strFile = getWeightFileName(strTag, nHiddenOverride);
             if (File.Exists(strFile))
                 File.Delete(strFile);
-        }
-
-        /// <summary>
-        /// Load the weights from file.
-        /// </summary>
-        /// <param name="strTag">Specifies an identifying tag.</param>
-        /// <returns>The weight data is returned.</returns>
-        /// <remarks>Currently, the weights are loaded directly.</remarks>
-        private void loadWeights(string strTag, MyCaffeControl<float> mycaffe, Phase phase)
-        {
-            string strFile = getWeightFileName(strTag);
-            if (!File.Exists(strFile))
-                return;
-
-            Net<float> net = mycaffe.GetInternalNet(phase);
-
-            using (FileStream fs = File.Open(strFile, FileMode.Open, FileAccess.Read))
-            using (BinaryReader br = new BinaryReader(fs))
-            {
-                foreach (Blob<float> b in net.learnable_parameters)
-                {
-                    loadBlob(br, b);
-                }
-            }
-        }
-
-        private void loadBlob(BinaryReader br, Blob<float> b)
-        {
-            string strName = br.ReadString();
-            string strShape = br.ReadString();
-            long nCount = br.ReadInt64();
-            float[] rgData = new float[nCount];
-
-            for (int i = 0; i < rgData.Length; i++)
-            {
-                rgData[i] = br.ReadSingle();
-            }
-
-            b.mutable_cpu_data = rgData;
         }
 
         /// <summary>
