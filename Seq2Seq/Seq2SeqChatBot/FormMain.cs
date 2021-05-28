@@ -290,7 +290,7 @@ namespace Seq2SeqChatBot
 
                     NetParameter netParam = m_model.CreateModel(m_input.HiddenSize, m_input.WordSize, m_data.VocabularyCount, Phase.RUN);
                     string strModel = netParam.ToProto("root").ToString();
-                    byte[] rgWts = loadWeights("sequence_b");
+                    byte[] rgWts = loadWeights("sequence");
 
                     int nN = m_model.TimeSteps;
                     m_mycaffe.LoadToRun(strModel, rgWts, new BlobShape(new List<int>() { nN, 1, 1, 1 }), null, null, false, false);
