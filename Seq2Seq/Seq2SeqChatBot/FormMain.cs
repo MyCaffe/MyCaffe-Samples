@@ -41,8 +41,8 @@ namespace Seq2SeqChatBot
         Blob<float> m_blobScale = null;
         int m_nOutputCount = 0;
         int m_nCorrectCount = 0;
-        List<float> m_rgAccuracy1 = new List<float>();
-        List<float> m_rgAccuracy2 = new List<float>();
+        List<float> m_rgAccuracyTraining = new List<float>();
+        List<float> m_rgAccuracyTesting = new List<float>();
         float m_fTotalCost = 0;
         int m_nTotalIter1 = 0;
         int m_nTotalSequences = 0;
@@ -156,8 +156,8 @@ namespace Seq2SeqChatBot
 
                 for (int i = 0; i < input.EpochSize; i++)
                 {
-                    m_rgAccuracy2.Add(0);
-                    m_rgAccuracy1.Add(0);
+                    m_rgAccuracyTesting.Add(0);
+                    m_rgAccuracyTraining.Add(0);
                 }
 
                 return input;
@@ -436,8 +436,8 @@ namespace Seq2SeqChatBot
                 if (nOldOutputCount > 0)
                 {
                     float fAccuracy = (float)m_nCorrectCount / nOldOutputCount;
-                    m_rgAccuracy1.Add(fAccuracy);
-                    m_rgAccuracy1.RemoveAt(0);
+                    m_rgAccuracyTraining.Add(fAccuracy);
+                    m_rgAccuracyTraining.RemoveAt(0);
                     m_nCorrectCount = 0;
                 }
 
@@ -635,14 +635,14 @@ namespace Seq2SeqChatBot
         /// <param name="e">Specifies the event args.</param>
         private void m_mycaffe_OnTestingIteration(object sender, TestingIterationArgs<float> e)
         {
-            float fAccuracy = m_rgAccuracy1.Average();
+            float fAccuracy = m_rgAccuracyTraining.Average();
             m_plotsSequenceAccuracyTrain.Add(m_nTotalSequences, fAccuracy * 100);
             if (m_plotsSequenceAccuracyTrain.Count > 100)
                 m_plotsSequenceAccuracyTrain.RemoveAt(0);
 
-            m_rgAccuracy2.Add((float)e.Accuracy);
-            m_rgAccuracy2.RemoveAt(0);
-            fAccuracy = m_rgAccuracy2.Average();
+            m_rgAccuracyTesting.Add((float)e.Accuracy);
+            m_rgAccuracyTesting.RemoveAt(0);
+            fAccuracy = m_rgAccuracyTesting.Average();
 
             m_plotsSequenceAccuracyTest.Add(m_nTotalSequences, fAccuracy * 100);
             if (m_plotsSequenceAccuracyTest.Count > 100)
