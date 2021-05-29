@@ -8,7 +8,7 @@ namespace Seq2SeqChatBot
 {
     public class Data
     {
-        Random m_random = new Random(1234);
+        Random m_random = new Random((int)DateTime.Now.Ticks);
         List<List<string>> m_rgInput;
         List<List<string>> m_rgOutput;
         int m_nCurrentSequence = -1;
