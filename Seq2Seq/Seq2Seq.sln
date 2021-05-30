@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SinCurve", "SinCurve\SinCur
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageToSin", "ImageToSin\ImageToSin.csproj", "{205F0149-EF8F-4B0E-B5F5-5BA6EA30F85A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seq2SeqChatBot2", "Seq2SeqChatBot2\Seq2SeqChatBot2.csproj", "{1311B5CB-45FD-43FB-8C45-670128E56876}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{205F0149-EF8F-4B0E-B5F5-5BA6EA30F85A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{205F0149-EF8F-4B0E-B5F5-5BA6EA30F85A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{205F0149-EF8F-4B0E-B5F5-5BA6EA30F85A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1311B5CB-45FD-43FB-8C45-670128E56876}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1311B5CB-45FD-43FB-8C45-670128E56876}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1311B5CB-45FD-43FB-8C45-670128E56876}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1311B5CB-45FD-43FB-8C45-670128E56876}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
