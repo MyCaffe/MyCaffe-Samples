@@ -11,6 +11,7 @@ namespace Seq2SeqChatBot
         Random m_random = new Random((int)DateTime.Now.Ticks);
         List<List<string>> m_rgInput;
         List<List<string>> m_rgOutput;
+        int m_nSequenceIdx = 0;
         int m_nCurrentSequence = -1;
         int m_nCurrentOutputIdx = 0;
         int m_nIxInput = 1;
@@ -45,7 +46,7 @@ namespace Seq2SeqChatBot
             return new Tuple<List<int>, int>(rgInput, 1);
         }
 
-        public Tuple<List<int>, int, int, int> GetNextData(out bool bNewEpoch, out bool bNewSequence, ref int nOutputCount)
+        public Tuple<List<int>, int, int, int> GetNextData(out bool bNewEpoch, out bool bNewSequence, ref int nOutputCount, bool bRandom = true)
         {
             int nDecClip = 1;
 
@@ -56,7 +57,20 @@ namespace Seq2SeqChatBot
             {
                 m_nIterations++;
                 bNewSequence = true;
-                m_nCurrentSequence = m_random.Next(m_rgInput.Count);
+
+                if (bRandom)
+                {
+                    m_nCurrentSequence = m_random.Next(m_rgInput.Count);
+                }
+                else
+                {
+                    m_nCurrentSequence = m_nSequenceIdx;
+                    m_nSequenceIdx++;
+
+                    if (m_nSequenceIdx == m_rgInput.Count)
+                        m_nSequenceIdx = 0;
+                }
+
                 nOutputCount = m_rgOutput[m_nCurrentSequence].Count;
                 nDecClip = 0;
 
