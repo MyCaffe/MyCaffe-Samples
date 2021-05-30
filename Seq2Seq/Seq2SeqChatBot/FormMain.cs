@@ -36,7 +36,8 @@ namespace Seq2SeqChatBot
         PlotCollection m_plotsSequenceAccuracyTrain = new PlotCollection("Sequence Training");
         List<ConfigurationTargetLine> m_rgZeroLine = new List<ConfigurationTargetLine>();
         InputData m_input = null;
-        Data m_data = null;
+        Data m_dataTraining = null;
+        Data m_dataTesting = null;
         Blob<float> m_blobProbs = null;
         Blob<float> m_blobScale = null;
         int m_nOutputCount = 0;
@@ -51,7 +52,6 @@ namespace Seq2SeqChatBot
         float[] m_rgData = null;
         float[] m_rgDatar = null;
         float[] m_rgClipE = null;
-        float[] m_rgClipAttn = null;
 
         /// <summary>
         /// The setstatus delegate is used to output text to the status window
@@ -241,7 +241,8 @@ namespace Seq2SeqChatBot
                 m_model.Batch = m_input.Batch;
                 m_mycaffe = new MyCaffeControl<float>(s, m_log, m_evtCancel);
 
-                m_data = m_input.PreProcessInputFiles();
+                m_dataTraining = m_input.PreProcessInputFiles();
+                m_dataTesting = m_input.PreProcessInputFiles();
 
                 // Train the model.
                 if (m_input.Operation == InputData.OPERATION.TRAIN)
@@ -253,7 +254,7 @@ namespace Seq2SeqChatBot
                     m_log.WriteLine("Using hidden = " + m_input.HiddenSize.ToString() + ", and word size = " + m_input.WordSize.ToString() + ".", true);
 
                     // Load the Seq2Seq training model.
-                    NetParameter netParam = m_model.CreateModel(m_input.HiddenSize, m_input.WordSize, m_data.VocabularyCount);
+                    NetParameter netParam = m_model.CreateModel(m_input.HiddenSize, m_input.WordSize, m_dataTraining.VocabularyCount);
                     string strModel = netParam.ToProto("root").ToString();
                     SolverParameter solverParam = m_model.CreateSolver(m_input.LearningRate);
                     string strSolver = solverParam.ToProto("root").ToString();
@@ -263,7 +264,7 @@ namespace Seq2SeqChatBot
                     m_mycaffe.OnTestingIteration += m_mycaffe_OnTestingIteration;
                     m_mycaffe.LoadLite(Phase.TRAIN, strSolver, strModel, rgWts, false, false);
                     m_mycaffe.SetOnTrainingStartOverride(new EventHandler(onTrainingStart));
-                    m_mycaffe.SetOnTestingStartOverride(new EventHandler(onTrainingStart));
+                    m_mycaffe.SetOnTestingStartOverride(new EventHandler(onTestingStart));
 
                     m_blobProbs = new Blob<float>(m_mycaffe.Cuda, m_mycaffe.Log);
                     m_blobScale = new Blob<float>(m_mycaffe.Cuda, m_mycaffe.Log);
@@ -288,7 +289,7 @@ namespace Seq2SeqChatBot
                 {
                     Data data = m_input.PreProcessInputText();
 
-                    NetParameter netParam = m_model.CreateModel(m_input.HiddenSize, m_input.WordSize, m_data.VocabularyCount, Phase.RUN);
+                    NetParameter netParam = m_model.CreateModel(m_input.HiddenSize, m_input.WordSize, m_dataTesting.VocabularyCount, Phase.RUN);
                     string strModel = netParam.ToProto("root").ToString();
                     byte[] rgWts = loadWeights("sequence");
 
@@ -425,7 +426,7 @@ namespace Seq2SeqChatBot
             bool bNewEpoch;
             bool bNewSequence;
             int nOldOutputCount = m_nOutputCount;
-            Tuple<List<int>, int, int, int> data = m_data.GetNextData(out bNewEpoch, out bNewSequence, ref m_nOutputCount);
+            Tuple<List<int>, int, int, int> data = m_dataTraining.GetNextData(out bNewEpoch, out bNewSequence, ref m_nOutputCount);
             List<int> rgInput = data.Item1;
             int nIxInput = data.Item2;
             int nIxTarget = data.Item3;
@@ -451,6 +452,26 @@ namespace Seq2SeqChatBot
         }
 
         /// <summary>
+        ///  This event is called by the Solver to get testing data for this next testing Step.  
+        ///  Within this event, the data is loaded for the next testing step.
+        /// </summary>
+        /// <param name="sender">Specifies the sender of the event (e.g. the solver)</param>
+        /// <param name="args">n/a</param>
+        private void onTestingStart(object sender, EventArgs args)
+        {
+            bool bNewEpoch;
+            bool bNewSequence;
+            int nOutputCount = 0;
+            Tuple<List<int>, int, int, int> data = m_dataTesting.GetNextData(out bNewEpoch, out bNewSequence, ref nOutputCount);
+            List<int> rgInput = data.Item1;
+            int nIxInput = data.Item2;
+            int nIxTarget = data.Item3;
+            int nDecClip = data.Item4;
+
+            loadData(Phase.TRAIN, rgInput, nIxInput, nIxTarget, nDecClip);
+        }
+
+        /// <summary>
         /// Load the data into the model.
         /// </summary>
         /// <param name="phase">Specifies the current phase.</param>
@@ -464,7 +485,6 @@ namespace Seq2SeqChatBot
             Blob<float> blobData = net.FindBlob("data");
             Blob<float> blobDatar = net.FindBlob("datar");
             Blob<float> blobClipE = net.FindBlob("clipE");
-            Blob<float> blobClipAttn = net.FindBlob("clip_attn");
             Blob<float> blobDecInput = net.FindBlob("dec_input");
             Blob<float> blobClipD = net.FindBlob("clipD");
             Blob<float> blobTarget = null;
@@ -481,13 +501,9 @@ namespace Seq2SeqChatBot
             if (m_rgClipE == null)
                 m_rgClipE = blobClipE.mutable_cpu_data;
 
-            if (m_rgClipAttn == null)
-                m_rgClipAttn = blobClipAttn.mutable_cpu_data;
-
             Array.Clear(m_rgData, 0, m_rgData.Length);
             Array.Clear(m_rgDatar, 0, m_rgDatar.Length);
             Array.Clear(m_rgClipE, 0, m_rgClipE.Length);
-            Array.Clear(m_rgClipAttn, 0, m_rgClipAttn.Length);
 
             blobClipD.SetData(0);
             blobDecInput.SetData(0);
@@ -501,13 +517,11 @@ namespace Seq2SeqChatBot
                 m_rgData[i] = rgInput[i];
                 m_rgDatar[i] = rgInput[(rgInput.Count - 1) - i];
                 m_rgClipE[i] = (i == 0) ? 0 : 1;
-                m_rgClipAttn[i] = 1;
             }
 
             blobData.mutable_cpu_data = m_rgData;
             blobDatar.mutable_cpu_data = m_rgDatar;
             blobClipE.mutable_cpu_data = m_rgClipE;
-            blobClipAttn.mutable_cpu_data = m_rgClipAttn;
 
             // Load the decoder data.
             blobClipD.SetData(nDecClip, 0);
