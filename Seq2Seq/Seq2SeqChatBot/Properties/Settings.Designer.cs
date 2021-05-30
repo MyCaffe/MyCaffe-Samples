@@ -49,7 +49,7 @@ namespace Seq2SeqChatBot.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("256")]
+        [global::System.Configuration.DefaultSettingValueAttribute("16")]
         public int Hidden {
             get {
                 return ((int)(this["Hidden"]));
@@ -61,7 +61,7 @@ namespace Seq2SeqChatBot.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("128")]
+        [global::System.Configuration.DefaultSettingValueAttribute("32")]
         public int WordSize {
             get {
                 return ((int)(this["WordSize"]));

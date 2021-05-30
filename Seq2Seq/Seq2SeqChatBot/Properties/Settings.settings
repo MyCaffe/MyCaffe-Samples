@@ -9,10 +9,10 @@
       <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="Hidden" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">256</Value>
+      <Value Profile="(Default)">16</Value>
     </Setting>
     <Setting Name="WordSize" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">128</Value>
+      <Value Profile="(Default)">32</Value>
     </Setting>
     <Setting Name="LearningRate" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0.001</Value>
