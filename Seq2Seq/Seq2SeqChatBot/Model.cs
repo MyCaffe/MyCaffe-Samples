@@ -166,8 +166,6 @@ namespace Seq2SeqChatBot
             LayerParameter clipE = new LayerParameter(LayerParameter.LayerType.INPUT);
             clipE.top.Add("clipE");
             clipE.input_param.shape.Add(new BlobShape(new List<int>() { m_nTimeSteps, m_nBatch }));
-            clipE.top.Add("clip_attn");
-            clipE.input_param.shape.Add(new BlobShape(new List<int>() { m_nTimeSteps, m_nBatch }));
             net.layer.Add(clipE);
 
             // Decoder Data inputs
@@ -267,7 +265,7 @@ namespace Seq2SeqChatBot
             lstm3.bottom.Add("dec_input_embed");
             lstm3.bottom.Add("clipD");
             lstm3.bottom.Add("encoded");
-            lstm3.bottom.Add("clip_attn");
+            lstm3.bottom.Add("clipE");
             lstm3.top.Add("ip1");
             net.layer.Add(lstm3);
 
