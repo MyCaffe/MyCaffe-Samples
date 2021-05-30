@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Seq2SeqChatBot
 {
     /// <summary>
-    /// The Vocabular object manages the overall word dictionary and word to index and index to word mappings.
+    /// The Vocabulary object manages the overall word dictionary and word to index and index to word mappings.
     /// </summary>
     public class Vocabulary
     {
