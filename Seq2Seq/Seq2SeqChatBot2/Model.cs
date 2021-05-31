@@ -149,6 +149,30 @@ namespace Seq2SeqChatBot
         }
 
         /// <summary>
+        /// Prepend the input data to the model string.
+        /// </summary>
+        /// <param name="strModel">Specifies the model string.</param>
+        /// <returns>The input + model is returned.</returns>
+        public string PrependInput(string strModel)
+        {
+            string strInput = "";
+
+            strInput += "input: \"idec\"" + Environment.NewLine;
+            strInput += "input_shape { dim: 1 dim: " + m_nBatch.ToString() + " dim: 1 } " + Environment.NewLine;
+
+            strInput += "input: \"ienc\"" + Environment.NewLine;
+            strInput += "input_shape { dim: " + m_nTimeSteps.ToString() + " dim: " + m_nBatch.ToString() + " dim: 1 } " + Environment.NewLine;
+
+            strInput += "input: \"iencr\"" + Environment.NewLine;
+            strInput += "input_shape { dim: " + m_nTimeSteps.ToString() + " dim: " + m_nBatch.ToString() + " dim: 1 } " + Environment.NewLine;
+
+            strInput += "input: \"iencc\"" + Environment.NewLine;
+            strInput += "input_shape { dim: " + m_nTimeSteps.ToString() + " dim: " + m_nBatch.ToString() + " } " + Environment.NewLine;
+
+            return strInput + strModel;
+        }
+
+        /// <summary>
         /// Create the model used to train the Encoder/Decoder using the TextData Layer as input.
         /// Seq2Seq model using two LSTM layers where the first
         /// acts as the Encoder and the second the Decoder.
@@ -176,35 +200,23 @@ namespace Seq2SeqChatBot
             data.text_data_param.decoder_source = strTargetFile;
             data.text_data_param.sample_size = (uint)m_nSampleSize;
             data.text_data_param.shuffle = true;
+            if (phase == Phase.RUN)
+            {
+                // Loaded with TextDataLayer.PreProcessInput
+                data.bottom.Add("idec");    // decoder input    
+                data.bottom.Add("ienc");    // encoder input
+                data.bottom.Add("iencr");   // encoder inputr
+                data.bottom.Add("iencc");   // encoder clip
+            }
             data.top.Add("dec_input");
             data.top.Add("clipD");
             data.top.Add("data");
             data.top.Add("datar");
             data.top.Add("clipE");
             data.top.Add("vocabcount");
-            data.top.Add("label");
-            data.include.Add(new NetStateRule(Phase.TRAIN));
+            if (phase != Phase.RUN)
+                data.top.Add("label");
             net.layer.Add(data);
-
-            LayerParameter datat = new LayerParameter(LayerParameter.LayerType.TEXT_DATA);
-            datat.name = "data";
-            datat.text_data_param.time_steps = (uint)m_nTimeSteps;
-            datat.text_data_param.batch_size = (uint)m_nBatch;
-            datat.text_data_param.enable_normal_encoder_output = true;
-            datat.text_data_param.enable_reverse_encoder_output = true;
-            datat.text_data_param.encoder_source = strInputFile;
-            datat.text_data_param.decoder_source = strTargetFile;
-            datat.text_data_param.sample_size = (uint)m_nSampleSize;
-            datat.text_data_param.shuffle = true;
-            datat.top.Add("dec_input");
-            datat.top.Add("clipD");
-            datat.top.Add("data");
-            datat.top.Add("datar");
-            datat.top.Add("clipE");
-            datat.top.Add("vocabcount");
-            datat.top.Add("label");
-            datat.include.Add(new NetStateRule(Phase.TEST));
-            net.layer.Add(datat);
 
             // Create the embedding layer that converts sentence word indexes into an embedding of
             // size nWordSize for each word in the sentence.

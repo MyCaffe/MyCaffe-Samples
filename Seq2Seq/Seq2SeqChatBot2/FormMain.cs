@@ -283,6 +283,8 @@ namespace Seq2SeqChatBot
                     string strModel = netParam.ToProto("root").ToString();
                     byte[] rgWts = loadWeights("sequence");
 
+                    strModel = m_model.PrependInput(strModel);
+
                     int nN = m_model.TimeSteps;
                     m_mycaffe.LoadToRun(strModel, rgWts, new BlobShape(new List<int>() { nN, 1, 1, 1 }), null, null, false, false);
 
@@ -401,15 +403,9 @@ namespace Seq2SeqChatBot
             {
                 fData -= 1;
                 btm.SetDiff(fData, nIxTarget);
-            }
 
-            if (e.Tag == null)
-            {
-                int nCorrectCount = 0;
                 if ((int)lPos == nIxTarget)
-                    nCorrectCount++;
-
-                m_nCorrectCount += nCorrectCount;
+                    m_nCorrectCount++;
             }
 
             e.EnableLossUpdate = false;
@@ -436,10 +432,10 @@ namespace Seq2SeqChatBot
         {
             Net<float> net = m_mycaffe.GetInternalNet(Phase.RUN);
             TextDataLayer<float> layer = net.FindLayer("TextData", "data") as TextDataLayer<float>;
-            Blob<float> blobData = net.FindBlob("data");
-            Blob<float> blobDatar = net.FindBlob("datar");
-            Blob<float> blobClipE = net.FindBlob("clipE");
-            Blob<float> blobDecInput = net.FindBlob("dec_input");
+            Blob<float> blobData = net.FindBlob("ienc");
+            Blob<float> blobDatar = net.FindBlob("iencr");
+            Blob<float> blobClipE = net.FindBlob("iencc");
+            Blob<float> blobDecInput = net.FindBlob("idec");
             BlobCollection<float> colBtm = new BlobCollection<float>();
 
             colBtm.Add(blobDecInput);
