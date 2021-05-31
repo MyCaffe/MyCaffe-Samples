@@ -15,3 +15,8 @@ Bart van Merrienboer, Dzmitry Bahdanau, and Yoshua Bengio inspired the encoder/d
 of the chat-bot and uses attention to learn the link between the two.  This sample is a re-write of the original open-source sample Seq2SeqLearn from 
 [mashmawy/Seq2SeqLearn](https://github.com/mashmawy/Seq2SeqLearn) distributed under MIT license and the chat-bot sample from
 [HectorPulido/Chatbot-seq2seq-C-](https://github.com/HectorPulido/Chatbot-seq2seq-C-) also distributed under [MIT license](https://github.com/HectorPulido/Chatbot-seq2seq-C-/blob/master/LICENSE).
+
+<b>Seq2SeqChatBot2</b> chat-bot sample that uses the new TextDataLayer to provide a MyCaffe Sequence-to-Sequence model that encodes the inputs from a questioner and maps the probabilities to the encoding
+of the chat-bot and uses attention to learn the link between the two.  This sample is a re-write of the original open-source sample Seq2SeqLearn from 
+[mashmawy/Seq2SeqLearn](https://github.com/mashmawy/Seq2SeqLearn) distributed under MIT license and the chat-bot sample from
+[HectorPulido/Chatbot-seq2seq-C-](https://github.com/HectorPulido/Chatbot-seq2seq-C-) also distributed under [MIT license](https://github.com/HectorPulido/Chatbot-seq2seq-C-/blob/master/LICENSE).
