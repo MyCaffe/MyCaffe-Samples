@@ -183,7 +183,28 @@ namespace Seq2SeqChatBot
             data.top.Add("clipE");
             data.top.Add("vocabcount");
             data.top.Add("label");
+            data.include.Add(new NetStateRule(Phase.TRAIN));
             net.layer.Add(data);
+
+            LayerParameter datat = new LayerParameter(LayerParameter.LayerType.TEXT_DATA);
+            datat.name = "data";
+            datat.text_data_param.time_steps = (uint)m_nTimeSteps;
+            datat.text_data_param.batch_size = (uint)m_nBatch;
+            datat.text_data_param.enable_normal_encoder_output = true;
+            datat.text_data_param.enable_reverse_encoder_output = true;
+            datat.text_data_param.encoder_source = strInputFile;
+            datat.text_data_param.decoder_source = strTargetFile;
+            datat.text_data_param.sample_size = (uint)m_nSampleSize;
+            datat.text_data_param.shuffle = true;
+            datat.top.Add("dec_input");
+            datat.top.Add("clipD");
+            datat.top.Add("data");
+            datat.top.Add("datar");
+            datat.top.Add("clipE");
+            datat.top.Add("vocabcount");
+            datat.top.Add("label");
+            datat.include.Add(new NetStateRule(Phase.TEST));
+            net.layer.Add(datat);
 
             // Create the embedding layer that converts sentence word indexes into an embedding of
             // size nWordSize for each word in the sentence.
