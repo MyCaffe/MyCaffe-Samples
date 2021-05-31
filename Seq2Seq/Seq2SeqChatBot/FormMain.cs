@@ -385,10 +385,6 @@ namespace Seq2SeqChatBot
             long lPos;
             cuda.max(nCount, btm.gpu_data, out lPos);
 
-            int nCorrectCount = 0;
-            if ((int)lPos == nIxTarget)
-                nCorrectCount++;
-
             float fData = btm.GetDiff(nIxTarget);
             e.Loss += (-(float)Math.Log(fData));
 
@@ -396,9 +392,11 @@ namespace Seq2SeqChatBot
             {
                 fData -= 1;
                 btm.SetDiff(fData, nIxTarget);
+
+                if ((int)lPos == nIxTarget)
+                    m_nCorrectCount++;
             }
 
-            m_nCorrectCount += nCorrectCount;
 
             e.EnableLossUpdate = false;
         }
