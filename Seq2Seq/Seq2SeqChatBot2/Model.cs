@@ -214,9 +214,13 @@ namespace Seq2SeqChatBot
             data.top.Add("datar");
             data.top.Add("clipE");
             data.top.Add("vocabcount");
-            if (phase != Phase.RUN)
-                data.top.Add("label");
+            data.top.Add("label");
             net.layer.Add(data);
+
+            LayerParameter silence = new LayerParameter(LayerParameter.LayerType.SILENCE);
+            silence.bottom.Add("label");
+            silence.include.Add(new NetStateRule(Phase.RUN));
+            net.layer.Add(silence);
 
             // Create the embedding layer that converts sentence word indexes into an embedding of
             // size nWordSize for each word in the sentence.
