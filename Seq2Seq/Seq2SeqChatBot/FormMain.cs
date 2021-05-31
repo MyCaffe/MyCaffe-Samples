@@ -816,7 +816,12 @@ namespace Seq2SeqChatBot
             string strFile = getWeightFileName(strTag);
 
             if (!File.Exists(strFile))
+            {
+                m_log.WriteLine("No weight file found.", true);
                 return null;
+            }
+
+            m_log.WriteLine("Loading weights '" + strFile + "'.", true);
 
             using (FileStream fs = File.OpenRead(strFile))
             using (BinaryReader br = new BinaryReader(fs))
