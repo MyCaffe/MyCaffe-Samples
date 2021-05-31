@@ -312,8 +312,9 @@ namespace Seq2SeqChatBot
 
             if (phase != Phase.RUN)
             {
-                LayerParameter loss = new LayerParameter(LayerParameter.LayerType.MEMORY_LOSS);
+                LayerParameter loss = new LayerParameter(LayerParameter.LayerType.SOFTMAXWITH_LOSS);
                 loss.name = "loss";
+                loss.softmax_param.axis = 2;
                 loss.loss_param.normalization = LossParameter.NormalizationMode.NONE;
                 loss.bottom.Add("ip1");
                 loss.bottom.Add("label");

@@ -257,13 +257,6 @@ namespace Seq2SeqChatBot
                     m_blobProbs = new Blob<float>(m_mycaffe.Cuda, m_mycaffe.Log);
                     m_blobScale = new Blob<float>(m_mycaffe.Cuda, m_mycaffe.Log);
 
-                    MemoryLossLayer<float> lossLayerTraining = m_mycaffe.GetInternalNet(Phase.TRAIN).FindLayer(LayerParameter.LayerType.MEMORY_LOSS, "loss") as MemoryLossLayer<float>;
-                    if(lossLayerTraining != null)
-                        lossLayerTraining.OnGetLoss += LossLayer_OnGetLossTraining;
-                    MemoryLossLayer<float> lossLayerTesting = m_mycaffe.GetInternalNet(Phase.TEST).FindLayer(LayerParameter.LayerType.MEMORY_LOSS, "loss") as MemoryLossLayer<float>;
-                    if (lossLayerTesting != null)
-                        lossLayerTesting.OnGetLoss += LossLayer_OnGetLossTesting;
-
                     TextDataLayer<float> dataLayerTraining = m_mycaffe.GetInternalNet(Phase.TRAIN).FindLayer(LayerParameter.LayerType.TEXT_DATA, "data") as TextDataLayer<float>;
                     if (dataLayerTraining != null)
                         dataLayerTraining.OnGetData += DataLayerTraining_OnGetDataTraining;
@@ -326,101 +319,6 @@ namespace Seq2SeqChatBot
                 if (e.IterationInfo.NewEpoch)
                     m_nTotalEpochs++;
             }
-        }
-
-        private void softmax_fwd(Blob<float> blobBottom, Blob<float> blobClip, Blob<float> blobScale, Blob<float> blobTop, int nAxis)
-        {
-            int nCount = blobBottom.count();
-            int nOuterNum = blobBottom.count(0, nAxis);
-            int nInnerNum = blobBottom.count(nAxis + 1);
-            int nChannels = blobTop.shape(nAxis);
-            long hBottomData = blobBottom.gpu_data;
-            long hTopData = blobTop.mutable_gpu_data;
-            long hScaleData = blobScale.mutable_gpu_data;
-            CudaDnn<float> cuda = m_mycaffe.Cuda;
-
-            cuda.copy(nCount, hBottomData, hTopData);
-
-            // Apply clip.
-            if (blobClip != null)
-                cuda.channel_scale(nCount, blobTop.num, blobTop.channels, blobTop.count(2), blobTop.gpu_data, blobClip.gpu_data, blobTop.mutable_gpu_data);
-
-            // We need to subtract the max to avoid numerical issues, compute the exp
-            // and then normalize.
-            // compute max.
-            cuda.channel_max(nOuterNum * nInnerNum, nOuterNum, nChannels, nInnerNum, hTopData, hScaleData);
-
-            // subtract
-            cuda.channel_sub(nCount, nOuterNum, nChannels, nInnerNum, hScaleData, hTopData);
-
-            // exponentiate
-            cuda.exp(nCount, hTopData, hTopData);
-
-            // Apply clip to remove 1's.
-            if (blobClip != null)
-                cuda.channel_scale(nCount, blobTop.num, blobTop.channels, blobTop.count(2), blobTop.gpu_data, blobClip.gpu_data, blobTop.mutable_gpu_data);
-
-            // Sum after exp
-            cuda.channel_sum(nOuterNum * nInnerNum, nOuterNum, nChannels, nInnerNum, hTopData, hScaleData);
-
-            // divide
-            cuda.channel_div(nCount, nOuterNum, nChannels, nInnerNum, hScaleData, hTopData);
-
-            // Denan for divide by zero.
-            cuda.denan(nCount, blobTop.mutable_gpu_data, 0);
-        }
-
-        /// <summary>
-        /// Calculate the loss when training.
-        /// </summary>
-        /// <param name="sender">Specifies the sender</param>
-        /// <param name="e">specifies the arguments.</param>
-        private void LossLayer_OnGetLossTraining(object sender, MemoryLossLayerGetLossArgs<float> e)
-        {
-            Phase phase = (e.Tag == null) ? Phase.TRAIN : (Phase)e.Tag;
-
-            Blob<float> btm = e.Bottom[0];
-            Blob<float> blobTarget = e.Bottom[1];
-            CudaDnn<float> cuda = m_mycaffe.Cuda;
-            Net<float> net = m_mycaffe.GetInternalNet(Phase.TRAIN);
-
-            int nIxTarget = (int)blobTarget.GetData(0);
-
-            m_blobProbs.ReshapeLike(btm);
-            m_blobScale.ReshapeLike(btm);
-            softmax_fwd(btm, null, m_blobScale, m_blobProbs, 2);
-
-            int nCount = btm.count(2);
-            cuda.copy(nCount, m_blobProbs.gpu_data, btm.mutable_gpu_diff);
-
-            long lPos;
-            cuda.max(nCount, btm.gpu_data, out lPos);
-
-            float fData = btm.GetDiff(nIxTarget);
-            e.Loss += (-(float)Math.Log(fData));
-
-            if (phase == Phase.TRAIN)
-            {
-                fData -= 1;
-                btm.SetDiff(fData, nIxTarget);
-
-                if ((int)lPos == nIxTarget)
-                    m_nCorrectCount++;
-            }
-
-            e.EnableLossUpdate = false;
-        }
-
-        /// <summary>
-        /// Calculate the loss when testing.
-        /// </summary>
-        /// <param name="sender">Specifies the sender</param>
-        /// <param name="e">specifies the arguments.</param>
-        private void LossLayer_OnGetLossTesting(object sender, MemoryLossLayerGetLossArgs<float> e)
-        {
-            e.Tag = Phase.TEST;
-            LossLayer_OnGetLossTraining(sender, e);
-            e.Tag = null;
         }
 
         /// <summary>
