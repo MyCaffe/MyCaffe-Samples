@@ -140,9 +140,7 @@ namespace Seq2SeqChatBot
             solver.clip_gradients = 5;
             solver.regularization_type = "L2";
             solver.type = SolverParameter.SolverType.RMSPROP;
-            solver.lr_policy = "multistep";
-            solver.stepvalue = new List<int>() { 100000, 200000 };
-            solver.gamma = 0.5;
+            solver.lr_policy = "poly";
             solver.base_lr = m_dfLearningRate;
 
             return solver;
@@ -183,7 +181,7 @@ namespace Seq2SeqChatBot
         /// <param name="nWordSize">Specifies the size of the word embeddings.</param>
         /// <param name="phase">Specifies phase of the model to create.</param>
         /// <returns>The NetParameter of the model is returned.</returns>
-        public NetParameter CreateModel(string strInputFile, string strTargetFile, int nHiddenCount, int nWordSize, Phase phase = Phase.TRAIN)
+        public NetParameter CreateModel(string strInputFile, string strTargetFile, int nHiddenCount, int nWordSize, bool bUseSoftmax, bool bUseExternalIp, Phase phase = Phase.TRAIN)
         {
             m_nHidden = nHiddenCount;
             NetParameter net = new NetParameter();
@@ -217,15 +215,10 @@ namespace Seq2SeqChatBot
             data.top.Add("label");
             net.layer.Add(data);
 
-            LayerParameter silence = new LayerParameter(LayerParameter.LayerType.SILENCE);
-            silence.bottom.Add("label");
-            silence.include.Add(new NetStateRule(Phase.RUN));
-            net.layer.Add(silence);
-
             // Create the embedding layer that converts sentence word indexes into an embedding of
             // size nWordSize for each word in the sentence.
             LayerParameter embed1 = new LayerParameter(LayerParameter.LayerType.EMBED);
-            embed1.embed_param.input_dim = 1; // (uint)nVocabCount + 2;
+            embed1.embed_param.input_dim = 1; // (uint)nVocabCount + 2; (set via bottom[6])
             embed1.embed_param.num_output = (uint)nWordSize; // Word size.
             embed1.embed_param.bias_term = true;
             embed1.embed_param.weight_filler = m_fillerParam;
@@ -243,6 +236,8 @@ namespace Seq2SeqChatBot
             lstm1.recurrent_param.weight_filler = m_fillerParam;
             lstm1.recurrent_param.engine = EngineParameter.Engine.CUDNN;
             lstm1.recurrent_param.num_output = (uint)m_nHidden;
+            lstm1.recurrent_param.num_layers = 2;
+            lstm1.recurrent_param.dropout_ratio = 0.1;
             lstm1.name = "encoder1";
             lstm1.bottom.Add("embed1");
             lstm1.bottom.Add("clipE");
@@ -252,7 +247,7 @@ namespace Seq2SeqChatBot
             // Create the embedding layer that converts sentence word indexes into an embedding of
             // size nWordSize for each word in the sentence.
             LayerParameter embed2 = new LayerParameter(LayerParameter.LayerType.EMBED);
-            embed2.embed_param.input_dim = 1; // (uint)nVocabCount + 2;
+            embed2.embed_param.input_dim = 1; // (uint)nVocabCount + 2; (set via bottom[6])
             embed2.embed_param.num_output = (uint)nWordSize; // Word size.
             embed2.embed_param.bias_term = true;
             embed2.embed_param.weight_filler = m_fillerParam;
@@ -270,6 +265,8 @@ namespace Seq2SeqChatBot
             lstm2.recurrent_param.weight_filler = m_fillerParam;
             lstm2.recurrent_param.engine = EngineParameter.Engine.CUDNN;
             lstm2.recurrent_param.num_output = (uint)m_nHidden;
+            lstm2.recurrent_param.num_layers = 2;
+            lstm2.recurrent_param.dropout_ratio = 0.1;
             lstm2.name = "encoder2";
             lstm2.bottom.Add("embed2");
             lstm2.bottom.Add("clipE");
@@ -286,7 +283,7 @@ namespace Seq2SeqChatBot
             // Create embedding for decoder input.
             LayerParameter embed3 = new LayerParameter(LayerParameter.LayerType.EMBED);
             embed3.name = "dec_input_embed";
-            embed3.embed_param.input_dim = 1; // (uint)nVocabCount + 2;
+            embed3.embed_param.input_dim = 1; // (uint)nVocabCount + 2; (set via bottom[6])
             embed3.embed_param.num_output = (uint)nWordSize; // Word size.
             embed3.embed_param.bias_term = true;
             embed3.embed_param.weight_filler = m_fillerParam;
@@ -299,27 +296,60 @@ namespace Seq2SeqChatBot
             lstm3.lstm_attention_param.bias_filler = new FillerParameter("constant", 0);
             lstm3.lstm_attention_param.weight_filler = m_fillerParam;
             lstm3.lstm_attention_param.num_output = (uint)m_nHidden;
-            lstm3.lstm_attention_param.num_output_ip = 1; // (uint)nVocabCount + 2;
+            lstm3.lstm_attention_param.num_output_ip = (uint)((bUseExternalIp) ? 0 : 1); // (uint)nVocabCount + 2; (set via bottom[6])
             lstm3.lstm_attention_param.enable_attention = true;
             lstm3.name = "decoder";
             lstm3.bottom.Add("dec_input_embed");
             lstm3.bottom.Add("clipD");
             lstm3.bottom.Add("encoded");
             lstm3.bottom.Add("clipE");
-            lstm3.bottom.Add("vocabcount");
-            lstm3.top.Add("ip1");
+            if (!bUseExternalIp)
+            {
+                lstm3.bottom.Add("vocabcount");
+                lstm3.top.Add("ip1");
+            }
+            else
+            {
+                lstm3.top.Add("lstm3");
+            }
             net.layer.Add(lstm3);
+
+            if (bUseExternalIp)
+            {
+                LayerParameter ip1 = new LayerParameter(LayerParameter.LayerType.INNERPRODUCT);
+                ip1.inner_product_param.axis = 2;
+                ip1.inner_product_param.bias_filler = new FillerParameter("constant", 0);
+                ip1.inner_product_param.weight_filler = m_fillerParam;
+                ip1.inner_product_param.bias_term = true;
+                ip1.bottom.Add("lstm3");
+                ip1.bottom.Add("vocabcount");
+                ip1.top.Add("ip1");
+                net.layer.Add(ip1);
+            }
 
             if (phase != Phase.RUN)
             {
-                LayerParameter loss = new LayerParameter(LayerParameter.LayerType.SOFTMAXWITH_LOSS);
-                loss.name = "loss";
-                loss.softmax_param.axis = 2;
-                loss.loss_param.normalization = LossParameter.NormalizationMode.NONE;
-                loss.bottom.Add("ip1");
-                loss.bottom.Add("label");
-                loss.top.Add("loss");
-                net.layer.Add(loss);
+                if (bUseSoftmax)
+                {
+                    LayerParameter loss = new LayerParameter(LayerParameter.LayerType.SOFTMAXWITH_LOSS);
+                    loss.name = "loss";
+                    loss.softmax_param.axis = 2;
+                    loss.loss_param.normalization = LossParameter.NormalizationMode.NONE;
+                    loss.bottom.Add("ip1");
+                    loss.bottom.Add("label");
+                    loss.top.Add("loss");
+                    net.layer.Add(loss);
+                }
+                else
+                {
+                    LayerParameter loss = new LayerParameter(LayerParameter.LayerType.MEMORY_LOSS);
+                    loss.name = "loss";
+                    loss.loss_param.normalization = LossParameter.NormalizationMode.NONE;
+                    loss.bottom.Add("ip1");
+                    loss.bottom.Add("label");
+                    loss.top.Add("loss");
+                    net.layer.Add(loss);
+                }
 
                 LayerParameter accuracy = new LayerParameter(LayerParameter.LayerType.ACCURACY);
                 accuracy.accuracy_param.axis = 2;
@@ -338,6 +368,11 @@ namespace Seq2SeqChatBot
                 output.top.Add("softmax");
                 net.layer.Add(output);
             }
+
+            LayerParameter silence = new LayerParameter(LayerParameter.LayerType.SILENCE);
+            silence.bottom.Add("label");
+            silence.include.Add(new NetStateRule(Phase.RUN));
+            net.layer.Add(silence);
 
             return net;
         }

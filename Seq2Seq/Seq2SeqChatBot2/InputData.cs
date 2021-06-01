@@ -22,6 +22,8 @@ namespace Seq2SeqChatBot
         int m_nHidden = 256;
         int m_nWordSize = 128;
         double m_dfLearningRate = 0.001;
+        bool m_bUseSoftmax = false;
+        bool m_bUseExtIp = false;
 
         /// <summary>
         /// Defines the OPERATION to run.
@@ -130,6 +132,22 @@ namespace Seq2SeqChatBot
         }
 
         /// <summary>
+        /// Returns whether or not to use a softmax layer vs memory_loss layer.
+        /// </summary>
+        public bool UseSoftmax
+        {
+            get { return m_bUseSoftmax; }
+        }
+
+        /// <summary>
+        /// Returns whether or not to us an external inner-product layer.
+        /// </summary>
+        public bool UseExternalIp
+        {
+            get { return m_bUseExtIp; }
+        }
+
+        /// <summary>
         /// Sets the initial input and target data files which are then loaded into the data sets.
         /// </summary>
         /// <param name="op">Specifies the operation to perform.</param>
@@ -141,10 +159,13 @@ namespace Seq2SeqChatBot
         /// <param name="strHidden">Specifies the hidden size.</param>
         /// <param name="strWordSize">Specifies the word size.</param>
         /// <param name="strLr">Specifies the learning rate.</param>
-        public void SetData(OPERATION op, string strInputFile, string strTargetFile, string strIter, string strInput, string strBatch, string strHidden, string strWordSize, string strLr)
+        public void SetData(OPERATION op, string strInputFile, string strTargetFile, string strIter, string strInput, string strBatch, string strHidden, string strWordSize, string strLr, bool bUseSoftmax, bool bUseExtIp)
         {
             m_operation = op;
             m_strInput = strInput;
+
+            m_bUseSoftmax = bUseSoftmax;
+            m_bUseExtIp = bUseExtIp;
 
             if (!File.Exists(strInputFile))
                 throw new Exception("Could not find the input filename '" + strInputFile + "'!");
