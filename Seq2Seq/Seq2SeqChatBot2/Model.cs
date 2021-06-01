@@ -331,10 +331,9 @@ namespace Seq2SeqChatBot
             {
                 if (bUseSoftmax)
                 {
-                    LayerParameter loss = new LayerParameter(LayerParameter.LayerType.SOFTMAXWITH_LOSS);
+                    LayerParameter loss = new LayerParameter(LayerParameter.LayerType.SOFTMAXCROSSENTROPY_LOSS);
                     loss.name = "loss";
                     loss.softmax_param.axis = 2;
-                    loss.loss_param.normalization = LossParameter.NormalizationMode.NONE;
                     loss.bottom.Add("ip1");
                     loss.bottom.Add("label");
                     loss.top.Add("loss");
