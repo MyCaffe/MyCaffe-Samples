@@ -82,5 +82,29 @@ namespace Seq2SeqChatBot.Properties {
                 this["LearningRate"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseSoftmax {
+            get {
+                return ((bool)(this["UseSoftmax"]));
+            }
+            set {
+                this["UseSoftmax"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseExtIp {
+            get {
+                return ((bool)(this["UseExtIp"]));
+            }
+            set {
+                this["UseExtIp"] = value;
+            }
+        }
     }
 }

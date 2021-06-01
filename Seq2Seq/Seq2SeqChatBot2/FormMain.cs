@@ -46,6 +46,9 @@ namespace Seq2SeqChatBot
         int m_nTotalIter1 = 0;
         int m_nTotalSequences = 0;
         int m_nTotalEpochs = 0;
+        string m_strModel = null;
+        string m_strModelRun = null;
+        string m_strSolver = null;
 
         /// <summary>
         /// The setstatus delegate is used to output text to the status window
@@ -76,6 +79,8 @@ namespace Seq2SeqChatBot
             edtBatch.Text = Properties.Settings.Default.Batch.ToString();
             edtHidden.Text = Properties.Settings.Default.Hidden.ToString();
             edtWordSize.Text = Properties.Settings.Default.WordSize.ToString();
+            chkUseSoftmaxLayer.Checked = Properties.Settings.Default.UseSoftmax;
+            chkUseExternalIp.Checked = Properties.Settings.Default.UseExtIp;
 
             edtInputTextFile.Text = AssemblyDirectory + "\\human_text.txt";
             edtTargetTextFile.Text = AssemblyDirectory + "\\robot_text.txt";
@@ -105,6 +110,11 @@ namespace Seq2SeqChatBot
 
         private void timerUI_Tick(object sender, EventArgs e)
         {
+            if (m_strModel != null && m_strModel.Length > 0)
+                btnSaveModelSolver.Enabled = true;
+            else
+                btnSaveModelSolver.Enabled = false;
+
             m_log.Enable = btnEnableVerboseOutput.Checked;
             btnRun.Enabled = !m_bw.IsBusy;
             btnTrain.Enabled = !m_bw.IsBusy;
@@ -121,6 +131,12 @@ namespace Seq2SeqChatBot
                 edtInput.Select();
         }
 
+        private void reset()
+        {
+            btnDeleteWeights_Click(this, new EventArgs());
+
+        }
+
         private InputData getInput(InputData.OPERATION op)
         {
             InputData input = null;
@@ -128,7 +144,7 @@ namespace Seq2SeqChatBot
             try
             {
                 input = new InputData();
-                input.SetData(op, edtInputTextFile.Text, edtTargetTextFile.Text, edtIterations.Text, edtInput.Text, edtBatch.Text, edtHidden.Text, edtWordSize.Text, edtLearningRate.Text);
+                input.SetData(op, edtInputTextFile.Text, edtTargetTextFile.Text, edtIterations.Text, edtInput.Text, edtBatch.Text, edtHidden.Text, edtWordSize.Text, edtLearningRate.Text, chkUseSoftmaxLayer.Checked, chkUseExternalIp.Checked);
                 edtInput.Text = "";
 
                 if (input.HiddenSize != Properties.Settings.Default.Hidden ||
@@ -146,8 +162,12 @@ namespace Seq2SeqChatBot
 
                 Properties.Settings.Default.Hidden = input.HiddenSize;
                 Properties.Settings.Default.WordSize = input.WordSize;
+                Properties.Settings.Default.UseSoftmax = input.UseSoftmax;
+                Properties.Settings.Default.UseExtIp = input.UseExternalIp;
                 Properties.Settings.Default.Save();
 
+                m_rgAccuracyTesting = new List<float>();
+                m_rgAccuracyTraining = new List<float>();
                 for (int i = 0; i < input.EpochSize; i++)
                 {
                     m_rgAccuracyTesting.Add(0);
@@ -244,15 +264,28 @@ namespace Seq2SeqChatBot
                     m_log.WriteLine("Using hidden = " + m_input.HiddenSize.ToString() + ", and word size = " + m_input.WordSize.ToString() + ".", true);
 
                     // Load the Seq2Seq training model.
-                    NetParameter netParam = m_model.CreateModel(m_input.InputFileName, m_input.TargetFileName, m_input.HiddenSize, m_input.WordSize);
+                    NetParameter netParam = m_model.CreateModel(m_input.InputFileName, m_input.TargetFileName, m_input.HiddenSize, m_input.WordSize, m_input.UseSoftmax, m_input.UseExternalIp);
                     string strModel = netParam.ToProto("root").ToString();
                     SolverParameter solverParam = m_model.CreateSolver(m_input.LearningRate);
                     string strSolver = solverParam.ToProto("root").ToString();
                     byte[] rgWts = loadWeights("sequence");
 
+                    m_strModel = strModel;
+                    m_strSolver = strSolver;
+
                     m_mycaffe.OnTrainingIteration += m_mycaffe_OnTrainingIteration;
                     m_mycaffe.OnTestingIteration += m_mycaffe_OnTestingIteration;
                     m_mycaffe.LoadLite(Phase.TRAIN, strSolver, strModel, rgWts, false, false);
+
+                    if (!m_input.UseSoftmax)
+                    {
+                        MemoryLossLayer<float> lossLayerTraining = m_mycaffe.GetInternalNet(Phase.TRAIN).FindLayer(LayerParameter.LayerType.MEMORY_LOSS, "loss") as MemoryLossLayer<float>;
+                        if (lossLayerTraining != null)
+                            lossLayerTraining.OnGetLoss += LossLayer_OnGetLossTraining;
+                        MemoryLossLayer<float> lossLayerTesting = m_mycaffe.GetInternalNet(Phase.TEST).FindLayer(LayerParameter.LayerType.MEMORY_LOSS, "loss") as MemoryLossLayer<float>;
+                        if (lossLayerTesting != null)
+                            lossLayerTesting.OnGetLoss += LossLayer_OnGetLossTesting;
+                    }
 
                     m_blobProbs = new Blob<float>(m_mycaffe.Cuda, m_mycaffe.Log);
                     m_blobScale = new Blob<float>(m_mycaffe.Cuda, m_mycaffe.Log);
@@ -272,11 +305,13 @@ namespace Seq2SeqChatBot
                 // Run a trained model.
                 else
                 {
-                    NetParameter netParam = m_model.CreateModel(m_input.InputFileName, m_input.TargetFileName, m_input.HiddenSize, m_input.WordSize, Phase.RUN);
+                    NetParameter netParam = m_model.CreateModel(m_input.InputFileName, m_input.TargetFileName, m_input.HiddenSize, m_input.WordSize, m_input.UseSoftmax, m_input.UseExternalIp, Phase.RUN);
                     string strModel = netParam.ToProto("root").ToString();
                     byte[] rgWts = loadWeights("sequence");
 
                     strModel = m_model.PrependInput(strModel);
+
+                    m_strModelRun = strModel;
 
                     int nN = m_model.TimeSteps;
                     m_mycaffe.LoadToRun(strModel, rgWts, new BlobShape(new List<int>() { nN, 1, 1, 1 }), null, null, false, false);
@@ -300,6 +335,102 @@ namespace Seq2SeqChatBot
                     m_mycaffe = null;
                 }
             }
+        }
+
+        private void softmax_fwd(Blob<float> blobBottom, Blob<float> blobClip, Blob<float> blobScale, Blob<float> blobTop, int nAxis)
+        {
+            int nCount = blobBottom.count();
+            int nOuterNum = blobBottom.count(0, nAxis);
+            int nInnerNum = blobBottom.count(nAxis + 1);
+            int nChannels = blobTop.shape(nAxis);
+            long hBottomData = blobBottom.gpu_data;
+            long hTopData = blobTop.mutable_gpu_data;
+            long hScaleData = blobScale.mutable_gpu_data;
+            CudaDnn<float> cuda = m_mycaffe.Cuda;
+
+            cuda.copy(nCount, hBottomData, hTopData);
+
+            // Apply clip.
+            if (blobClip != null)
+                cuda.channel_scale(nCount, blobTop.num, blobTop.channels, blobTop.count(2), blobTop.gpu_data, blobClip.gpu_data, blobTop.mutable_gpu_data);
+
+            // We need to subtract the max to avoid numerical issues, compute the exp
+            // and then normalize.
+            // compute max.
+            cuda.channel_max(nOuterNum * nInnerNum, nOuterNum, nChannels, nInnerNum, hTopData, hScaleData);
+
+            // subtract
+            cuda.channel_sub(nCount, nOuterNum, nChannels, nInnerNum, hScaleData, hTopData);
+
+            // exponentiate
+            cuda.exp(nCount, hTopData, hTopData);
+
+            // Apply clip to remove 1's.
+            if (blobClip != null)
+                cuda.channel_scale(nCount, blobTop.num, blobTop.channels, blobTop.count(2), blobTop.gpu_data, blobClip.gpu_data, blobTop.mutable_gpu_data);
+
+            // Sum after exp
+            cuda.channel_sum(nOuterNum * nInnerNum, nOuterNum, nChannels, nInnerNum, hTopData, hScaleData);
+
+            // divide
+            cuda.channel_div(nCount, nOuterNum, nChannels, nInnerNum, hScaleData, hTopData);
+
+            // Denan for divide by zero.
+            cuda.denan(nCount, blobTop.mutable_gpu_data, 0);
+        }
+
+        /// <summary>
+        /// Calculate the loss when training.
+        /// </summary>
+        /// <param name="sender">Specifies the sender</param>
+        /// <param name="e">specifies the arguments.</param>
+        private void LossLayer_OnGetLossTraining(object sender, MemoryLossLayerGetLossArgs<float> e)
+        {
+            Phase phase = (e.Tag == null) ? Phase.TRAIN : (Phase)e.Tag;
+
+            Blob<float> btm = e.Bottom[0];
+            Blob<float> blobTarget = e.Bottom[1];
+            CudaDnn<float> cuda = m_mycaffe.Cuda;
+            Net<float> net = m_mycaffe.GetInternalNet(Phase.TRAIN);
+
+            int nIxTarget = (int)blobTarget.GetData(0);
+
+            m_blobProbs.ReshapeLike(btm);
+            m_blobScale.ReshapeLike(btm);
+            softmax_fwd(btm, null, m_blobScale, m_blobProbs, 2);
+
+            int nCount = btm.count(2);
+            cuda.copy(nCount, m_blobProbs.gpu_data, btm.mutable_gpu_diff);
+
+            long lPos;
+            cuda.max(nCount, btm.gpu_data, out lPos);
+
+            float fData = btm.GetDiff(nIxTarget);
+            e.Loss += (-(float)Math.Log(fData));
+
+            if (phase == Phase.TRAIN)
+            {
+                fData -= 1;
+                btm.SetDiff(fData, nIxTarget);
+
+                if ((int)lPos == nIxTarget)
+                    m_nCorrectCount++;
+            }
+
+
+            e.EnableLossUpdate = false;
+        }
+
+        /// <summary>
+        /// Calculate the loss when testing.
+        /// </summary>
+        /// <param name="sender">Specifies the sender</param>
+        /// <param name="e">specifies the arguments.</param>
+        private void LossLayer_OnGetLossTesting(object sender, MemoryLossLayerGetLossArgs<float> e)
+        {
+            e.Tag = Phase.TEST;
+            LossLayer_OnGetLossTraining(sender, e);
+            e.Tag = null;
         }
 
         private void DataLayerTraining_OnGetDataTraining(object sender, OnGetDataArgs e)
@@ -727,6 +858,26 @@ namespace Seq2SeqChatBot
             edtBatch.Text = "1";
             edtHidden.Text = "128";
             edtLearningRate.Text = "0.001";
+        }
+
+        private void btnSaveModelSolver_Click(object sender, EventArgs e)
+        {
+            if (folderBrowserDialog1.ShowDialog() != DialogResult.OK)
+                return;
+
+            string strPath = folderBrowserDialog1.SelectedPath;
+            string strModel = strPath + "\\train_val.prototxt";
+            string strModelRun = strPath + "\\deploy.prototxt";
+            string strSolver = strPath + "\\solver.prototxt";
+
+            if (!string.IsNullOrEmpty(m_strModel))
+                File.WriteAllText(strModel, m_strModel);
+
+            if (!string.IsNullOrEmpty(m_strModelRun))
+                File.WriteAllText(strModelRun, m_strModelRun);
+
+            if (!string.IsNullOrEmpty(m_strSolver))
+                File.WriteAllText(strSolver, m_strSolver);
         }
     }
 }

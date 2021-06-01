@@ -70,10 +70,6 @@ namespace Seq2SeqChatBot
             this.pbImageLoss = new System.Windows.Forms.PictureBox();
             this.pbImageAccuracy = new System.Windows.Forms.PictureBox();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
-            this.lvStatus = new Seq2SeqChatBot.ListViewEx();
-            this.colStatus = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.lvDiscussion = new Seq2SeqChatBot.ListViewEx();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.btnTrain = new System.Windows.Forms.ToolStripButton();
             this.btnRun = new System.Windows.Forms.ToolStripButton();
@@ -82,6 +78,14 @@ namespace Seq2SeqChatBot
             this.btnEnableVerboseOutput = new System.Windows.Forms.ToolStripButton();
             this.openFileDialogTxt = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.btnSaveModelSolver = new System.Windows.Forms.ToolStripButton();
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.lvStatus = new Seq2SeqChatBot.ListViewEx();
+            this.colStatus = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lvDiscussion = new Seq2SeqChatBot.ListViewEx();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.chkUseSoftmaxLayer = new System.Windows.Forms.CheckBox();
+            this.chkUseExternalIp = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
@@ -247,6 +251,8 @@ namespace Seq2SeqChatBot
             // splitContainer2.Panel1
             // 
             this.splitContainer2.Panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.splitContainer2.Panel1.Controls.Add(this.chkUseExternalIp);
+            this.splitContainer2.Panel1.Controls.Add(this.chkUseSoftmaxLayer);
             this.splitContainer2.Panel1.Controls.Add(this.btnSetDefaults);
             this.splitContainer2.Panel1.Controls.Add(this.lblIterations);
             this.splitContainer2.Panel1.Controls.Add(this.label4);
@@ -273,7 +279,7 @@ namespace Seq2SeqChatBot
             // 
             this.splitContainer2.Panel2.Controls.Add(this.splitContainer3);
             this.splitContainer2.Size = new System.Drawing.Size(987, 517);
-            this.splitContainer2.SplitterDistance = 120;
+            this.splitContainer2.SplitterDistance = 137;
             this.splitContainer2.TabIndex = 0;
             // 
             // btnSetDefaults
@@ -492,7 +498,7 @@ namespace Seq2SeqChatBot
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.pbImageAccuracy);
-            this.splitContainer3.Size = new System.Drawing.Size(987, 393);
+            this.splitContainer3.Size = new System.Drawing.Size(987, 376);
             this.splitContainer3.SplitterDistance = 743;
             this.splitContainer3.TabIndex = 0;
             // 
@@ -502,7 +508,7 @@ namespace Seq2SeqChatBot
             this.pbImageLoss.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pbImageLoss.Location = new System.Drawing.Point(0, 0);
             this.pbImageLoss.Name = "pbImageLoss";
-            this.pbImageLoss.Size = new System.Drawing.Size(743, 393);
+            this.pbImageLoss.Size = new System.Drawing.Size(743, 376);
             this.pbImageLoss.TabIndex = 0;
             this.pbImageLoss.TabStop = false;
             // 
@@ -512,7 +518,7 @@ namespace Seq2SeqChatBot
             this.pbImageAccuracy.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pbImageAccuracy.Location = new System.Drawing.Point(0, 0);
             this.pbImageAccuracy.Name = "pbImageAccuracy";
-            this.pbImageAccuracy.Size = new System.Drawing.Size(240, 393);
+            this.pbImageAccuracy.Size = new System.Drawing.Size(240, 376);
             this.pbImageAccuracy.TabIndex = 1;
             this.pbImageAccuracy.TabStop = false;
             // 
@@ -533,57 +539,11 @@ namespace Seq2SeqChatBot
             this.splitContainer4.SplitterDistance = 523;
             this.splitContainer4.TabIndex = 1;
             // 
-            // lvStatus
-            // 
-            this.lvStatus.BackColor = System.Drawing.Color.Aqua;
-            this.lvStatus.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.colStatus});
-            this.lvStatus.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lvStatus.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lvStatus.FullRowSelect = true;
-            this.lvStatus.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.lvStatus.HideSelection = false;
-            this.lvStatus.Location = new System.Drawing.Point(0, 0);
-            this.lvStatus.Name = "lvStatus";
-            this.lvStatus.RowHeight = 14;
-            this.lvStatus.Size = new System.Drawing.Size(523, 248);
-            this.lvStatus.TabIndex = 0;
-            this.lvStatus.UseCompatibleStateImageBehavior = false;
-            this.lvStatus.View = System.Windows.Forms.View.Details;
-            this.lvStatus.Resize += new System.EventHandler(this.lvStatus_Resize);
-            // 
-            // colStatus
-            // 
-            this.colStatus.Text = "Status";
-            this.colStatus.Width = 962;
-            // 
-            // lvDiscussion
-            // 
-            this.lvDiscussion.BackColor = System.Drawing.Color.Aquamarine;
-            this.lvDiscussion.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1});
-            this.lvDiscussion.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lvDiscussion.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lvDiscussion.FullRowSelect = true;
-            this.lvDiscussion.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.lvDiscussion.HideSelection = false;
-            this.lvDiscussion.Location = new System.Drawing.Point(0, 0);
-            this.lvDiscussion.Name = "lvDiscussion";
-            this.lvDiscussion.RowHeight = 14;
-            this.lvDiscussion.Size = new System.Drawing.Size(460, 248);
-            this.lvDiscussion.TabIndex = 1;
-            this.lvDiscussion.UseCompatibleStateImageBehavior = false;
-            this.lvDiscussion.View = System.Windows.Forms.View.Details;
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "Status";
-            this.columnHeader1.Width = 962;
-            // 
             // toolStrip1
             // 
             this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.btnSaveModelSolver,
             this.btnTrain,
             this.btnRun,
             this.btnStop,
@@ -591,7 +551,7 @@ namespace Seq2SeqChatBot
             this.btnEnableVerboseOutput});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(127, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(150, 25);
             this.toolStrip1.TabIndex = 0;
             // 
             // btnTrain
@@ -653,6 +613,88 @@ namespace Seq2SeqChatBot
             this.openFileDialogTxt.DefaultExt = "txt";
             this.openFileDialogTxt.Filter = "Text Files (*.txt)|*.txt||";
             this.openFileDialogTxt.Title = "Select the Input Text File";
+            // 
+            // btnSaveModelSolver
+            // 
+            this.btnSaveModelSolver.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnSaveModelSolver.Enabled = false;
+            this.btnSaveModelSolver.Image = ((System.Drawing.Image)(resources.GetObject("btnSaveModelSolver.Image")));
+            this.btnSaveModelSolver.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnSaveModelSolver.Name = "btnSaveModelSolver";
+            this.btnSaveModelSolver.Size = new System.Drawing.Size(23, 22);
+            this.btnSaveModelSolver.Text = "Save Model/Solver";
+            this.btnSaveModelSolver.Click += new System.EventHandler(this.btnSaveModelSolver_Click);
+            // 
+            // folderBrowserDialog1
+            // 
+            this.folderBrowserDialog1.Description = "Select the folder for saving the model/solver";
+            // 
+            // lvStatus
+            // 
+            this.lvStatus.BackColor = System.Drawing.Color.Aqua;
+            this.lvStatus.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colStatus});
+            this.lvStatus.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvStatus.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lvStatus.FullRowSelect = true;
+            this.lvStatus.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.lvStatus.HideSelection = false;
+            this.lvStatus.Location = new System.Drawing.Point(0, 0);
+            this.lvStatus.Name = "lvStatus";
+            this.lvStatus.RowHeight = 14;
+            this.lvStatus.Size = new System.Drawing.Size(523, 248);
+            this.lvStatus.TabIndex = 0;
+            this.lvStatus.UseCompatibleStateImageBehavior = false;
+            this.lvStatus.View = System.Windows.Forms.View.Details;
+            this.lvStatus.Resize += new System.EventHandler(this.lvStatus_Resize);
+            // 
+            // colStatus
+            // 
+            this.colStatus.Text = "Status";
+            this.colStatus.Width = 962;
+            // 
+            // lvDiscussion
+            // 
+            this.lvDiscussion.BackColor = System.Drawing.Color.Aquamarine;
+            this.lvDiscussion.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1});
+            this.lvDiscussion.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvDiscussion.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lvDiscussion.FullRowSelect = true;
+            this.lvDiscussion.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.lvDiscussion.HideSelection = false;
+            this.lvDiscussion.Location = new System.Drawing.Point(0, 0);
+            this.lvDiscussion.Name = "lvDiscussion";
+            this.lvDiscussion.RowHeight = 14;
+            this.lvDiscussion.Size = new System.Drawing.Size(460, 248);
+            this.lvDiscussion.TabIndex = 1;
+            this.lvDiscussion.UseCompatibleStateImageBehavior = false;
+            this.lvDiscussion.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Status";
+            this.columnHeader1.Width = 962;
+            // 
+            // chkUseSoftmaxLayer
+            // 
+            this.chkUseSoftmaxLayer.AutoSize = true;
+            this.chkUseSoftmaxLayer.Location = new System.Drawing.Point(97, 115);
+            this.chkUseSoftmaxLayer.Name = "chkUseSoftmaxLayer";
+            this.chkUseSoftmaxLayer.Size = new System.Drawing.Size(109, 17);
+            this.chkUseSoftmaxLayer.TabIndex = 19;
+            this.chkUseSoftmaxLayer.Text = "Use softmax layer";
+            this.chkUseSoftmaxLayer.UseVisualStyleBackColor = true;
+            // 
+            // chkUseExternalIp
+            // 
+            this.chkUseExternalIp.AutoSize = true;
+            this.chkUseExternalIp.Location = new System.Drawing.Point(212, 115);
+            this.chkUseExternalIp.Name = "chkUseExternalIp";
+            this.chkUseExternalIp.Size = new System.Drawing.Size(177, 17);
+            this.chkUseExternalIp.TabIndex = 19;
+            this.chkUseExternalIp.Text = "Use external Inner Product layer";
+            this.chkUseExternalIp.UseVisualStyleBackColor = true;
             // 
             // FormMain
             // 
@@ -755,6 +797,10 @@ namespace Seq2SeqChatBot
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox edtLearningRate;
         private System.Windows.Forms.Button btnSetDefaults;
+        private System.Windows.Forms.ToolStripButton btnSaveModelSolver;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
+        private System.Windows.Forms.CheckBox chkUseExternalIp;
+        private System.Windows.Forms.CheckBox chkUseSoftmaxLayer;
     }
 }
 

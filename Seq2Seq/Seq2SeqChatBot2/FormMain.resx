@@ -147,6 +147,22 @@
   <metadata name="toolStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>423, 17</value>
   </metadata>
+  <data name="btnSaveModelSolver.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIySURBVDhPrZLrS9NRGMd//0LvexP0orc1NYZrshz8yjWU
+        VUOxJOzyizRL02WapFiZSs0bZCtcOmm1msRmF/ICXpASMZaSlZkrWuLwik0Eg2/nOfvlyYpeRA88bw7n
+        8znnuUj/JZ48joDS71tCm3cRd91zaGkO46ZjCg31n2G/FsSVigmUlb5DcdFrFOSP4PSpAFRckgjs7gLq
+        61bwt1heWYUptRtpqQ95qrgkeR8scEFV5bx69fcgODy3jATLU2g0Cqz7PULgvjPLBWWlX9Tr6+MH/CG0
+        gBizH0XnJrHX0ioEzqZpLjhre68iIn6GX42HsUX2Ii93DCnJTiFovB7igpyTIyoWjV/hgUAIGw1uKMoQ
+        zGaHENTVfuIC5diQiv4Z7hr8iA3xzThwsBdJSQ1CUF01ic4OsFEChw6/gDWjn3ebGkY107fp5Sjcg33W
+        Z5BluxBcLB9Hux9sB4BW1zc296+ouDzDm0oNo5qzswJr8J4UH4zGSiE4XzwGzz3gtnOVLU4EpvTcdWnJ
+        tCH9REkUTmbwbg8MhnIhsBWMMhiorYnwlwlix4jRyRh+O43RiRko+ZeQaGrjsG6nC3p9iRDQWjpuYO3b
+        JCD4eOFVvAnOIji1iDMX7Ig1uBjcgtgdt6CLLxSC7KyXrO4lDm82erBpm4z77X3wdwygs2cQ/c+Hscts
+        hUbfhDgGb9U2QqvNEwLfoyCOHunj60kbRktCc6ZRUbepYVQzvUpJ8Pa4HCH495Ck7+J/PAs8iBVJAAAA
+        AElFTkSuQmCC
+</value>
+  </data>
   <data name="btnTrain.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -191,5 +207,8 @@
   </data>
   <metadata name="openFileDialogTxt.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>528, 17</value>
+  </metadata>
+  <metadata name="folderBrowserDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>775, 17</value>
   </metadata>
 </root>
