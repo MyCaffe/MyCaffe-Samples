@@ -24,6 +24,7 @@ namespace Seq2SeqChatBot
         double m_dfLearningRate = 0.001;
         bool m_bUseSoftmax = false;
         bool m_bUseExtIp = false;
+        bool m_bUseBeamSearch = false;
 
         /// <summary>
         /// Defines the OPERATION to run.
@@ -148,6 +149,14 @@ namespace Seq2SeqChatBot
         }
 
         /// <summary>
+        /// Returns whether or not to use beam search or greedy search. 
+        /// </summary>
+        public bool UseBeamSearch
+        {
+            get { return m_bUseBeamSearch; }
+        }
+
+        /// <summary>
         /// Sets the initial input and target data files which are then loaded into the data sets.
         /// </summary>
         /// <param name="op">Specifies the operation to perform.</param>
@@ -159,13 +168,17 @@ namespace Seq2SeqChatBot
         /// <param name="strHidden">Specifies the hidden size.</param>
         /// <param name="strWordSize">Specifies the word size.</param>
         /// <param name="strLr">Specifies the learning rate.</param>
-        public void SetData(OPERATION op, string strInputFile, string strTargetFile, string strIter, string strInput, string strBatch, string strHidden, string strWordSize, string strLr, bool bUseSoftmax, bool bUseExtIp)
+        /// <param name="bUseSoftmax">Use softmax cross entropy instead of memory loss layer.</param>
+        /// <param name="bUseExtIp">Use external inner-product layer.</param>
+        /// <param name="bUseBeamSearch">Use beam search instead of greedy search.</param>
+        public void SetData(OPERATION op, string strInputFile, string strTargetFile, string strIter, string strInput, string strBatch, string strHidden, string strWordSize, string strLr, bool bUseSoftmax, bool bUseExtIp, bool bUseBeamSearch)
         {
             m_operation = op;
             m_strInput = strInput;
 
             m_bUseSoftmax = bUseSoftmax;
             m_bUseExtIp = bUseExtIp;
+            m_bUseBeamSearch = bUseBeamSearch;
 
             if (!File.Exists(strInputFile))
                 throw new Exception("Could not find the input filename '" + strInputFile + "'!");

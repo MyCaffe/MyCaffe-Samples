@@ -144,7 +144,7 @@ namespace Seq2SeqChatBot
             try
             {
                 input = new InputData();
-                input.SetData(op, edtInputTextFile.Text, edtTargetTextFile.Text, edtIterations.Text, edtInput.Text, edtBatch.Text, edtHidden.Text, edtWordSize.Text, edtLearningRate.Text, chkUseSoftmaxLayer.Checked, chkUseExternalIp.Checked);
+                input.SetData(op, edtInputTextFile.Text, edtTargetTextFile.Text, edtIterations.Text, edtInput.Text, edtBatch.Text, edtHidden.Text, edtWordSize.Text, edtLearningRate.Text, chkUseSoftmaxLayer.Checked, chkUseExternalIp.Checked, chkUseBeamSearch.Checked);
                 edtInput.Text = "";
 
                 if (input.HiddenSize != Properties.Settings.Default.Hidden ||
@@ -485,41 +485,11 @@ namespace Seq2SeqChatBot
         /// <param name="strInput">Specifies the input data to run the model on.</param>
         private void runModel(MyCaffeControl<float> mycaffe, BackgroundWorker bw, string strInput)
         {
-            Net<float> net = m_mycaffe.GetInternalNet(Phase.RUN);
-            TextDataLayer<float> layer = net.FindLayer("TextData", "data") as TextDataLayer<float>;           
-            int nDecInputLayerIdx = net.layer_index_by_name("dec_input_embed");
-            int nIxInput = 1;
-
             try
             {
-                BlobCollection<float> colBtm = loadData(strInput, nIxInput);
-
-                double dfLoss;
-                BlobCollection<float> colTop = net.Forward(colBtm, out dfLoss);
-
-                Tuple<string, int> res = layer.PostProcessOutput(colTop[0]);
-                int nCount = 0;
-
-                nIxInput = res.Item2;
-                string strWord = res.Item1;
-                string strOut = "";
-
-                while (nIxInput != 0 && strWord.Length > 0 && nCount < 80)
-                {
-                    strOut += strWord + " ";
-
-                    colBtm = loadData(strInput, nIxInput);
-                    colTop = net.Forward(colBtm, out dfLoss);
-
-                    res = layer.PostProcessOutput(colTop[0]);
-
-                    nIxInput = res.Item2;
-                    strWord = res.Item1;
-
-                    nCount++;
-                }
-
-                m_log.WriteLine("Robot: " + strOut.Trim(), true);
+                int nK = (m_input.UseBeamSearch) ? 5 : 1;
+                PropertySet results = m_mycaffe.Run(new PropertySet("InputData=" + strInput), 80, nK);
+                m_log.WriteLine("Robot: " + results.GetProperty("Results"));
             }
             catch (Exception excpt)
             {
