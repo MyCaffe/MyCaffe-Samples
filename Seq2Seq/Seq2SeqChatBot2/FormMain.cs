@@ -319,7 +319,7 @@ namespace Seq2SeqChatBot
                     m_blobProbs = new Blob<float>(m_mycaffe.Cuda, m_mycaffe.Log);
                     m_blobScale = new Blob<float>(m_mycaffe.Cuda, m_mycaffe.Log);
 
-                    runModel(m_mycaffe, bw, edtInput.Text);
+                    runModel(m_mycaffe, bw, m_input.InputText);
                 }
             }
             catch (Exception excpt)
@@ -485,11 +485,13 @@ namespace Seq2SeqChatBot
         /// <param name="strInput">Specifies the input data to run the model on.</param>
         private void runModel(MyCaffeControl<float> mycaffe, BackgroundWorker bw, string strInput)
         {
-            try
+            try           
             {
-                int nK = (m_input.UseBeamSearch) ? 5 : 1;
-                PropertySet results = m_mycaffe.Run(new PropertySet("InputData=" + strInput), 80, nK);
-                m_log.WriteLine("Robot: " + results.GetProperty("Results"));
+                m_log.WriteLine("You: " + strInput);
+                int nK = (m_input.UseBeamSearch) ? 3 : 1;
+                PropertySet input = new PropertySet("InputData=" + strInput);
+                PropertySet results = m_mycaffe.Run(input, nK);
+                m_log.WriteLine("Robot: " + results.GetProperty("Results"), true);
             }
             catch (Exception excpt)
             {
