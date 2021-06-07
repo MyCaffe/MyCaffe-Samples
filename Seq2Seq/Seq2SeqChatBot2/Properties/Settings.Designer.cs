@@ -85,7 +85,7 @@ namespace Seq2SeqChatBot.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool UseSoftmax {
             get {
                 return ((bool)(this["UseSoftmax"]));
@@ -97,13 +97,25 @@ namespace Seq2SeqChatBot.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool UseExtIp {
             get {
                 return ((bool)(this["UseExtIp"]));
             }
             set {
                 this["UseExtIp"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UseBeamSearch {
+            get {
+                return ((bool)(this["UseBeamSearch"]));
+            }
+            set {
+                this["UseBeamSearch"] = value;
             }
         }
     }

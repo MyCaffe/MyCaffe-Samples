@@ -81,6 +81,7 @@ namespace Seq2SeqChatBot
             edtWordSize.Text = Properties.Settings.Default.WordSize.ToString();
             chkUseSoftmaxLayer.Checked = Properties.Settings.Default.UseSoftmax;
             chkUseExternalIp.Checked = Properties.Settings.Default.UseExtIp;
+            chkUseBeamSearch.Checked = Properties.Settings.Default.UseBeamSearch;
 
             edtInputTextFile.Text = AssemblyDirectory + "\\human_text.txt";
             edtTargetTextFile.Text = AssemblyDirectory + "\\robot_text.txt";
@@ -164,6 +165,7 @@ namespace Seq2SeqChatBot
                 Properties.Settings.Default.WordSize = input.WordSize;
                 Properties.Settings.Default.UseSoftmax = input.UseSoftmax;
                 Properties.Settings.Default.UseExtIp = input.UseExternalIp;
+                Properties.Settings.Default.UseBeamSearch = input.UseBeamSearch;
                 Properties.Settings.Default.Save();
 
                 m_rgAccuracyTesting = new List<float>();
@@ -491,7 +493,7 @@ namespace Seq2SeqChatBot
                 int nK = (m_input.UseBeamSearch) ? 3 : 1;
                 PropertySet input = new PropertySet("InputData=" + strInput);
                 PropertySet results = m_mycaffe.Run(input, nK);
-                m_log.WriteLine("Robot: " + results.GetProperty("Results"), true);
+                m_log.WriteLine("Robot: " + results.GetProperty("Results").TrimEnd(' ', '|'), true);
             }
             catch (Exception excpt)
             {

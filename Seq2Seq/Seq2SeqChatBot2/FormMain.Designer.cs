@@ -45,6 +45,7 @@ namespace Seq2SeqChatBot
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.chkUseBeamSearch = new System.Windows.Forms.CheckBox();
             this.chkUseExternalIp = new System.Windows.Forms.CheckBox();
             this.chkUseSoftmaxLayer = new System.Windows.Forms.CheckBox();
             this.btnSetDefaults = new System.Windows.Forms.Button();
@@ -86,7 +87,6 @@ namespace Seq2SeqChatBot
             this.openFileDialogTxt = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.chkUseBeamSearch = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
@@ -283,6 +283,18 @@ namespace Seq2SeqChatBot
             this.splitContainer2.Size = new System.Drawing.Size(987, 517);
             this.splitContainer2.SplitterDistance = 137;
             this.splitContainer2.TabIndex = 0;
+            // 
+            // chkUseBeamSearch
+            // 
+            this.chkUseBeamSearch.AutoSize = true;
+            this.chkUseBeamSearch.Checked = true;
+            this.chkUseBeamSearch.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkUseBeamSearch.Location = new System.Drawing.Point(395, 115);
+            this.chkUseBeamSearch.Name = "chkUseBeamSearch";
+            this.chkUseBeamSearch.Size = new System.Drawing.Size(109, 17);
+            this.chkUseBeamSearch.TabIndex = 20;
+            this.chkUseBeamSearch.Text = "Use beam search";
+            this.chkUseBeamSearch.UseVisualStyleBackColor = true;
             // 
             // chkUseExternalIp
             // 
@@ -701,16 +713,6 @@ namespace Seq2SeqChatBot
             // folderBrowserDialog1
             // 
             this.folderBrowserDialog1.Description = "Select the folder for saving the model/solver";
-            // 
-            // chkUseBeamSearch
-            // 
-            this.chkUseBeamSearch.AutoSize = true;
-            this.chkUseBeamSearch.Location = new System.Drawing.Point(395, 115);
-            this.chkUseBeamSearch.Name = "chkUseBeamSearch";
-            this.chkUseBeamSearch.Size = new System.Drawing.Size(109, 17);
-            this.chkUseBeamSearch.TabIndex = 20;
-            this.chkUseBeamSearch.Text = "Use beam search";
-            this.chkUseBeamSearch.UseVisualStyleBackColor = true;
             // 
             // FormMain
             // 
