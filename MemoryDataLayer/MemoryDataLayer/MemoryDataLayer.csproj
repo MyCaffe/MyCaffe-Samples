@@ -45,8 +45,8 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Protobuf, Version=3.14.0.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Protobuf.3.14.0\lib\net45\Google.Protobuf.dll</HintPath>
+    <Reference Include="Google.Protobuf, Version=3.17.3.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Protobuf.3.17.3\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
     <Reference Include="HDF5DotNet, Version=1.8.9.0, Culture=neutral, PublicKeyToken=a4952c8df86d6e8c, processorArchitecture=AMD64">
       <HintPath>..\packages\HDF5DotNet.x64.1.8.9\lib\Net40\HDF5DotNet.dll</HintPath>
@@ -54,11 +54,11 @@
     <Reference Include="Microsoft.SqlServer.Types, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.SqlServer.Types.14.0.1016.290\lib\net40\Microsoft.SqlServer.Types.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe, Version=0.11.3.25, Culture=neutral, PublicKeyToken=40efa406af72d203, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.11.3.25-beta1\lib\net40\MyCaffe.dll</HintPath>
+    <Reference Include="MyCaffe, Version=0.11.4.60, Culture=neutral, PublicKeyToken=40efa406af72d203, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.11.4.60-beta1\lib\net40\MyCaffe.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.basecode, Version=0.11.3.25, Culture=neutral, PublicKeyToken=da09778f48a756ef, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.11.3.25-beta1\lib\net40\MyCaffe.basecode.dll</HintPath>
+    <Reference Include="MyCaffe.basecode, Version=0.11.4.60, Culture=neutral, PublicKeyToken=da09778f48a756ef, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.11.4.60-beta1\lib\net40\MyCaffe.basecode.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -100,7 +100,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /s /y "$(SolutionDir)packages\HDF5DotNet.x64.1.8.9\NativeBinaries\*.*" "$(TargetDir)"
-xcopy /s /y "$(SolutionDir)packages\MyCaffe.0.11.3.25-beta1\NativeBinaries\x64\*.*" "$(TargetDir)"</PostBuildEvent>
+xcopy /s /y "$(SolutionDir)packages\MyCaffe.0.11.4.60-beta1\NativeBinaries\x64\*.*" "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
