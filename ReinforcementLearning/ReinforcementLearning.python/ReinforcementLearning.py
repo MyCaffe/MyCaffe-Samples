@@ -1,5 +1,5 @@
 # == Reinforcement Learning Sample ==
-# IMPORTANT: This sample requires the MyCaffe AI Platform version 0.11.2.9 or greater.
+# IMPORTANT: This sample requires the MyCaffe AI Platform version 0.11.4.60 or greater.
 # This sample requires:
 #   * Installing and running the MyCaffe AI Platform which is located at
 #     https://github.com/MyCaffe/MyCaffe/releases
@@ -16,7 +16,7 @@
 # NOTE: The MyCaffe Test Application must be running when using this script, for the
 # test application hosts the Cart-Pole gym used.
 
-import clr
+import clr # required pythonnet
 clr.AddReference('C:\Program Files\SignalPop\MyCaffe\MyCaffe.dll')
 from MyCaffe import *
 from MyCaffe.common import *
@@ -227,7 +227,7 @@ project.ModelDescription = strModel
 project.SolverDescription = strSolver
 
 # Create the MyCaffeControl (with the 'float' base type)
-strCudaPath = "C:\\Program Files\\SignalPop\\MyCaffe\\cuda_11.3\\CudaDnnDll.11.3.dll"
+strCudaPath = "C:\\Program Files\\SignalPop\\MyCaffe\\cuda_11.4\\CudaDnnDll.11.4.dll"
 mycaffe = MyCaffeControl[float](settings, log, cancel, None, None, None, None, strCudaPath)
 
 # Load the project, using the TRAIN phase
