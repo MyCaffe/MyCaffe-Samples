@@ -183,15 +183,11 @@ namespace ImageClassificationBareBones
 
             if (!Directory.Exists(m_strImageDirTraining) || !Directory.Exists(m_strImageDirTesting))
             {
-                string strMsg = "You must first expand the MNIST dataset into the following directories:" + Environment.NewLine;
+                string strMsg = "You must first export the MNIST dataset into the following directories:" + Environment.NewLine + Environment.NewLine;
                 strMsg += "Training Images: '" + m_strImageDirTraining + "'" + Environment.NewLine;
                 strMsg += "Testing Images: '" + m_strImageDirTesting + "'" + Environment.NewLine + Environment.NewLine;
 
-                strMsg += "If you have Microsoft SQL or SQL Express installed, selecting the 'Export' button from the 'ImageClassification' project will export these images for you." + Environment.NewLine + Environment.NewLine;
-
-                strMsg += "If you DO NOT have Microsoft SQL or SQL Express, running the MyCaffe Test Application and selecting the 'Database | Load MNIST...' menu item with the 'Export to file only' check box checked, will export the images for you without SQL." + Environment.NewLine + Environment.NewLine;
-
-                strMsg += "To get the MNIST *.gz data files, please see http://yann.lecun.com/exdb/mnist/";
+                strMsg += "To export the MNIST images, run the MyCaffe Test Application and select the 'Database | Load MNIST...' menu item, download the MNIST dataset, and check the 'Export to file only' check box to export to image files." + Environment.NewLine + Environment.NewLine;
 
                 MessageBox.Show(strMsg, "Images Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -314,7 +310,13 @@ namespace ImageClassificationBareBones
 
             if (!Directory.Exists(m_strImageDirTraining) || !Directory.Exists(m_strImageDirTesting))
             {
-                MessageBox.Show("You must first 'export' the images by running the 'MyCaffe Test Application' and selecting the 'Load MNIST' with the 'Export to file only' check box checked.", "Images Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                string strMsg = "You must first export the MNIST dataset into the following directories:" + Environment.NewLine + Environment.NewLine;
+                strMsg += "Training Images: '" + m_strImageDirTraining + "'" + Environment.NewLine;
+                strMsg += "Testing Images: '" + m_strImageDirTesting + "'" + Environment.NewLine + Environment.NewLine;
+
+                strMsg += "To export the MNIST images, run the MyCaffe Test Application and select the 'Database | Load MNIST...' menu item, download the MNIST dataset, and check the 'Export to file only' check box to export to image files." + Environment.NewLine + Environment.NewLine;
+
+                MessageBox.Show(strMsg, "Images Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -393,7 +395,13 @@ namespace ImageClassificationBareBones
 
             if (!Directory.Exists(m_strImageDirTraining) || !Directory.Exists(m_strImageDirTesting))
             {
-                MessageBox.Show("You must first 'export' the images by running the 'MyCaffe Test Application' and selecting the 'Load MNIST' with the 'Export to file only' check box checked.", "Images Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                string strMsg = "You must first export the MNIST dataset into the following directories:" + Environment.NewLine + Environment.NewLine;
+                strMsg += "Training Images: '" + m_strImageDirTraining + "'" + Environment.NewLine;
+                strMsg += "Testing Images: '" + m_strImageDirTesting + "'" + Environment.NewLine + Environment.NewLine;
+
+                strMsg += "To export the MNIST images, run the MyCaffe Test Application and select the 'Database | Load MNIST...' menu item, download the MNIST dataset, and check the 'Export to file only' check box to export to image files." + Environment.NewLine + Environment.NewLine;
+
+                MessageBox.Show(strMsg, "Images Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -503,7 +511,13 @@ namespace ImageClassificationBareBones
 
             if (!Directory.Exists(m_strImageDirTraining) || !Directory.Exists(m_strImageDirTesting))
             {
-                MessageBox.Show("You must first 'export' the images by running the 'MyCaffe Test Application' and selecting the 'Load MNIST' with the 'Export to file only' check box checked.", "Images Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                string strMsg = "You must first export the MNIST dataset into the following directories:" + Environment.NewLine + Environment.NewLine;
+                strMsg += "Training Images: '" + m_strImageDirTraining + "'" + Environment.NewLine;
+                strMsg += "Testing Images: '" + m_strImageDirTesting + "'" + Environment.NewLine + Environment.NewLine;
+
+                strMsg += "To export the MNIST images, run the MyCaffe Test Application and select the 'Database | Load MNIST...' menu item, download the MNIST dataset, and check the 'Export to file only' check box to export to image files." + Environment.NewLine + Environment.NewLine;
+
+                MessageBox.Show(strMsg, "Images Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -768,7 +782,13 @@ namespace ImageClassificationBareBones
 
             if (!Directory.Exists(m_strImageDirTraining) || !Directory.Exists(m_strImageDirTesting))
             {
-                MessageBox.Show("You must first 'export' the images by running the 'ImageClassification' sample and pressing the 'Export Images' button.", "Images Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                string strMsg = "You must first export the MNIST dataset into the following directories:" + Environment.NewLine + Environment.NewLine;
+                strMsg += "Training Images: '" + m_strImageDirTraining + "'" + Environment.NewLine;
+                strMsg += "Testing Images: '" + m_strImageDirTesting + "'" + Environment.NewLine + Environment.NewLine;
+
+                strMsg += "To export the MNIST images, run the MyCaffe Test Application and select the 'Database | Load MNIST...' menu item, download the MNIST dataset, and check the 'Export to file only' check box to export to image files." + Environment.NewLine + Environment.NewLine;
+
+                MessageBox.Show(strMsg, "Images Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -838,12 +858,15 @@ namespace ImageClassificationBareBones
 
         private void saveWeights(MyCaffeControl<float> mycaffe, string strName)
         {
-            string strDir = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\MyCaffe\\test_data\\models\\mnist\\";
+            string strDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MyCaffe\\test_data\\models\\mnist\\";
             string strFile = strDir + strName + ".mycaffemodel";
 
 //          byte[] rgWeights = mycaffe.GetWeights();
             Net<float> net = mycaffe.GetInternalNet(Phase.TRAIN);
             byte[] rgWeights = net.SaveWeights(mycaffe.Persist, false);
+
+            if (!Directory.Exists(strDir))
+                Directory.CreateDirectory(strDir);
 
             if (File.Exists(strFile))
                 File.Delete(strFile);
@@ -857,7 +880,7 @@ namespace ImageClassificationBareBones
 
         private byte[] loadWeights(string strName)
         {
-            string strDir = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\MyCaffe\\test_data\\models\\mnist\\";
+            string strDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MyCaffe\\test_data\\models\\mnist\\";
             string strFile = strDir + strName + ".mycaffemodel";
 
             if (!File.Exists(strFile))
