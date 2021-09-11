@@ -13,7 +13,7 @@
 #    e.) Create a 64-bit Python environment.
 #    f.) Install PythonNet - run 'pip install pythonnet'
 
-import clr
+import clr # requires pythonnet, run 'pip install pythonnet'
 clr.AddReference('C:\Program Files\SignalPop\MyCaffe\MyCaffe.dll')
 from MyCaffe import *
 clr.AddReference('C:\Program Files\SignalPop\MyCaffe\MyCaffe.basecode.dll')
