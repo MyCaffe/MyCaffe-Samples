@@ -65,8 +65,8 @@ namespace OneShotLearning
             project.ModelDescription = strModel;
             project.SolverDescription = strSolver;
 
-            // Crate the MyCaffeControl (with the 'float' base type)
-            string strCudaPath = "C:\\Program Files\\SignalPop\\MyCaffe\\cuda_11.3\\CudaDnnDll.11.3.dll";
+            // Create the MyCaffeControl (with the 'float' base type)
+            string strCudaPath = "C:\\Program Files\\SignalPop\\MyCaffe\\cuda_11.4\\CudaDnnDll.11.4.dll";
             MyCaffeControl<float> mycaffe = new MyCaffeControl<float>(settings, log, cancel, null, null, null, null, strCudaPath);
 
             // Load the project, using the TRAIN phase.
