@@ -3,6 +3,7 @@ using MyCaffe.basecode;
 using MyCaffe.common;
 using MyCaffe.layers;
 using MyCaffe.layers.beta;
+using MyCaffe.layers.beta.TextData;
 using MyCaffe.param;
 using SimpleGraphing;
 using System;
