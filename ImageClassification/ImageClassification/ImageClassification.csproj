@@ -9,7 +9,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>ImageClassification</RootNamespace>
     <AssemblyName>ImageClassification</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -40,18 +40,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AleControlLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f59a5464a77ea1ad, processorArchitecture=MSIL">
-      <HintPath>..\packages\AleControl.0.11.4.60-beta1\lib\net40\AleControlLib.dll</HintPath>
+      <HintPath>..\packages\AleControl.0.11.6.86-beta1\lib\net40\AleControlLib.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="CudaControlLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f59a5464a77ea1ad, processorArchitecture=MSIL">
-      <HintPath>..\packages\CudaControl.0.11.4.60-beta1\lib\net40\CudaControlLib.dll</HintPath>
+      <HintPath>..\packages\CudaControl.0.11.6.86-beta1\lib\net40\CudaControlLib.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="DirectShow, Version=0.11.4.60, Culture=neutral, PublicKeyToken=772ff9910eb842c4, processorArchitecture=MSIL">
-      <HintPath>..\packages\WebCam.0.11.4.60-beta1\lib\net40\DirectShow.dll</HintPath>
+    <Reference Include="DirectShow, Version=0.11.6.86, Culture=neutral, PublicKeyToken=9f3f7731a2cb8d51, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebCam.0.11.6.86-beta1\lib\net40\DirectShow.dll</HintPath>
     </Reference>
-    <Reference Include="DirectX.Capture, Version=0.11.4.60, Culture=neutral, PublicKeyToken=2b8e5716967d2021, processorArchitecture=MSIL">
-      <HintPath>..\packages\WebCam.0.11.4.60-beta1\lib\net40\DirectX.Capture.dll</HintPath>
+    <Reference Include="DirectX.Capture, Version=0.11.6.86, Culture=neutral, PublicKeyToken=8ce8db723478ce47, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebCam.0.11.6.86-beta1\lib\net40\DirectX.Capture.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
@@ -59,8 +59,8 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Protobuf, Version=3.17.3.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Protobuf.3.17.3\lib\net45\Google.Protobuf.dll</HintPath>
+    <Reference Include="Google.Protobuf, Version=3.19.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Protobuf.3.19.1\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
     <Reference Include="HDF5DotNet, Version=1.8.9.0, Culture=neutral, PublicKeyToken=a4952c8df86d6e8c, processorArchitecture=AMD64">
       <HintPath>..\packages\HDF5DotNet.x64.1.8.9\lib\Net40\HDF5DotNet.dll</HintPath>
@@ -68,59 +68,59 @@
     <Reference Include="Microsoft.SqlServer.Types, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.SqlServer.Types.14.0.1016.290\lib\net40\Microsoft.SqlServer.Types.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe, Version=0.11.4.60, Culture=neutral, PublicKeyToken=40efa406af72d203, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.11.4.60-beta1\lib\net40\MyCaffe.dll</HintPath>
+    <Reference Include="MyCaffe, Version=0.11.6.86, Culture=neutral, PublicKeyToken=e967ea19bfd47a89, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.11.6.86-beta1\lib\net40\MyCaffe.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.basecode, Version=0.11.4.60, Culture=neutral, PublicKeyToken=da09778f48a756ef, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.11.4.60-beta1\lib\net40\MyCaffe.basecode.dll</HintPath>
+    <Reference Include="MyCaffe.basecode, Version=0.11.6.86, Culture=neutral, PublicKeyToken=2541b18e2b82928f, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.11.6.86-beta1\lib\net40\MyCaffe.basecode.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.converter.onnx, Version=0.11.4.60, Culture=neutral, PublicKeyToken=299efd7e8bbc4423, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.11.4.60-beta1\lib\net40\MyCaffe.converter.onnx.dll</HintPath>
+    <Reference Include="MyCaffe.converter.onnx, Version=0.11.6.86, Culture=neutral, PublicKeyToken=35a95b9c364e4794, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.11.6.86-beta1\lib\net40\MyCaffe.converter.onnx.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.data, Version=0.11.4.60, Culture=neutral, PublicKeyToken=1b856f71bd6e25c1, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.11.4.60-beta1\lib\net40\MyCaffe.data.dll</HintPath>
+    <Reference Include="MyCaffe.data, Version=0.11.6.86, Culture=neutral, PublicKeyToken=5ee1e9f5e32cff5e, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.11.6.86-beta1\lib\net40\MyCaffe.data.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.db.image, Version=0.11.4.60, Culture=neutral, PublicKeyToken=28fbed6f5155dac1, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.11.4.60-beta1\lib\net40\MyCaffe.db.image.dll</HintPath>
+    <Reference Include="MyCaffe.db.image, Version=0.11.6.86, Culture=neutral, PublicKeyToken=e3ffe6b7993441fb, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.11.6.86-beta1\lib\net40\MyCaffe.db.image.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.db.stream, Version=0.11.4.60, Culture=neutral, PublicKeyToken=0ace0a87fc7b019d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.11.4.60-beta1\lib\net40\MyCaffe.db.stream.dll</HintPath>
+    <Reference Include="MyCaffe.db.stream, Version=0.11.6.86, Culture=neutral, PublicKeyToken=30d0651acf6a56e6, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.11.6.86-beta1\lib\net40\MyCaffe.db.stream.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.extras, Version=0.11.4.60, Culture=neutral, PublicKeyToken=3f98a055c0abf5a4, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.11.4.60-beta1\lib\net40\MyCaffe.extras.dll</HintPath>
+    <Reference Include="MyCaffe.extras, Version=0.11.6.86, Culture=neutral, PublicKeyToken=c3800940030c776b, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.11.6.86-beta1\lib\net40\MyCaffe.extras.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.gym, Version=0.11.4.60, Culture=neutral, PublicKeyToken=dbcb41420a003db4, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.11.4.60-beta1\lib\net40\MyCaffe.gym.dll</HintPath>
+    <Reference Include="MyCaffe.gym, Version=0.11.6.86, Culture=neutral, PublicKeyToken=d8eaadd8ff4ae38b, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.11.6.86-beta1\lib\net40\MyCaffe.gym.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.gym.python, Version=0.11.4.60, Culture=neutral, PublicKeyToken=f234fbf693eeff0f, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.11.4.60-beta1\lib\net40\MyCaffe.gym.python.dll</HintPath>
+    <Reference Include="MyCaffe.gym.python, Version=0.11.6.86, Culture=neutral, PublicKeyToken=509864af876d3fce, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.11.6.86-beta1\lib\net40\MyCaffe.gym.python.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.layers.alpha, Version=0.11.4.60, Culture=neutral, PublicKeyToken=6e37296863f16b13, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.11.4.60-beta1\lib\net40\MyCaffe.layers.alpha.dll</HintPath>
+    <Reference Include="MyCaffe.layers.alpha, Version=0.11.6.86, Culture=neutral, PublicKeyToken=400129fbac0a49d0, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.11.6.86-beta1\lib\net40\MyCaffe.layers.alpha.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.layers.beta, Version=0.11.4.60, Culture=neutral, PublicKeyToken=03bdd70d8dfe8321, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.11.4.60-beta1\lib\net40\MyCaffe.layers.beta.dll</HintPath>
+    <Reference Include="MyCaffe.layers.beta, Version=0.11.6.86, Culture=neutral, PublicKeyToken=2ce3179af427881e, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.11.6.86-beta1\lib\net40\MyCaffe.layers.beta.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.layers.hdf5, Version=0.11.4.60, Culture=neutral, PublicKeyToken=f101a1302ccf7a81, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.11.4.60-beta1\lib\net40\MyCaffe.layers.hdf5.dll</HintPath>
+    <Reference Include="MyCaffe.layers.hdf5, Version=0.11.6.86, Culture=neutral, PublicKeyToken=9ee70ac6204bc333, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.11.6.86-beta1\lib\net40\MyCaffe.layers.hdf5.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.layers.nt, Version=0.11.4.60, Culture=neutral, PublicKeyToken=cee8ffa18488b14f, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.11.4.60-beta1\lib\net40\MyCaffe.layers.nt.dll</HintPath>
+    <Reference Include="MyCaffe.layers.nt, Version=0.11.6.86, Culture=neutral, PublicKeyToken=2959ca5ee300fd0a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.11.6.86-beta1\lib\net40\MyCaffe.layers.nt.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.layers.ssd, Version=0.11.4.60, Culture=neutral, PublicKeyToken=e0ee7b5a52703d2f, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.11.4.60-beta1\lib\net40\MyCaffe.layers.ssd.dll</HintPath>
+    <Reference Include="MyCaffe.layers.ssd, Version=0.11.6.86, Culture=neutral, PublicKeyToken=bb6319f0e555fef7, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.11.6.86-beta1\lib\net40\MyCaffe.layers.ssd.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.model, Version=0.11.4.60, Culture=neutral, PublicKeyToken=d0b4eae64743e787, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.11.4.60-beta1\lib\net40\MyCaffe.model.dll</HintPath>
+    <Reference Include="MyCaffe.model, Version=0.11.6.86, Culture=neutral, PublicKeyToken=17f273f87d1a9802, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.11.6.86-beta1\lib\net40\MyCaffe.model.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.preprocessor, Version=0.11.4.60, Culture=neutral, PublicKeyToken=aa7e9fd5d6875c9b, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.11.4.60-beta1\lib\net40\MyCaffe.preprocessor.dll</HintPath>
+    <Reference Include="MyCaffe.preprocessor, Version=0.11.6.86, Culture=neutral, PublicKeyToken=8ebb34f18e67059e, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.11.6.86-beta1\lib\net40\MyCaffe.preprocessor.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.trainers, Version=0.11.4.60, Culture=neutral, PublicKeyToken=b36f2786de43a412, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.11.4.60-beta1\lib\net40\MyCaffe.trainers.dll</HintPath>
+    <Reference Include="MyCaffe.trainers, Version=0.11.6.86, Culture=neutral, PublicKeyToken=2a7fc0024be9d9aa, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.11.6.86-beta1\lib\net40\MyCaffe.trainers.dll</HintPath>
     </Reference>
-    <Reference Include="OnnxControl, Version=0.11.4.60, Culture=neutral, PublicKeyToken=8c813ab21bbfb2ac, processorArchitecture=MSIL">
-      <HintPath>..\packages\OnnxControl.0.11.4.60-beta1\lib\net40\OnnxControl.dll</HintPath>
+    <Reference Include="OnnxControl, Version=0.11.6.86, Culture=neutral, PublicKeyToken=666204c5f16cdcaa, processorArchitecture=MSIL">
+      <HintPath>..\packages\OnnxControl.0.11.6.86-beta1\lib\net40\OnnxControl.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -136,8 +136,8 @@
     <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
     </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.5.0.0\lib\net45\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceProcess" />
@@ -150,8 +150,8 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="WebCam, Version=0.11.4.60, Culture=neutral, PublicKeyToken=aaa91e2b1083af82, processorArchitecture=MSIL">
-      <HintPath>..\packages\WebCam.0.11.4.60-beta1\lib\net40\WebCam.dll</HintPath>
+    <Reference Include="WebCam, Version=0.11.6.86, Culture=neutral, PublicKeyToken=5e37ae9e6a2fcb01, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebCam.0.11.6.86-beta1\lib\net40\WebCam.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -234,7 +234,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /s /y "$(SolutionDir)packages\HDF5DotNet.x64.1.8.9\NativeBinaries\*.*" "$(TargetDir)"
-xcopy /s /y "$(SolutionDir)packages\MyCaffe.0.11.4.60-beta1\NativeBinaries\x64\*.*" "$(TargetDir)"</PostBuildEvent>
+xcopy /s /y "$(SolutionDir)packages\MyCaffe.0.11.6.86-beta1\NativeBinaries\x64\*.*" "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -242,8 +242,8 @@ xcopy /s /y "$(SolutionDir)packages\MyCaffe.0.11.4.60-beta1\NativeBinaries\x64\*
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
     <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
-    <Error Condition="!Exists('..\packages\Google.Protobuf.Tools.3.14.0\build\Google.Protobuf.Tools.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Google.Protobuf.Tools.3.14.0\build\Google.Protobuf.Tools.targets'))" />
+    <Error Condition="!Exists('..\packages\Google.Protobuf.Tools.3.19.1\build\Google.Protobuf.Tools.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Google.Protobuf.Tools.3.19.1\build\Google.Protobuf.Tools.targets'))" />
   </Target>
   <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
-  <Import Project="..\packages\Google.Protobuf.Tools.3.14.0\build\Google.Protobuf.Tools.targets" Condition="Exists('..\packages\Google.Protobuf.Tools.3.14.0\build\Google.Protobuf.Tools.targets')" />
+  <Import Project="..\packages\Google.Protobuf.Tools.3.19.1\build\Google.Protobuf.Tools.targets" Condition="Exists('..\packages\Google.Protobuf.Tools.3.19.1\build\Google.Protobuf.Tools.targets')" />
 </Project>

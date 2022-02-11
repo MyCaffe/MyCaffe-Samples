@@ -33,6 +33,7 @@
             this.btnTestTrainedWeights = new System.Windows.Forms.Button();
             this.btnSimplerClassificationWithProgrammableModels = new System.Windows.Forms.Button();
             this.btnSimplestClassification = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnSimplerClassification
@@ -85,11 +86,22 @@
             this.btnSimplestClassification.UseVisualStyleBackColor = true;
             this.btnSimplestClassification.Click += new System.EventHandler(this.btnSimplestClassification_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(156, 46);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(425, 13);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "See Visual Studio Output window for debug output showing the status of each opera" +
+    "tion.";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 96);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.btnTestTrainedWeights);
             this.Controls.Add(this.btnSimplerClassificationWithProgrammableModels);
             this.Controls.Add(this.btnSimplestClassification);
@@ -98,6 +110,7 @@
             this.Name = "MainForm";
             this.Text = "Image Classification - Bare Bones";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -108,6 +121,7 @@
         private System.Windows.Forms.Button btnTestTrainedWeights;
         private System.Windows.Forms.Button btnSimplerClassificationWithProgrammableModels;
         private System.Windows.Forms.Button btnSimplestClassification;
+        private System.Windows.Forms.Label label1;
     }
 }
 
