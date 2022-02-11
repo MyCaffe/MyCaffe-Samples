@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -69,6 +70,7 @@ namespace ImageToSin
         /// </summary>
         public FormMain()
         {
+            copyCudaDnnDll();
             m_strOutputPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             m_sw.Start();
 
@@ -76,6 +78,35 @@ namespace ImageToSin
             m_rgZeroLine.Add(zeroLine);
 
             InitializeComponent();
+        }
+
+        private void copyCudaDnnDll()
+        {
+            string strDll = AssemblyDirectory + "\\CudaDnnDll.11.6.dll";
+
+            if (!File.Exists(strDll))
+            {
+                string strTarget = "MyCaffe-Samples";
+                int nPos = strDll.IndexOf(strTarget);
+                if (nPos == -1)
+                    return;
+
+                string strSrc = strDll.Substring(0, nPos + strTarget.Length);
+                strSrc += "\\Seq2Seq\\packages\\MyCaffe.0.11.6.86-beta1\\nativeBinaries\\x64";
+
+                File.Copy(strSrc + "\\CudaDnnDll.11.6.dll", strDll);
+            }
+        }
+
+        public static string AssemblyDirectory
+        {
+            get
+            {
+                string codeBase = Assembly.GetExecutingAssembly().CodeBase;
+                UriBuilder uri = new UriBuilder(codeBase);
+                string path = Uri.UnescapeDataString(uri.Path);
+                return Path.GetDirectoryName(path);
+            }
         }
 
         /// <summary>

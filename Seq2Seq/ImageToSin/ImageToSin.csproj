@@ -9,12 +9,13 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>ImageToSin</RootNamespace>
     <AssemblyName>ImageToSin</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -44,29 +45,29 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Protobuf, Version=3.17.3.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Protobuf.3.17.3\lib\net45\Google.Protobuf.dll</HintPath>
+    <Reference Include="Google.Protobuf, Version=3.19.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Protobuf.3.19.1\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SqlServer.Types, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.SqlServer.Types.14.0.1016.290\lib\net40\Microsoft.SqlServer.Types.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe, Version=0.11.4.60, Culture=neutral, PublicKeyToken=40efa406af72d203, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.11.4.60-beta1\lib\net40\MyCaffe.dll</HintPath>
+    <Reference Include="MyCaffe, Version=0.11.6.86, Culture=neutral, PublicKeyToken=e967ea19bfd47a89, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.11.6.86-beta1\lib\net40\MyCaffe.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.basecode, Version=0.11.4.60, Culture=neutral, PublicKeyToken=da09778f48a756ef, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.11.4.60-beta1\lib\net40\MyCaffe.basecode.dll</HintPath>
+    <Reference Include="MyCaffe.basecode, Version=0.11.6.86, Culture=neutral, PublicKeyToken=2541b18e2b82928f, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.11.6.86-beta1\lib\net40\MyCaffe.basecode.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.db.image, Version=0.11.4.60, Culture=neutral, PublicKeyToken=28fbed6f5155dac1, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.11.4.60-beta1\lib\net40\MyCaffe.db.image.dll</HintPath>
+    <Reference Include="MyCaffe.db.image, Version=0.11.6.86, Culture=neutral, PublicKeyToken=e3ffe6b7993441fb, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.11.6.86-beta1\lib\net40\MyCaffe.db.image.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.layers.beta, Version=0.11.4.60, Culture=neutral, PublicKeyToken=03bdd70d8dfe8321, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.0.11.4.60-beta1\lib\net40\MyCaffe.layers.beta.dll</HintPath>
+    <Reference Include="MyCaffe.layers.beta, Version=0.11.6.86, Culture=neutral, PublicKeyToken=2ce3179af427881e, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.0.11.6.86-beta1\lib\net40\MyCaffe.layers.beta.dll</HintPath>
     </Reference>
-    <Reference Include="OnnxControl, Version=0.11.4.60, Culture=neutral, PublicKeyToken=8c813ab21bbfb2ac, processorArchitecture=MSIL">
-      <HintPath>..\packages\OnnxControl.0.11.4.60-beta1\lib\net40\OnnxControl.dll</HintPath>
+    <Reference Include="OnnxControl, Version=0.11.6.86, Culture=neutral, PublicKeyToken=666204c5f16cdcaa, processorArchitecture=MSIL">
+      <HintPath>..\packages\OnnxControl.0.11.6.86-beta1\lib\net40\OnnxControl.dll</HintPath>
     </Reference>
-    <Reference Include="SimpleGraphing, Version=0.11.4.60, Culture=neutral, PublicKeyToken=2720ee5a6bece8ff, processorArchitecture=MSIL">
-      <HintPath>..\packages\SimpleGraphingControl.0.11.4.60-beta1\lib\net40\SimpleGraphing.dll</HintPath>
+    <Reference Include="SimpleGraphing, Version=0.11.6.86, Culture=neutral, PublicKeyToken=db1fd361618e40f6, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleGraphingControl.0.11.6.86-beta1\lib\net40\SimpleGraphing.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -82,8 +83,8 @@
     <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
     </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.5.0.0\lib\net45\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
@@ -164,12 +165,12 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
     <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
-    <Error Condition="!Exists('..\packages\Google.Protobuf.Tools.3.14.0\build\Google.Protobuf.Tools.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Google.Protobuf.Tools.3.14.0\build\Google.Protobuf.Tools.targets'))" />
+    <Error Condition="!Exists('..\packages\Google.Protobuf.Tools.3.19.1\build\Google.Protobuf.Tools.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Google.Protobuf.Tools.3.19.1\build\Google.Protobuf.Tools.targets'))" />
   </Target>
   <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
-  <Import Project="..\packages\Google.Protobuf.Tools.3.14.0\build\Google.Protobuf.Tools.targets" Condition="Exists('..\packages\Google.Protobuf.Tools.3.14.0\build\Google.Protobuf.Tools.targets')" />
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\Google.Protobuf.Tools.3.19.1\build\Google.Protobuf.Tools.targets" Condition="Exists('..\packages\Google.Protobuf.Tools.3.19.1\build\Google.Protobuf.Tools.targets')" />
 </Project>

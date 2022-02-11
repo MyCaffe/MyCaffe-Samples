@@ -63,6 +63,7 @@ namespace Seq2SeqChatBot
         /// </summary>
         public FormMain()
         {
+            copyCudaDnnDll();
             m_strOutputPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             m_sw.Start();
 
@@ -70,6 +71,24 @@ namespace Seq2SeqChatBot
             m_rgZeroLine.Add(zeroLine);
 
             InitializeComponent();
+        }
+
+        private void copyCudaDnnDll()
+        {
+            string strDll = AssemblyDirectory + "\\CudaDnnDll.11.6.dll";
+
+            if (!File.Exists(strDll))
+            {
+                string strTarget = "MyCaffe-Samples";
+                int nPos = strDll.IndexOf(strTarget);
+                if (nPos == -1)
+                    return;
+
+                string strSrc = strDll.Substring(0, nPos + strTarget.Length);
+                strSrc += "\\Seq2Seq\\packages\\MyCaffe.0.11.6.86-beta1\\nativeBinaries\\x64";
+
+                File.Copy(strSrc + "\\CudaDnnDll.11.6.dll", strDll);
+            }
         }
 
         private void FormMain_Load(object sender, EventArgs e)
