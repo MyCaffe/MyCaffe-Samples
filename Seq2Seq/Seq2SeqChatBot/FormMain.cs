@@ -87,7 +87,7 @@ namespace Seq2SeqChatBot
                     return;
 
                 string strSrc = strDll.Substring(0, nPos + strTarget.Length);
-                strSrc += "\\Seq2Seq\\packages\\MyCaffe.0.11.6.86-beta1\\nativeBinaries\\x64";
+                strSrc += "\\Seq2Seq\\packages\\MyCaffe.1.11.6.38\\nativeBinaries\\x64";
 
                 File.Copy(strSrc + "\\CudaDnnDll.11.6.dll", strDll);
             }
