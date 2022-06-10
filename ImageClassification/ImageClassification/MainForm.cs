@@ -251,6 +251,7 @@ namespace ImageClassification
             load_descriptors("mnist", out strSolver, out strModel); // Load the descriptors from their respective files (installed by MyCaffe Test Application install)
             strModel = fixup_model(strModel, nBatchSize);
 
+            m_evtCancel.Reset();
             MyCaffeControl<float> mycaffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel);
             mycaffe.Load(Phase.TRAIN,   // using the training phase. 
                          strSolver,     // solver descriptor, that specifies to use the SGD solver.
@@ -365,6 +366,7 @@ namespace ImageClassification
             strModel = fixup_model(strModel, nBatchSize);
             strSolver = fixup_solver(strSolver, 10000); // set the interval beyond the iterations to skip testing during solving.
 
+            m_evtCancel.Reset();
             MyCaffeControl<float> mycaffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel);
             mycaffe.Load(Phase.TRAIN,   // using the training phase. 
                          strSolver,     // solver descriptor, that specifies to use the SGD solver.
@@ -373,6 +375,7 @@ namespace ImageClassification
 
             // Perform your own training
             Solver<float> solver = mycaffe.GetInternalSolver();
+            solver.CancelEvent.Reset();
             solver.OnStart += Solver_OnStart;
             solver.OnTestStart += Solver_OnTestStart;
 
@@ -462,6 +465,7 @@ namespace ImageClassification
             project.WeightsState = null;
 
             // Create the MyCaffeControl
+            m_evtCancel.Reset();
             MyCaffeControl<float> mycaffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel);
 
             // Load the project, using the TRAIN phase.

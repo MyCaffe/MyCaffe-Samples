@@ -204,6 +204,7 @@ namespace ImageClassificationBareBones
             load_descriptors("mnist", out strSolver, out strModel); // Load the descriptors from their respective files (installed by MyCaffe Test Application install)
             strModel = fixup_model(strModel, nBatchSize);
 
+            m_evtCancel.Reset();
             MyCaffeControl<float> mycaffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel);
 
             mycaffe.LoadLite(Phase.TRAIN,   // using the training phase. 
@@ -333,9 +334,10 @@ namespace ImageClassificationBareBones
             load_descriptors("mnist", out strSolver, out strModel); 
             strModel = fixup_model(strModel, nBatchSize);
             // set the interval beyond the iterations to skip testing during solving.
-            strSolver = fixup_solver(strSolver, 10000); 
+            strSolver = fixup_solver(strSolver, 10000);
 
             // Create the MyCaffeControl.
+            m_evtCancel.Reset();
             MyCaffeControl<float> mycaffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel);
 
             // Load the solver and model descriptors without the Image Database.
@@ -420,6 +422,7 @@ namespace ImageClassificationBareBones
             strSolver = create_solver_descriptor_programmatically(10000);
 
             // Create the MyCaffeControl.
+            m_evtCancel.Reset();
             MyCaffeControl<float> mycaffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel);
 
             // Load the solver and model descriptors without the Image Database.
@@ -534,6 +537,7 @@ namespace ImageClassificationBareBones
             SimpleDatum sdMean = new SimpleDatum(3, 28, 28);
 
             // Create the MyCaffeControl.
+            m_evtCancel.Reset();
             MyCaffeControl<float> mycaffe = new MyCaffeControl<float>(settings, m_log, m_evtCancel);
 
             // Load the solver and model descriptors without the Image Database.
