@@ -11,14 +11,14 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MeanAbsoluteError
+namespace MeanErrorLoss
 {
     internal class Program
     {
         /// <summary>
-        /// This sample requires version 1.11.6.43 or greater.
+        /// This sample requires version 1.11.6.44 or greater.
         /// </summary>
-        static string m_strExpectedMyCaffeVersion = "1.11.6.43";
+        static string m_strExpectedMyCaffeVersion = "1.11.6.44";
         /// <summary>
         /// Specifies the training dataset.
         /// </summary>
@@ -52,8 +52,11 @@ namespace MeanAbsoluteError
             m_dsTrain = data.Item1;
             m_dsTest = data.Item2;
 
+            // Get the mean error type to use from the user.
+            MEAN_ERROR meanErr = get_error_type();
+
             // Build the model description.
-            string strModel = build_model(m_nBatch);
+            string strModel = build_model(m_nBatch, meanErr);
             // Build the solver description.
             string strSolver = build_solver();
 
@@ -62,8 +65,8 @@ namespace MeanAbsoluteError
 
             try
             {
-                if (!version_check(mycaffe, m_strExpectedMyCaffeVersion))
-                    throw new Exception("You need to use a version of MyCaffe >= '" + m_strExpectedMyCaffeVersion + "'!");
+                //if (!version_check(mycaffe, m_strExpectedMyCaffeVersion))
+                //    throw new Exception("You need to use a version of MyCaffe >= '" + m_strExpectedMyCaffeVersion + "'!");
 
                 // Load the model and solver for training.
                 mycaffe.LoadLite(Phase.TRAIN, strSolver, strModel);
@@ -101,40 +104,37 @@ namespace MeanAbsoluteError
         }
 
         /// <summary>
-        /// Verify the version of MyCaffe.
+        /// Query the user for the mean error type to use (default = Mean Absolute Error 'MAE').
         /// </summary>
-        /// <param name="mycaffe">Specifies the instance of MyCaffe.</param>
-        /// <param name="strMinVersion">Specifies the minimum version.</param>
-        /// <returns>If the version running is >= the minimum version, true is returned, otherwise false.</returns>
-        /// <exception cref="Exception">An exception is thrown if the version string is not found.</exception>
-        private static bool version_check(MyCaffeControl<float> mycaffe, string strMinVersion)
+        /// <returns>The MEAN_ERROR type is returned.</returns>
+        private static MEAN_ERROR get_error_type()
         {
-            Type type = mycaffe.GetType();
-            string strName = type.Assembly.FullName;
-            string strTarget = "Version=";
+            Console.WriteLine("What type of Mean Error would you like to use? 1=MSE, 2=MSLE, 3=RMSE, 4=MAE (default)");
+            string strMe = Console.ReadLine().Trim(' ', '\r', '\n');
+            MEAN_ERROR meanErr = MEAN_ERROR.MAE;
 
-            int nPos = strName.IndexOf(strTarget);
-            if (nPos < 0)
-                throw new Exception("Could not find the 'Version=' in the assembly name!");
-
-            strName = strName.Substring(nPos + strTarget.Length);
-            nPos = strName.IndexOf(',');
-            if (nPos < 0)
-                throw new Exception("Could not find the ',' after the 'Version=' in the assembly name.");
-
-            string strVer = strName.Substring(0, nPos);
-            string[] rgstrVer = strVer.Split('.');
-            string[] rgstrMin = strMinVersion.Split('.');
-            int[] rgnVer = rgstrVer.Select(p => int.Parse(p)).ToArray();
-            int[] rgnMin = rgstrMin.Select(p => int.Parse(p)).ToArray();
-
-            for (int i = 0; i < rgnVer.Length; i++)
+            switch (strMe)
             {
-                if (rgnVer[i] < rgnMin[i])
-                    return false;
+                case "1":
+                    meanErr = MEAN_ERROR.MSE;
+                    break;
+                case "2":
+                    meanErr = MEAN_ERROR.MSLE;
+                    break;
+                case "3":
+                    meanErr = MEAN_ERROR.RMSE;
+                    break;
+                case "4":
+                    meanErr = MEAN_ERROR.MAE;
+                    break;
+                default:
+                    meanErr = MEAN_ERROR.MAE;
+                    break;
             }
 
-            return true;
+            Console.WriteLine("Using '" + meanErr.ToString() + "' as the error type.");
+
+            return meanErr;
         }
 
         /// <summary>
@@ -230,9 +230,10 @@ namespace MeanAbsoluteError
         /// Build the model
         /// </summary>
         /// <param name="nBatch">Specifies the batch size.</param>
+        /// <param name="meanErr">Specifies the mean error type.</param>
         /// <returns>Return the model as a descriptor string.</returns>
         /// <remarks>The model is a simple linear regression model.</remarks>
-        static string build_model(int nBatch)
+        static string build_model(int nBatch, MEAN_ERROR meanErr)
         {
             NetParameter net = new NetParameter();
             net.name = "mae_model";
@@ -279,12 +280,13 @@ namespace MeanAbsoluteError
             net.layer.Add(dense2);
 
             // Create the Mean Absolute Error loss layer.
-            LayerParameter loss = new LayerParameter(LayerParameter.LayerType.MAE_LOSS);
+            LayerParameter loss = new LayerParameter(LayerParameter.LayerType.MEAN_ERROR_LOSS);
             loss.name = "loss";
             loss.bottom.Add("dense2");
             loss.bottom.Add("label");
             loss.top.Add("loss");
-            loss.mae_loss_param.axis = 1;
+            loss.mean_error_loss_param.axis = 1;
+            loss.mean_error_loss_param.mean_error_type = meanErr;
             net.layer.Add(loss);
 
             return net.ToProto("root").ToString();
@@ -333,6 +335,43 @@ namespace MeanAbsoluteError
                 string path = Uri.UnescapeDataString(uri.Path);
                 return Path.GetDirectoryName(path);
             }
+        }
+
+        /// <summary>
+        /// Verify the version of MyCaffe.
+        /// </summary>
+        /// <param name="mycaffe">Specifies the instance of MyCaffe.</param>
+        /// <param name="strMinVersion">Specifies the minimum version.</param>
+        /// <returns>If the version running is >= the minimum version, true is returned, otherwise false.</returns>
+        /// <exception cref="Exception">An exception is thrown if the version string is not found.</exception>
+        private static bool version_check(MyCaffeControl<float> mycaffe, string strMinVersion)
+        {
+            Type type = mycaffe.GetType();
+            string strName = type.Assembly.FullName;
+            string strTarget = "Version=";
+
+            int nPos = strName.IndexOf(strTarget);
+            if (nPos < 0)
+                throw new Exception("Could not find the 'Version=' in the assembly name!");
+
+            strName = strName.Substring(nPos + strTarget.Length);
+            nPos = strName.IndexOf(',');
+            if (nPos < 0)
+                throw new Exception("Could not find the ',' after the 'Version=' in the assembly name.");
+
+            string strVer = strName.Substring(0, nPos);
+            string[] rgstrVer = strVer.Split('.');
+            string[] rgstrMin = strMinVersion.Split('.');
+            int[] rgnVer = rgstrVer.Select(p => int.Parse(p)).ToArray();
+            int[] rgnMin = rgstrMin.Select(p => int.Parse(p)).ToArray();
+
+            for (int i = 0; i < rgnVer.Length; i++)
+            {
+                if (rgnVer[i] < rgnMin[i])
+                    return false;
+            }
+
+            return true;
         }
     }
 

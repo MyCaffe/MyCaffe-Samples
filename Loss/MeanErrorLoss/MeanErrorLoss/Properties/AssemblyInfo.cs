@@ -5,13 +5,13 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MeanAbsoluteError")]
+[assembly: AssemblyTitle("MeanErrorLoss")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("MeanAbsoluteError")]
-[assembly: AssemblyCopyright("Copyright ©  2022")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCompany("SignalPop LLC")]
+[assembly: AssemblyProduct("MeanErrorLoss")]
+[assembly: AssemblyCopyright("Copyright ©  2022 SignalPop LLC. All rights reserved.")]
+[assembly: AssemblyTrademark("SignalPop")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
