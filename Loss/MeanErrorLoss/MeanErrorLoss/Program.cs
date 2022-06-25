@@ -109,7 +109,7 @@ namespace MeanErrorLoss
         /// <returns>The MEAN_ERROR type is returned.</returns>
         private static MEAN_ERROR get_error_type()
         {
-            Console.WriteLine("What type of Mean Error would you like to use? 1=MSE, 2=MSLE, 3=RMSE, 4=MAE (default)");
+            Console.WriteLine("What type of Mean Error would you like to use? 1=MSE, 2=MAE (default)");
             string strMe = Console.ReadLine().Trim(' ', '\r', '\n');
             MEAN_ERROR meanErr = MEAN_ERROR.MAE;
 
@@ -119,12 +119,6 @@ namespace MeanErrorLoss
                     meanErr = MEAN_ERROR.MSE;
                     break;
                 case "2":
-                    meanErr = MEAN_ERROR.MSLE;
-                    break;
-                case "3":
-                    meanErr = MEAN_ERROR.RMSE;
-                    break;
-                case "4":
                     meanErr = MEAN_ERROR.MAE;
                     break;
                 default:
@@ -132,13 +126,7 @@ namespace MeanErrorLoss
                     break;
             }
 
-            Console.WriteLine("Using '" + meanErr.ToString() + "' as the mean error calculation.");
-
-            // Warning on support.
-            // TODO: remove as other types are supported.
-            if (meanErr != MEAN_ERROR.MAE)
-                Console.WriteLine("WARNING: Currently, only MAE is supported.");
- 
+            Console.WriteLine("Using '" + meanErr.ToString() + "' as the mean error calculation."); 
             return meanErr;
         }
 
@@ -326,6 +314,10 @@ namespace MeanErrorLoss
             // Disable periodic snapshots (snapshots are 
             // still taken when accuracy improvements are found)
             solver.snapshot = -1;
+            // Clip gradients to avoid model blowing up with MSE
+            solver.clip_gradients = 30;
+            // Disable gradient clipping status output.
+            solver.enable_clip_gradient_status = false;
             
             return solver.ToProto("root").ToString();
         }
