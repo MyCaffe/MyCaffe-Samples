@@ -310,8 +310,8 @@ namespace MeanAbsoluteError
             solver.test_iter.Add(1);
             // Disable weight decay.
             solver.weight_decay = 0;
-            // Display output every 100 intervals.
-            solver.display = 100;
+            // Display output every 1000 intervals.
+            solver.display = 1000;
             // Disable snapshots after training.
             solver.snapshot_after_train = false;
             // Disable periodic snapshots (snapshots are 
