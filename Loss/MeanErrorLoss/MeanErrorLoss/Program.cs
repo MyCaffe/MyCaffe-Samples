@@ -80,14 +80,13 @@ namespace MeanErrorLoss
                 mycaffe.GetInternalSolver().OnTestStart += Program_OnTestStart;
                 // Set the OnTestingIteration event so that we can track the progress.
                 mycaffe.GetInternalSolver().OnTestingIteration += Program_OnTestingIteration;
+                // Set the OnTestResults event so that we can compare the output with the target.
+                mycaffe.GetInternalSolver().OnTestResults += Program_OnTestResults;
+                mycaffe.GetInternalSolver().OnSnapshot += Program_OnSnapshot;
 
                 // Train for 300 epochs.
                 int nIterations = (300 * m_dsTrain.Count) / m_nBatch;
                 mycaffe.Train(nIterations);
-
-                // Test the final accuracy by running 100 iterations.
-                double dfAccuracy = mycaffe.Test(100);
-                Console.WriteLine("Accuracy: {0:P2}", dfAccuracy);
             }
             catch (Exception excpt)
             {
@@ -183,10 +182,47 @@ namespace MeanErrorLoss
         /// Event called at the end of each testing step - track any testing progress here.
         /// </summary>
         /// <param name="sender">Specifies the sender - the Solver</param>
-        /// <param name="e">Specifies the training arguments.</param>
+        /// <param name="e">Specifies the testing arguments.</param>
         private static void Program_OnTestingIteration(object sender, MyCaffe.common.TestingIterationArgs<float> e)
         {
+            Solver<float> solver = sender as Solver<float>;
+
+            Net<float> net = solver.TestingNet;
+            Blob<float> dataBlob = net.blob_by_name("data");
+            Blob<float> labelBlob = net.blob_by_name("label");
+
+            Tuple<float[], float[]> data = m_dsTest.GetData(m_nBatch);
+            dataBlob.mutable_cpu_data = data.Item1;
+            labelBlob.mutable_cpu_data = data.Item2;
         }
+
+        /// <summary>
+        /// Event called at the end of each test cycle to verify results.
+        /// </summary>
+        /// <param name="sender">Specifies the sender - the Solver</param>
+        /// <param name="e">Specifies the testing arguments.</param>
+        private static void Program_OnTestResults(object sender, TestResultArgs<float> e)
+        {
+            float[] rgLabels = e.Results[0].mutable_cpu_data;
+            float[] rgPredicted = e.Results[1].mutable_cpu_data;
+
+            int nMatchCount = 0;
+            for (int i = 0; i < rgLabels.Length; i++)
+            {
+                float fDiff = rgLabels[i] - rgPredicted[i];
+                if (fDiff < 0.00001)
+                    nMatchCount++;
+            }
+
+            e.Accuracy = (double)nMatchCount / rgLabels.Length;
+            e.AccuracyValid = true;
+        }
+
+        private static void Program_OnSnapshot(object sender, SnapshotArgs e)
+        {
+            Console.WriteLine("Accuracy = " + e.Accuracy.ToString("P"));
+        }
+
 
         /// <summary>
         /// Create MyCaffe
@@ -229,20 +265,33 @@ namespace MeanErrorLoss
         static string build_model(int nBatch, MEAN_ERROR meanErr)
         {
             NetParameter net = new NetParameter();
-            net.name = "mae_model";
+            net.name = meanErr.ToString().ToLower() + "_model";
 
             // Create the input layer with inputs data->(32,1,1,20), label->(32,1,1,1)
             LayerParameter input = new LayerParameter(LayerParameter.LayerType.INPUT);
             input.name = "input";
             input.top.Add("data");
             input.top.Add("label");
+            input.include.Add(new NetStateRule(Phase.TRAIN));
             input.input_param.shape = new List<BlobShape>()
             {
                 new BlobShape(nBatch, 1, 1, 20), // data, e.g., batch of 32
                 new BlobShape(nBatch, 1, 1, 1)   // label
             };
             net.layer.Add(input);
-           
+            input = new LayerParameter(LayerParameter.LayerType.INPUT);
+            input.name = "input";
+            input.top.Add("data");
+            input.top.Add("label");
+            input.include.Add(new NetStateRule(Phase.TEST));
+            input.input_param.shape = new List<BlobShape>()
+            {
+                new BlobShape(nBatch, 1, 1, 20), // data, e.g., batch of 32
+                new BlobShape(nBatch, 1, 1, 1)   // label
+            };
+            net.layer.Add(input);
+
+
             // Create the first Dense layer with 25 outputs.
             LayerParameter dense1 = new LayerParameter(LayerParameter.LayerType.INNERPRODUCT);
             dense1.name = "dense1";
@@ -282,6 +331,7 @@ namespace MeanErrorLoss
             loss.mean_error_loss_param.mean_error_type = meanErr;
             loss.loss_param.normalization = LossParameter.NormalizationMode.BATCH_SIZE;
             loss.loss_weight.Add(nBatch);
+            loss.include.Add(new NetStateRule(Phase.TRAIN));
             net.layer.Add(loss);
 
             return net.ToProto("root").ToString();
@@ -299,14 +349,16 @@ namespace MeanErrorLoss
             // Learning rate = 0.01
             solver.base_lr = 0.01;
             solver.momentum = 0.9;
+            // Keep the same learning rate.
+            solver.LearningRatePolicy = SolverParameter.LearningRatePolicyType.FIXED;
             // Disable initial testing.
             solver.test_initialization = false;
             // Run testing every 100 intervals.
-            solver.test_interval = 100;
-            // Only run a single test
-            solver.test_iter.Add(1);
-            // Disable weight decay.
-            solver.weight_decay = 0;
+            solver.test_interval = 10;
+            // Only run one test.
+            solver.test_iter[0] = 10;
+            // Add weight decay.
+            solver.weight_decay = 0.0001;
             // Display output every 1000 intervals.
             solver.display = 1000;
             // Disable snapshots after training.
@@ -315,7 +367,7 @@ namespace MeanErrorLoss
             // still taken when accuracy improvements are found)
             solver.snapshot = -1;
             // Clip gradients to avoid model blowing up with MSE
-            solver.clip_gradients = 30;
+            solver.clip_gradients = 50;
             // Disable gradient clipping status output.
             solver.enable_clip_gradient_status = false;
             
