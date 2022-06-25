@@ -132,8 +132,13 @@ namespace MeanErrorLoss
                     break;
             }
 
-            Console.WriteLine("Using '" + meanErr.ToString() + "' as the error type.");
+            Console.WriteLine("Using '" + meanErr.ToString() + "' as the mean error calculation.");
 
+            // Warning on support.
+            // TODO: remove as other types are supported.
+            if (meanErr != MEAN_ERROR.MAE)
+                Console.WriteLine("WARNING: Currently, only MAE is supported.");
+ 
             return meanErr;
         }
 
