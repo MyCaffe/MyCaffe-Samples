@@ -1,4 +1,4 @@
-# MyCaffe Mean Error Sample
+# MyCaffe Mean Error Loss Sample
 MyCaffe Mean Error Loss sample solves a simple regression problem using either Mean Squared Error (MSE) or Mean Absolute Error (MAE).
 
 The Mean Squared Error (MSE) calculates the means squared difference between the target and predicted values.  The following simple model uses the MSE loss function.  To enable, select option '1' when running the sample.
