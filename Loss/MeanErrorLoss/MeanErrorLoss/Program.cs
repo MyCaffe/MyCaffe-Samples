@@ -292,6 +292,8 @@ namespace MeanErrorLoss
             loss.top.Add("loss");
             loss.mean_error_loss_param.axis = 1;
             loss.mean_error_loss_param.mean_error_type = meanErr;
+            loss.loss_param.normalization = LossParameter.NormalizationMode.BATCH_SIZE;
+            loss.loss_weight.Add(nBatch);
             net.layer.Add(loss);
 
             return net.ToProto("root").ToString();
