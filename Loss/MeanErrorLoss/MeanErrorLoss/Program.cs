@@ -36,18 +36,12 @@ namespace MeanErrorLoss
         /// Main entry point.
         /// </summary>
         /// <param name="args">Standard arguments, not used.</param>
-        /// <remarks>
-        /// Before running, copy the 'dataset' directory into either the Release or Debug 
-        /// target directories.
-        /// </remarks>
         static void Main(string[] args)
         {
-            // Load dataset that is already centered and normalized.
-            string strFile = AssemblyDirectory + "\\dataset\\dataset_norm.txt";
             Dataset ds = new Dataset();
 
             // Load the dataset which contains the y (1000) and X (1000,20) values.
-            ds.Load(strFile);
+            ds.Load("dataset_norm.txt");
             // Split the dataset in half into training and testing sets.
             Tuple<Dataset, Dataset> data = ds.Split(0.5);
             m_dsTrain = data.Item1;
@@ -373,20 +367,6 @@ namespace MeanErrorLoss
         }
 
         /// <summary>
-        /// Return the directory of the executing assembly.
-        /// </summary>
-        static string AssemblyDirectory
-        {
-            get
-            {
-                string codeBase = Assembly.GetExecutingAssembly().CodeBase;
-                UriBuilder uri = new UriBuilder(codeBase);
-                string path = Uri.UnescapeDataString(uri.Path);
-                return Path.GetDirectoryName(path);
-            }
-        }
-
-        /// <summary>
         /// Verify the version of MyCaffe.
         /// </summary>
         /// <param name="mycaffe">Specifies the instance of MyCaffe.</param>
@@ -584,6 +564,8 @@ namespace MeanErrorLoss
         /// </remarks>
         public void Load(string strFile)
         {
+            strFile = getFullFilePath(strFile);
+            
             using (StreamReader sr = new StreamReader(strFile))
             {
                 string strLine = sr.ReadLine();
@@ -670,6 +652,38 @@ namespace MeanErrorLoss
                 {
                     m_rgX[i][j] = (m_rgX[i][j] - m_fAveX) / m_fStdevX;
                 }
+            }
+        }
+
+        private string getFullFilePath(string strFile)
+        {
+            string strPath = AssemblyDirectory;
+            int nPos = strPath.LastIndexOf('\\');
+            if (nPos < 0)
+                throw new Exception("Could not find the full path of the file '" + strFile + "'.");
+
+            strPath = strPath.Substring(0, nPos);
+            nPos = strPath.LastIndexOf('\\');
+            if (nPos < 0)
+                throw new Exception("Could not find the full path of the file '" + strFile + "'.");
+
+            strPath = strPath.Substring(0, nPos);
+            strPath += "\\dataset\\" + strFile;
+
+            return strPath;
+        }
+
+        /// <summary>
+        /// Return the directory of the executing assembly.
+        /// </summary>
+        public string AssemblyDirectory
+        {
+            get
+            {
+                string codeBase = Assembly.GetExecutingAssembly().CodeBase;
+                UriBuilder uri = new UriBuilder(codeBase);
+                string path = Uri.UnescapeDataString(uri.Path);
+                return Path.GetDirectoryName(path);
             }
         }
     }
