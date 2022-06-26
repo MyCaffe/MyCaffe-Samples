@@ -29,7 +29,7 @@ The Hinge Loss calculates the loss by incorporating a margin or distance into th
 
 The results of running the Hinge Loss model over 300 epochs are as follows.
 
-![Hinge Loss Results](https://github.com/MyCaffe/MyCaffe-Samples/blob/master/Loss/BinaryClassificationLoss/BinaryClassificationLoss/Documents/hinge_loss_results.png)
+![Hinge Loss Results](https://github.com/MyCaffe/MyCaffe-Samples/blob/master/Loss/MultiClassClassificationLoss/MultiClassClassificationLoss/Documents/hinge_loss_results.png)
 
 ## Cross Entropy Loss
 
@@ -39,28 +39,28 @@ The Cross Entropy Loss calculates the loss using a cross entropy calculation pre
 
 The Sigmoid Cross Entropy Loss sample used the following model.
 
-![Sigmoid Cross Entropy Loss Model](https://github.com/MyCaffe/MyCaffe-Samples/blob/master/Loss/BinaryClassificationLoss/BinaryClassificationLoss/Documents/sigmoidce_loss_model.png)
+![Sigmoid Cross Entropy Loss Model](https://github.com/MyCaffe/MyCaffe-Samples/blob/master/Loss/MultiClassClassificationLoss/MultiClassClassificationLoss/Documents/sigmoidce_loss_model.png)
 
 The results of running the Sigmoid Cross Entropy Loss model over 300 epochs are as follows.
 
-![Sigmoid Cross Entropy Loss Results](https://github.com/MyCaffe/MyCaffe-Samples/blob/master/Loss/BinaryClassificationLoss/BinaryClassificationLoss/Documents/sigmoidce_loss_results.png)
+![Sigmoid Cross Entropy Loss Results](https://github.com/MyCaffe/MyCaffe-Samples/blob/master/Loss/MultiClassClassificationLoss/MultiClassClassificationLoss/Documents/sigmoidce_loss_results.png)
 
 ### Softmax Cross Entropy Loss
 
 The Softmax Cross Entropy Loss sample used the following model.
 
-![Softmax Cross Entropy Loss Model](https://github.com/MyCaffe/MyCaffe-Samples/blob/master/Loss/BinaryClassificationLoss/BinaryClassificationLoss/Documents/softmaxce_loss_model.png)
+![Softmax Cross Entropy Loss Model](https://github.com/MyCaffe/MyCaffe-Samples/blob/master/Loss/MultiClassClassificationLoss/MultiClassClassificationLoss/Documents/softmaxce_loss_model.png)
 
 The results of running the Softmax Cross Entropy Loss model over 300 epochs are as follows.
 
-![Softmax Cross Entropy Loss Results](https://github.com/MyCaffe/MyCaffe-Samples/blob/master/Loss/BinaryClassificationLoss/BinaryClassificationLoss/Documents/softmaxce_loss_results.png)
+![Softmax Cross Entropy Loss Results](https://github.com/MyCaffe/MyCaffe-Samples/blob/master/Loss/MultiClassClassificationLoss/MultiClassClassificationLoss/Documents/softmaxce_loss_results.png)
 
 ## Softmax Loss
 
 The Softmax Loss sample uses the following model.
 
-![Softmax Loss Model](https://github.com/MyCaffe/MyCaffe-Samples/blob/master/Loss/BinaryClassificationLoss/BinaryClassificationLoss/Documents/softmax_loss_model.png)
+![Softmax Loss Model](https://github.com/MyCaffe/MyCaffe-Samples/blob/master/Loss/MultiClassClassificationLoss/MultiClassClassificationLoss/Documents/softmax_loss_model.png)
 
 The results of running the Softmax Loss model over 300 epochs are as follows.
 
-![Softmax Loss Results](https://github.com/MyCaffe/MyCaffe-Samples/blob/master/Loss/BinaryClassificationLoss/BinaryClassificationLoss/Documents/softmax_loss_results.png)
+![Softmax Loss Results](https://github.com/MyCaffe/MyCaffe-Samples/blob/master/Loss/MultiClassClassificationLoss/MultiClassClassificationLoss/Documents/softmax_loss_results.png)
