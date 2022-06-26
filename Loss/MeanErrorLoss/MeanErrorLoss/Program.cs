@@ -65,8 +65,8 @@ namespace MeanErrorLoss
 
             try
             {
-                //if (!version_check(mycaffe, m_strExpectedMyCaffeVersion))
-                //    throw new Exception("You need to use a version of MyCaffe >= '" + m_strExpectedMyCaffeVersion + "'!");
+                if (!version_check(mycaffe, m_strExpectedMyCaffeVersion))
+                    throw new Exception("You need to use a version of MyCaffe >= '" + m_strExpectedMyCaffeVersion + "'!");
 
                 // Load the model and solver for training.
                 mycaffe.LoadLite(Phase.TRAIN, strSolver, strModel);
@@ -82,6 +82,7 @@ namespace MeanErrorLoss
                 mycaffe.GetInternalSolver().OnTestingIteration += Program_OnTestingIteration;
                 // Set the OnTestResults event so that we can compare the output with the target.
                 mycaffe.GetInternalSolver().OnTestResults += Program_OnTestResults;
+                // Set the OnSnapshot event so that we can notify when the best accuracies are received.
                 mycaffe.GetInternalSolver().OnSnapshot += Program_OnSnapshot;
 
                 // Train for 300 epochs.
@@ -185,15 +186,6 @@ namespace MeanErrorLoss
         /// <param name="e">Specifies the testing arguments.</param>
         private static void Program_OnTestingIteration(object sender, MyCaffe.common.TestingIterationArgs<float> e)
         {
-            Solver<float> solver = sender as Solver<float>;
-
-            Net<float> net = solver.TestingNet;
-            Blob<float> dataBlob = net.blob_by_name("data");
-            Blob<float> labelBlob = net.blob_by_name("label");
-
-            Tuple<float[], float[]> data = m_dsTest.GetData(m_nBatch);
-            dataBlob.mutable_cpu_data = data.Item1;
-            labelBlob.mutable_cpu_data = data.Item2;
         }
 
         /// <summary>
@@ -203,21 +195,26 @@ namespace MeanErrorLoss
         /// <param name="e">Specifies the testing arguments.</param>
         private static void Program_OnTestResults(object sender, TestResultArgs<float> e)
         {
-            float[] rgLabels = e.Results[0].mutable_cpu_data;
+            float[] rgTarget = e.Results[0].mutable_cpu_data;
             float[] rgPredicted = e.Results[1].mutable_cpu_data;
 
             int nMatchCount = 0;
-            for (int i = 0; i < rgLabels.Length; i++)
+            for (int i = 0; i < rgTarget.Length; i++)
             {
-                float fDiff = rgLabels[i] - rgPredicted[i];
+                float fDiff = rgTarget[i] - rgPredicted[i];
                 if (fDiff < 0.00001)
                     nMatchCount++;
             }
 
-            e.Accuracy = (double)nMatchCount / rgLabels.Length;
+            e.Accuracy = (double)nMatchCount / rgTarget.Length;
             e.AccuracyValid = true;
         }
 
+        /// <summary>
+        /// Event called each time a better accuracy is found.
+        /// </summary>
+        /// <param name="sender">Specifies the sender - the Solver</param>
+        /// <param name="e">Specifies the snapshot arguments, including the current accuracy.</param>
         private static void Program_OnSnapshot(object sender, SnapshotArgs e)
         {
             Console.WriteLine("Accuracy = " + e.Accuracy.ToString("P"));
