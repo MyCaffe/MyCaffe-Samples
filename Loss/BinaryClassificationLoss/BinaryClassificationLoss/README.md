@@ -1,5 +1,5 @@
 # MyCaffe Binary Classification Loss Sample
-MyCaffe Binary Classification sample solves a simple 2-class classification problem where the model learns to determinen whether a given point falls within 
+MyCaffe Binary Classification sample solves a simple 2-class classification problem where the model learns to determine whether a given point falls within 
 one of two circles of dots (created with Python SciKit-Learn make_circles()) shown below.  NOTE: This sample requires MyCaffe version 1.11.6.46 or later.
 
 ![Dataset](https://github.com/MyCaffe/MyCaffe-Samples/blob/master/Loss/BinaryClassificationLoss/BinaryClassificationLoss/Documents/circles_dataset.png)
