@@ -42,6 +42,7 @@ namespace MeanErrorLoss
         /// </remarks>
         static void Main(string[] args)
         {
+            // Load dataset that is already centered and normalized.
             string strFile = AssemblyDirectory + "\\dataset\\dataset_norm.txt";
             Dataset ds = new Dataset();
 
