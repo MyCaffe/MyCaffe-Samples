@@ -95,8 +95,8 @@ namespace BinaryClassificationLoss
                 // Set the OnSnapshot event so that we can notify when the best accuracies are received.
                 mycaffe.GetInternalSolver().OnSnapshot += Program_OnSnapshot;
 
-                // Train for 700 epochs.
-                int nIterations = (700 * m_dsTrain.Count) / m_nBatch;
+                // Train for 300 epochs.
+                int nIterations = (300 * m_dsTrain.Count) / m_nBatch;
                 mycaffe.Train(nIterations);
             }
             catch (Exception excpt)
