@@ -22,10 +22,12 @@ All models were trained for 300 epochs and as shown below, even though all model
 - Softmax Loss: 78.13%
 - Softmax Cross Entropy Loss: 77.19%
 
+Unlike in the 2-class sample, in this 3-class sample we use the MyCaffe [Accuracy layer](https://www.signalpop.com/onlinehelp/mycaffe/html/class_my_caffe_1_1layers_1_1_accuracy_layer.html) to calculate all accuracies for each model.
+
 ## Hinge Loss
 The Hinge Loss calculates the loss by incorporating a margin or distance into the loss function.  See [Understanding Hinge Loss and the SVM Cost Function](https://programmathically.com/understanding-hinge-loss-and-the-svm-cost-function/) for more information.
 
-![Hinge Loss Model](https://github.com/MyCaffe/MyCaffe-Samples/blob/master/Loss/BinaryClassificationLoss/BinaryClassificationLoss/Documents/hinge_loss_model.png)
+![Hinge Loss Model](https://github.com/MyCaffe/MyCaffe-Samples/blob/master/Loss/MultiClassClassificationLoss/MultiClassClassificationLoss/Documents/hinge_loss_model.png)
 
 The results of running the Hinge Loss model over 300 epochs are as follows.
 
