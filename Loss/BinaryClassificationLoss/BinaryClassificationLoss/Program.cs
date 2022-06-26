@@ -114,7 +114,7 @@ namespace BinaryClassificationLoss
         }
 
         /// <summary>
-        /// Query the user for the binary loss type to use (default = SigmoidCrossEntropeLoss 'SigmoidCE').
+        /// Query the user for the binary loss type to use (default = SigmoidCrossEntropeLoss 'Softmax').
         /// </summary>
         /// <returns>The LOSS_TYPE type is returned.</returns>
         private static LOSS_TYPE get_loss_type()
@@ -297,7 +297,7 @@ namespace BinaryClassificationLoss
             NetParameter net = new NetParameter();
             net.name = lossType.ToString().ToLower() + "_model";
 
-            // Create the input layer with inputs data->(32,1,1,2), label->(32,1,1,2)
+            // Create the input layer with inputs data->(32,1,1,2), label->(32,1,1,1)
             LayerParameter input = new LayerParameter(LayerParameter.LayerType.INPUT);
             input.name = "input";
             input.top.Add("data");
