@@ -8,10 +8,10 @@ Note the labels for this dataset are set to 0 and 1.
 
 The input shape to each of the models discussed below is: 
 
-'''
+```
  Data shape  (batch, 1, 1, 2), 
  Label shape (batch, 1, 1, 1) 
-'''
+```
 
 where the label contains each actual label value of 0 or 1.
 
