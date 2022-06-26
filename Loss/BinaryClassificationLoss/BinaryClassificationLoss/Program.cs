@@ -55,7 +55,7 @@ namespace BinaryClassificationLoss
         {
             Dataset ds = new Dataset();
 
-            // Load the dataset which contains the y (1000) and X (1000,20) values.
+            // Load the dataset which contains the y (1000) and X (1000,2) values.
             ds.Load("circles_dataset_raw.txt");
             // Split the dataset in half into training and testing sets.
             Tuple<Dataset, Dataset> data = ds.Split(0.5);
