@@ -18,7 +18,7 @@ namespace BinaryClassificationLoss
         /// <summary>
         /// Specifies the minimum version of MyCaffe supported.
         /// </summary>
-        static string m_strExpectedMyCaffeVersion = "1.11.6.46";
+        static string m_strExpectedMyCaffeVersion = "1.11.6.45";
         /// <summary>
         /// Specifies the training dataset.
         /// </summary>
@@ -298,7 +298,7 @@ namespace BinaryClassificationLoss
 
             // Create the activation function.
             LayerParameter activation1 = new LayerParameter(LayerParameter.LayerType.SIGMOID);
-            activation1.name = "relu1";
+            activation1.name = "sigmoid1";
             activation1.bottom.Add("dense1");
             activation1.top.Add("dense1");
             net.layer.Add(activation1);
