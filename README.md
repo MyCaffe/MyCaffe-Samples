@@ -19,6 +19,7 @@ models using Python.
 <b>[Seq2Seq](https://github.com/MyCaffe/MyCaffe-Samples/tree/master/Seq2Seq)</b> has several demonstrations that show how to learn a Sin curve using an encoder/decoder model and also how to learn a Sin curve using MNIST hand-written
 characters that are associated with different parts of the Sin curve.
 
+<b>[Loss](https://github.com/MyCaffe/MyCaffe-Samples/tree/master/Loss)</b> has several demonstrations that show how to use the various loss functions to solve regresssion, binary classification, multi-class classification and multi-label classification problems.
 
 
 
