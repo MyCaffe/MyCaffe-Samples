@@ -25,7 +25,7 @@ namespace MultiLabelClassificationLoss
         /// <summary>
         /// Specifies the batch size.
         /// </summary>
-        static int m_nBatch = 32;
+        static int m_nBatch = 128;
         static int m_nInputCount = 2;   // input items per each input.
         static int m_nClassCount = 8;   // classes
 
@@ -87,9 +87,9 @@ namespace MultiLabelClassificationLoss
                 // Set the OnSnapshot event so that we can notify when the best accuracies are received.
                 mycaffe.GetInternalSolver().OnSnapshot += Program_OnSnapshot;
 
-                // Train for 300 epochs.
+                // Train for 2 epochs.
                 int nTrainCount = db.GetDatasetById(nDatasetId).TrainingSource.ImageCount;
-                int nIterations = (300 * nTrainCount) / m_nBatch;
+                int nIterations = (2 * nTrainCount) / m_nBatch;
                 mycaffe.Train(nIterations);
             }
             catch (Exception excpt)
@@ -175,7 +175,7 @@ namespace MultiLabelClassificationLoss
         /// <param name="e">Specifies the snapshot arguments, including the current accuracy.</param>
         private static void Program_OnSnapshot(object sender, SnapshotArgs e)
         {
-            Console.WriteLine("Accuracy = " + e.Accuracy.ToString("P"));
+            Console.WriteLine("Accuracy = " + e.Accuracy.ToString("P") + " at iteraction " + e.Iteration.ToString());
         }
 
         /// <summary>
@@ -248,9 +248,9 @@ namespace MultiLabelClassificationLoss
 
             // Add the convolution blocks.
             string strLayer = "data";            
-            strLayer = build_model_add_block(net, "a", strLayer, 32);
-            strLayer = build_model_add_block(net, "b", strLayer, 64);
-            strLayer = build_model_add_block(net, "c", strLayer, 128);
+            strLayer = build_model_add_block(net, "a", strLayer, 32, 0.2);
+            strLayer = build_model_add_block(net, "b", strLayer, 64, 0.2);
+            strLayer = build_model_add_block(net, "c", strLayer, 128, 0.2);
             
             // Create the first Dense layer with 50 outputs.
             LayerParameter dense1 = new LayerParameter(LayerParameter.LayerType.INNERPRODUCT);
@@ -269,6 +269,14 @@ namespace MultiLabelClassificationLoss
             activation1.bottom.Add("dense1");
             activation1.top.Add("dense1");
             net.layer.Add(activation1);
+
+            LayerParameter dropout = new LayerParameter(LayerParameter.LayerType.DROPOUT);
+            dropout.name = "drop2";
+            dropout.bottom.Add("dense1");
+            dropout.top.Add("dense1");
+            dropout.dropout_param.active = true;
+            dropout.dropout_param.dropout_ratio = 0.5;
+            net.layer.Add(dropout);
 
             // Create the second Dense layer with 1 output.
             LayerParameter dense2 = new LayerParameter(LayerParameter.LayerType.INNERPRODUCT);
@@ -339,7 +347,7 @@ namespace MultiLabelClassificationLoss
         /// <param name="strInputLayer">Specifies the input laye name.</param>
         /// <param name="nKernels">Specifies the convolution kernels.</param>
         /// <returns>Returns the output layer name.</returns>
-        private static string build_model_add_block(NetParameter net, string strName, string strInputLayer, int nKernels)
+        private static string build_model_add_block(NetParameter net, string strName, string strInputLayer, int nKernels, double dfDropout)
         {
             // Block 1
             LayerParameter conv1 = new LayerParameter(LayerParameter.LayerType.CONVOLUTION);
@@ -380,6 +388,17 @@ namespace MultiLabelClassificationLoss
             pool1.pooling_param.kernel_size.Add(2);
             pool1.pooling_param.stride.Add(1);
             net.layer.Add(pool1);
+            
+            if (dfDropout > 0)
+            {
+                LayerParameter dropout = new LayerParameter(LayerParameter.LayerType.DROPOUT);
+                dropout.name = "drop1" + strName;
+                dropout.bottom.Add("pool1" + strName);
+                dropout.top.Add("pool1" + strName);
+                dropout.dropout_param.active = true;
+                dropout.dropout_param.dropout_ratio = dfDropout;
+                net.layer.Add(dropout);
+            }
 
             return pool1.name;
         }
