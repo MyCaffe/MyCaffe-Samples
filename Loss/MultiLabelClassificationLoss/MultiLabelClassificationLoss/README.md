@@ -20,8 +20,8 @@ images, just run the [MyCaffe Test Application](https://github.com/MyCaffe/MyCaf
 3. Press the 'Download' button to download the files which by default download to the '\ProgramData\MyCaffe\test_data\mnist' directory
 4. Copy the 'testing' and 'training' directories from your download location to '..\MyCaffe-Samples\Loss\MultiLabelClassificationLoss\MultiLabelClassificationLoss\dataset' directory
 ```
-**NOTE:** Even though the export above does not require SQL (or SQL Express), this sample does requires SQL (or SQL Express) for it loads the MNIST dataset with one-hot encoded labels into a special KARS dataset into SQL.
-Once loaded into SQL, the sample merely queries the dataset directly from SQL using the MyCaffe in-memory database.
+**NOTE:** Even though the export above does not require SQL (or SQL Express), this sample does requires SQL (or SQL Express) for it loads the MNIST dataset with one-hot encoded labels into a special KARS dataset stored in the DNN SQL database.
+Once loaded, the sample merely queries the dataset directly from SQL using the MyCaffe in-memory database.
 
 ## One-hot Encoding
 The label of each MNIST image is one-hot encoded.  This means that the label is a vector of length 8 with a 1 indicating each attribute that the label meets. As shown below, there are 7 attributes used to describe each MNIST character.
