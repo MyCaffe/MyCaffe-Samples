@@ -20,6 +20,9 @@
 **/bin/*
 *.pro.*
 
+**/testing/*
+**/training/*
+
 # Build results
 
 [Dd]ebug/
