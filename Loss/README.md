@@ -8,3 +8,4 @@ The samples in this area cover various types of loss functions including the fol
 
 **[Multi-Class Classification](https://github.com/MyCaffe/MyCaffe-Samples/tree/master/Loss/MultiClassClassificationLoss/MultiClassClassificationLoss)** - multi-class classification loss functions are used to solver n-class problems.  For example, determining the character value of a handwritten digit is a multi-class problem.
 
+**[Multi-Label Classification](https://github.com/MyCaffe/MyCaffe-Samples/tree/master/Loss/MultiLabelClassificationLoss/MultiLabelClassificationLoss)** - multi-label classification loss function solves multi-label problems.  For example, determining the attributes of a handwritten image is a multi-label problem.
