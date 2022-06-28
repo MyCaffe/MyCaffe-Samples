@@ -2,7 +2,13 @@
 The MyCaffe Multi-Label Classification sample solves problems where the model learns one or more labels per input.  In this sample, we describe 
 each hand-written character in the MNIST dataset with one or more of 7 characteristics as shown below.
 
-![MNIST Characteristics](https://github.com/MyCaffe/MyCaffe-Samples/blob/master/Loss/MultiLabelClassificationLoss/MultiLabelClassificationLoss/Documents/MNIST_MultiClassification.png)
+0. **Loop** - the character has a loop.
+1. **Top Loop** - the character has a loop in the top portion.
+2. **Bottom Loop** - the character has a loop in the bottom portion.
+3. **Angle** - the character has an angled line in it.
+4. **Top Curve** - the character has a curve in the top portion.
+5. **Bottom Curve** - the character has a curve in the bottom portion.
+6. **Line** - the character has a straight line in it.
 
 This same model could also be used to learn the characteristics of the Kaggel Amazon Rainforest Satellite Image Dataset, however we have found aquiring this dataset to be
 very time consuming.  So, in the mean-time we have created a very simple replica of the problem using the MNIST dataset which is very readily available.  To create the MNIST
