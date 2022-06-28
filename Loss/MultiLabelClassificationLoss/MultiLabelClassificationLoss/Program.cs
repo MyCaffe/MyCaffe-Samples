@@ -32,9 +32,7 @@ namespace MultiLabelClassificationLoss
         public enum LOSS_TYPE
         {
             HINGE = 1,
-            SIGMOIDCE = 2,
-            SOFTMAXCE = 3,
-            SOFTMAX = 4
+            SIGMOIDCE = 2
         }
 
         /// <summary>
