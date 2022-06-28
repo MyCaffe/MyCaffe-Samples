@@ -10,8 +10,8 @@ each hand-written character in the MNIST dataset with one or more of 7 character
 5. **Bottom Curve** - the character has a curve in the bottom portion.
 6. **Line** - the character has a straight line in it.
 
-This same model could also be used to learn the characteristics of the Kaggel Amazon Rainforest Satellite Image Dataset, however we have found aquiring this dataset to be
-very time consuming.  So, in the mean-time we have created a very simple replica of the problem using the MNIST dataset which is very readily available.  To create the MNIST
+This same model could also be used to learn the characteristics of the Kaggle Amazon Rainforest Satellite Image Dataset; however we have found acquiring this dataset to be
+very time consuming.  So, in the meantime we have created a very simple replica of the problem using the MNIST dataset which is very readily available.  To create the MNIST
 images, just run the [MyCaffe Test Application](https://github.com/MyCaffe/MyCaffe/releases) and follow the instructions below.
 
 ```
@@ -20,7 +20,7 @@ images, just run the [MyCaffe Test Application](https://github.com/MyCaffe/MyCaf
 3. Press the 'Download' button to download the files which by default download to the '\ProgramData\MyCaffe\test_data\mnist' directory
 4. Copy the 'testing' and 'training' directories from your download location to '..\MyCaffe-Samples\Loss\MultiLabelClassificationLoss\MultiLabelClassificationLoss\dataset' directory
 ```
-NOTE: Even though the export above does not require SQL (or SQL Express), this sample does for when first run, it loads the MNIST dataset with one-hot encoded labes into a special KARS dataset.
+**NOTE:** Even though the export above does not require SQL (or SQL Express), this sample does for when first run, it loads the MNIST dataset with one-hot encoded labels into a special KARS dataset.
 Once loaded into SQL, the sample merely loads the dataset directly from SQL using the MyCaffe in-memory database.
 
 ## One-hot Encoding
@@ -42,7 +42,7 @@ The Hinge Loss calculates the loss by incorporating a margin or distance into th
 
 ![Hinge Loss Model](https://github.com/MyCaffe/MyCaffe-Samples/blob/master/Loss/MultiLabelClassificationLoss/MultiLabelClassificationLoss/Documents/hinge_loss_model2.png)
 
-The results of running the Hinge Loss model over 300 epochs are as follows.
+The results of running the Hinge Loss model over 2 epochs with a batch = 128 are as follows.
 
 ![Hinge Loss Results](https://github.com/MyCaffe/MyCaffe-Samples/blob/master/Loss/MultiLabelClassificationLoss/MultiLabelClassificationLoss/Documents/hinge_loss_results.png)
 
@@ -56,6 +56,6 @@ The Sigmoid Cross Entropy Loss sample used the following model.
 
 ![Sigmoid Cross Entropy Loss Model](https://github.com/MyCaffe/MyCaffe-Samples/blob/master/Loss/MultiLabelClassificationLoss/MultiLabelClassificationLoss/Documents/sigmoidce_loss_model.png)
 
-The results of running the Sigmoid Cross Entropy Loss model over 300 epochs are as follows.
+The results of running the Sigmoid Cross Entropy Loss model over 2 epochs with a batch = 128 are as follows.
 
 ![Sigmoid Cross Entropy Loss Results](https://github.com/MyCaffe/MyCaffe-Samples/blob/master/Loss/MultiLabelClassificationLoss/MultiLabelClassificationLoss/Documents/sigmoidce_loss_results.png)
