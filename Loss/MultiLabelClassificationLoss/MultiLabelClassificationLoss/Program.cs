@@ -317,24 +317,12 @@ namespace MultiLabelClassificationLoss
                     break;
             }
 
-            if (lossType == LOSS_TYPE.SIGMOIDCE)
-            {
-                LayerParameter sigmoid = new LayerParameter(LayerParameter.LayerType.SIGMOID);
-                sigmoid.name = "sigmoid";
-                sigmoid.bottom.Add("dense2");
-                sigmoid.top.Add("sigmoid");
-                sigmoid.include.Add(new NetStateRule(Phase.TEST));
-                net.layer.Add(sigmoid);
-            }
-            else
-            {
-                LayerParameter softmax = new LayerParameter(LayerParameter.LayerType.SOFTMAX);
-                softmax.name = "softmax";
-                softmax.bottom.Add("dense2");
-                softmax.top.Add("softmax");
-                softmax.include.Add(new NetStateRule(Phase.TEST));
-                net.layer.Add(softmax);
-            }
+            LayerParameter sigmoid = new LayerParameter(LayerParameter.LayerType.SIGMOID);
+            sigmoid.name = "sigmoid";
+            sigmoid.bottom.Add("dense2");
+            sigmoid.top.Add("sigmoid");
+            sigmoid.include.Add(new NetStateRule(Phase.TEST));
+            net.layer.Add(sigmoid);
 
             return net.ToProto("root").ToString();
         }
