@@ -1,5 +1,5 @@
 # == Image Classification Sample ==
-# IMPORTANT: This sample requires the MyCaffe AI Platform version 1.11.6.38 or greater.
+# IMPORTANT: This sample requires the MyCaffe AI Platform version 1.11.7.7 or greater.
 # This sample requires:
 #   * Installing and running the MyCaffe AI Platform which is located at
 #     https://github.com/MyCaffe/MyCaffe/releases
@@ -52,7 +52,7 @@ project.ModelDescription = strModel
 project.SolverDescription = strSolver
 
 # Create the MyCaffeControl (with the 'float' base type)
-strCudaPath = "C:\\Program Files\\SignalPop\\MyCaffe\\cuda_11.6\\CudaDnnDll.11.6.dll"
+strCudaPath = "C:\\Program Files\\SignalPop\\MyCaffe\\cuda_11.7\\CudaDnnDll.11.7.dll"
 mycaffe = MyCaffeControl[float](settings, log, cancel, None, None, None, None, strCudaPath)
 
 # Load the project, using the TRAIN phase
