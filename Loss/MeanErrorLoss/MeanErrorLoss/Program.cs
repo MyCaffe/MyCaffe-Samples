@@ -16,9 +16,9 @@ namespace MeanErrorLoss
     internal class Program
     {
         /// <summary>
-        /// This sample requires version 1.11.6.45 or greater.
+        /// This sample requires version 1.11.7.7 or greater.
         /// </summary>
-        static string m_strExpectedMyCaffeVersion = "1.11.6.45";
+        static string m_strExpectedMyCaffeVersion = "1.11.7.7";
         /// <summary>
         /// Specifies the training dataset.
         /// </summary>
