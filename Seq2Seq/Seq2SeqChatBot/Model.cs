@@ -281,7 +281,7 @@ namespace Seq2SeqChatBot
 
                 LayerParameter accuracy = new LayerParameter(LayerParameter.LayerType.ACCURACY);
                 accuracy.accuracy_param.axis = 2;
-                accuracy.accuracy_param.ignore_label = 0;
+                accuracy.accuracy_param.ignore_labels.Add(0);
                 accuracy.bottom.Add("ip1");
                 accuracy.bottom.Add("label");
                 accuracy.top.Add("accuracy");

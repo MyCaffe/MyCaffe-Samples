@@ -67,7 +67,7 @@ namespace SinCurve
 
         private static void copyCudaDnnDll()
         {
-            string strDll = AssemblyDirectory + "\\CudaDnnDll.11.6.dll";
+            string strDll = AssemblyDirectory + "\\CudaDnnDll.11.7.dll";
 
             if (!File.Exists(strDll))
             {
@@ -77,9 +77,9 @@ namespace SinCurve
                     return;
 
                 string strSrc = strDll.Substring(0, nPos + strTarget.Length);
-                strSrc += "\\Seq2Seq\\packages\\MyCaffe.0.11.6.86-beta1\\nativeBinaries\\x64";
+                strSrc += "\\Seq2Seq\\packages\\MyCaffe.1.11.7.7\\nativeBinaries\\x64";
 
-                File.Copy(strSrc + "\\CudaDnnDll.11.6.dll", strDll);
+                File.Copy(strSrc + "\\CudaDnnDll.11.7.dll", strDll);
             }
         }
 
@@ -96,7 +96,7 @@ namespace SinCurve
 
         static bool checkMyCaffeVersion()
         {
-            string strMinVer = "0.11.6.86"; // Requires MyCaffe version 0.11.6.86 or greater.
+            string strMinVer = "1.11.7.7"; // Requires MyCaffe version 1.11.7.7 or greater.
 
             try
             {
