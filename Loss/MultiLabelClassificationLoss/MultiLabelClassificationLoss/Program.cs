@@ -21,7 +21,7 @@ namespace MultiLabelClassificationLoss
         /// <summary>
         /// Specifies the minimum version of MyCaffe supported.
         /// </summary>
-        static string m_strExpectedMyCaffeVersion = "1.11.6.46";
+        static string m_strExpectedMyCaffeVersion = "1.11.7.7";
         /// <summary>
         /// Specifies the batch size.
         /// </summary>
