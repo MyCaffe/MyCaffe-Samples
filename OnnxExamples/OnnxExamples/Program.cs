@@ -61,7 +61,7 @@ namespace OnnxExamples
         static void Main(string[] args)
         {
             // Get the ONNX file to import.
-            string strOnnxModelUrl = "https://github.com/onnx/models/raw/master/vision/classification/alexnet/model/bvlcalexnet-9.onnx";
+            string strOnnxModelUrl = "https://github.com/onnx/models/raw/main/vision/classification/alexnet/model/bvlcalexnet-9.onnx";
             string strOnnxFile = downloadFile(strOnnxModelUrl);
 
             // Create the MyCaffe conversion control
