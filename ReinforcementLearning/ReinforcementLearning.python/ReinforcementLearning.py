@@ -227,11 +227,13 @@ project.ModelDescription = strModel
 project.SolverDescription = strSolver
 
 # Create the MyCaffeControl (with the 'float' base type)
-strCudaPath = "C:\\Program Files\\SignalPop\\MyCaffe\\cuda_11.7\\CudaDnnDll.11.7.dll"
+strCudaPath = "C:\\Program Files\\SignalPop\\MyCaffe\\cuda_11.8\\CudaDnnDll.11.8.dll"
 mycaffe = MyCaffeControl[float](settings, log, cancel, None, None, None, None, strCudaPath)
 
 # Load the project, using the TRAIN phase
 mycaffe.Load(Phase.TRAIN, project, None, None, False, None, False, True, 'RL')
+# NOTE: You must run the MyCaffe Test Application which starts the Gym, otherwise the
+# call below will fail.
 gym.OpenUi()
 
 # Train the model for 1000000 iterations
