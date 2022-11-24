@@ -67,7 +67,7 @@ namespace SinCurve
 
         private static void copyCudaDnnDll()
         {
-            string strDll = AssemblyDirectory + "\\CudaDnnDll.11.7.dll";
+            string strDll = AssemblyDirectory + "\\CudaDnnDll.11.8.dll";
 
             if (!File.Exists(strDll))
             {
@@ -77,9 +77,9 @@ namespace SinCurve
                     return;
 
                 string strSrc = strDll.Substring(0, nPos + strTarget.Length);
-                strSrc += "\\Seq2Seq\\packages\\MyCaffe.1.11.7.7\\nativeBinaries\\x64";
+                strSrc += "\\Seq2Seq\\packages\\MyCaffe.1.11.8.27\\nativeBinaries\\x64";
 
-                File.Copy(strSrc + "\\CudaDnnDll.11.7.dll", strDll);
+                File.Copy(strSrc + "\\CudaDnnDll.11.8.dll", strDll);
             }
         }
 

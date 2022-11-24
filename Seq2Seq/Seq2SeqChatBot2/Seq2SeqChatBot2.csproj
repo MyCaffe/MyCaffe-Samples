@@ -51,14 +51,14 @@
     <Reference Include="Microsoft.SqlServer.Types, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.SqlServer.Types.14.0.1016.290\lib\net40\Microsoft.SqlServer.Types.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe, Version=1.11.7.7, Culture=neutral, PublicKeyToken=e967ea19bfd47a89, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.1.11.7.7\lib\net40\MyCaffe.dll</HintPath>
+    <Reference Include="MyCaffe, Version=1.11.8.27, Culture=neutral, PublicKeyToken=e967ea19bfd47a89, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.1.11.8.27\lib\net40\MyCaffe.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.basecode, Version=1.11.7.7, Culture=neutral, PublicKeyToken=2541b18e2b82928f, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.1.11.7.7\lib\net40\MyCaffe.basecode.dll</HintPath>
+    <Reference Include="MyCaffe.basecode, Version=1.11.8.27, Culture=neutral, PublicKeyToken=2541b18e2b82928f, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.1.11.8.27\lib\net40\MyCaffe.basecode.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.layers.beta, Version=1.11.7.7, Culture=neutral, PublicKeyToken=2ce3179af427881e, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.1.11.7.7\lib\net40\MyCaffe.layers.beta.dll</HintPath>
+    <Reference Include="MyCaffe.layers.beta, Version=1.11.8.27, Culture=neutral, PublicKeyToken=2ce3179af427881e, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.1.11.8.27\lib\net40\MyCaffe.layers.beta.dll</HintPath>
     </Reference>
     <Reference Include="SimpleGraphing, Version=1.11.7.7, Culture=neutral, PublicKeyToken=db1fd361618e40f6, processorArchitecture=MSIL">
       <HintPath>..\packages\SimpleGraphingControl.1.11.7.7\lib\net40\SimpleGraphing.dll</HintPath>
@@ -148,8 +148,7 @@
   <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
   <PropertyGroup>
     <PostBuildEvent>
-%25systemroot%25\System32\xcopy /s /y "$(SolutionDir)packages\MyCaffe.1.11.6.38\NativeBinaries\x64\*.*" "$(TargetDir)"
-xcopy /s /y "$(SolutionDir)packages\MyCaffe.1.11.7.7\NativeBinaries\x64\*.*" "$(TargetDir)"</PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Google.Protobuf.Tools.3.21.4\build\Google.Protobuf.Tools.targets" Condition="Exists('..\packages\Google.Protobuf.Tools.3.21.4\build\Google.Protobuf.Tools.targets')" />
 </Project>
