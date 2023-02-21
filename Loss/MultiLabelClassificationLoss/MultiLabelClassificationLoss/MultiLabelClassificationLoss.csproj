@@ -44,8 +44,8 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Protobuf, Version=3.21.4.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Protobuf.3.21.4\lib\net45\Google.Protobuf.dll</HintPath>
+    <Reference Include="Google.Protobuf, Version=3.22.0.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Protobuf.3.22.0\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
     <Reference Include="HDF5DotNet, Version=1.8.9.0, Culture=neutral, PublicKeyToken=a4952c8df86d6e8c, processorArchitecture=AMD64">
       <HintPath>..\packages\HDF5DotNet.x64.1.8.9\lib\Net40\HDF5DotNet.dll</HintPath>
@@ -53,20 +53,20 @@
     <Reference Include="Microsoft.SqlServer.Types, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.SqlServer.Types.14.0.1016.290\lib\net40\Microsoft.SqlServer.Types.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe, Version=1.11.8.27, Culture=neutral, PublicKeyToken=e967ea19bfd47a89, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.1.11.8.27\lib\net40\MyCaffe.dll</HintPath>
+    <Reference Include="MyCaffe, Version=1.12.0.60, Culture=neutral, PublicKeyToken=e967ea19bfd47a89, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.1.12.0.60\lib\net40\MyCaffe.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.basecode, Version=1.11.8.27, Culture=neutral, PublicKeyToken=2541b18e2b82928f, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.1.11.8.27\lib\net40\MyCaffe.basecode.dll</HintPath>
+    <Reference Include="MyCaffe.basecode, Version=1.12.0.60, Culture=neutral, PublicKeyToken=2541b18e2b82928f, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.1.12.0.60\lib\net40\MyCaffe.basecode.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.data, Version=1.11.8.27, Culture=neutral, PublicKeyToken=5ee1e9f5e32cff5e, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.1.11.8.27\lib\net40\MyCaffe.data.dll</HintPath>
+    <Reference Include="MyCaffe.data">
+      <HintPath>..\packages\MyCaffe.1.12.0.60\lib\net40\MyCaffe.data.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.db.image, Version=1.11.8.27, Culture=neutral, PublicKeyToken=e3ffe6b7993441fb, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.1.11.8.27\lib\net40\MyCaffe.db.image.dll</HintPath>
+    <Reference Include="MyCaffe.db.image">
+      <HintPath>..\packages\MyCaffe.1.12.0.60\lib\net40\MyCaffe.db.image.dll</HintPath>
     </Reference>
-    <Reference Include="MyCaffe.layers.beta, Version=1.11.8.27, Culture=neutral, PublicKeyToken=2ce3179af427881e, processorArchitecture=MSIL">
-      <HintPath>..\packages\MyCaffe.1.11.8.27\lib\net40\MyCaffe.layers.beta.dll</HintPath>
+    <Reference Include="MyCaffe.layers.beta, Version=1.12.0.60, Culture=neutral, PublicKeyToken=2ce3179af427881e, processorArchitecture=MSIL">
+      <HintPath>..\packages\MyCaffe.1.12.0.60\lib\net40\MyCaffe.layers.beta.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -117,12 +117,11 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
     <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
-    <Error Condition="!Exists('..\packages\Google.Protobuf.Tools.3.21.4\build\Google.Protobuf.Tools.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Google.Protobuf.Tools.3.21.4\build\Google.Protobuf.Tools.targets'))" />
+    <Error Condition="!Exists('..\packages\Google.Protobuf.Tools.3.22.0\build\Google.Protobuf.Tools.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Google.Protobuf.Tools.3.22.0\build\Google.Protobuf.Tools.targets'))" />
   </Target>
   <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>copy "$(SolutionDir)packages\MyCaffe.1.12.0.60\NativeBinaries\x64\*.*" "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\Google.Protobuf.Tools.3.21.4\build\Google.Protobuf.Tools.targets" Condition="Exists('..\packages\Google.Protobuf.Tools.3.21.4\build\Google.Protobuf.Tools.targets')" />
+  <Import Project="..\packages\Google.Protobuf.Tools.3.22.0\build\Google.Protobuf.Tools.targets" Condition="Exists('..\packages\Google.Protobuf.Tools.3.22.0\build\Google.Protobuf.Tools.targets')" />
 </Project>
