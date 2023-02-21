@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("SignalPop LLC")]
 [assembly: AssemblyProduct("BinaryClassificationLoss")]
-[assembly: AssemblyCopyright("Copyright ©  2022 SignalPop LLC. All rights reserved.")]
+[assembly: AssemblyCopyright("Copyright © 2022-2023 SignalPop LLC. All rights reserved.")]
 [assembly: AssemblyTrademark("SignalPop")]
 [assembly: AssemblyCulture("")]
 

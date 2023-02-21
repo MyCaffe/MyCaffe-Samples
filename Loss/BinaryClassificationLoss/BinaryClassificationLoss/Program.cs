@@ -18,7 +18,7 @@ namespace BinaryClassificationLoss
         /// <summary>
         /// Specifies the minimum version of MyCaffe supported.
         /// </summary>
-        static string m_strExpectedMyCaffeVersion = "1.11.7.7";
+        static string m_strExpectedMyCaffeVersion = "1.12.0.60";
         /// <summary>
         /// Specifies the training dataset.
         /// </summary>
