@@ -1,5 +1,5 @@
 # == Reinforcement Learning Sample ==
-# IMPORTANT: This sample requires the MyCaffe AI Platform version 1.11.7.7 or greater.
+# IMPORTANT: This sample requires the MyCaffe AI Platform version 1.12.0.60 or greater.
 # This sample requires:
 #   * Installing and running the MyCaffe AI Platform which is located at
 #     https://github.com/MyCaffe/MyCaffe/releases
@@ -214,7 +214,7 @@ strModel = file.read()
 try:
     ds = gym.GetDataset(DATA_TYPE.VALUES)
 except Exception as e:
-    print("You must have MyCaffe version 0.11.6.86 or greater to run this sample!")
+    print("You must have MyCaffe version 0.12.0.60 or greater to run this sample!")
     print(".")
     print(".")
     quit()
