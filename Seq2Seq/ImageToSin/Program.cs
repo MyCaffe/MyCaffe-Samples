@@ -25,7 +25,7 @@ namespace ImageToSin
 
         static bool checkMyCaffeVersion()
         {
-            string strMinVer = "1.11.7.7"; // Requires MyCaffe version 1.11.7.7 or greater.
+            string strMinVer = "1.12.0.60"; // Required MyCaffe version.
 
             try
             {

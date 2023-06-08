@@ -77,7 +77,7 @@ namespace SinCurve
                     return;
 
                 string strSrc = strDll.Substring(0, nPos + strTarget.Length);
-                strSrc += "\\Seq2Seq\\packages\\MyCaffe.1.11.8.27\\nativeBinaries\\x64";
+                strSrc += "\\Seq2Seq\\packages\\MyCaffe.1.12.0.60\\nativeBinaries\\x64";
 
                 File.Copy(strSrc + "\\CudaDnnDll.11.8.dll", strDll);
             }
@@ -96,7 +96,7 @@ namespace SinCurve
 
         static bool checkMyCaffeVersion()
         {
-            string strMinVer = "1.11.7.7"; // Requires MyCaffe version 1.11.7.7 or greater.
+            string strMinVer = "1.12.0.60"; // Required MyCaffe version.
 
             try
             {

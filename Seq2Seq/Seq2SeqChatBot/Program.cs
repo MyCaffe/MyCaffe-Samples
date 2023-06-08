@@ -25,7 +25,7 @@ namespace Seq2SeqChatBot
 
         static bool checkMyCaffeVersion()
         {
-            string strMinVer = "0.11.3.23"; // Requires MyCaffe version 0.11.3.23 or greater.
+            string strMinVer = "1.12.0.60"; // Required MyCaffe version.
 
             try
             {
