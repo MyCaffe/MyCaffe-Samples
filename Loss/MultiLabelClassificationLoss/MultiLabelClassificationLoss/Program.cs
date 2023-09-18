@@ -21,7 +21,7 @@ namespace MultiLabelClassificationLoss
         /// <summary>
         /// Specifies the minimum version of MyCaffe supported.
         /// </summary>
-        static string m_strExpectedMyCaffeVersion = "1.12.0.60";
+        static string m_strExpectedMyCaffeVersion = "1.12.2.41";
         /// <summary>
         /// Specifies the batch size.
         /// </summary>
@@ -173,7 +173,7 @@ namespace MultiLabelClassificationLoss
         /// <param name="e">Specifies the snapshot arguments, including the current accuracy.</param>
         private static void Program_OnSnapshot(object sender, SnapshotArgs e)
         {
-            Console.WriteLine("Accuracy = " + e.Accuracy.ToString("P") + " at iteraction " + e.Iteration.ToString());
+            Console.WriteLine("Accuracy = " + e.Accuracy.ToString("P") + " at iteration " + e.Iteration.ToString());
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace MultiLabelClassificationLoss
             // Run on GPU 0
             settings = new SettingsCaffe();
             settings.GpuIds = "0";
-            settings.ImageDbLoadMethod = IMAGEDB_LOAD_METHOD.LOAD_ALL;
+            settings.DbLoadMethod = DB_LOAD_METHOD.LOAD_ALL;
 
             // Return the MyCaffe instance.
             return new MyCaffeControl<float>(settings, log, evtCancel);
@@ -511,7 +511,7 @@ namespace MultiLabelClassificationLoss
             }
 
             m_log.WriteLine("Loading dataset into the MyCaffe in-memory database...");
-            MyCaffeImageDatabase db = new MyCaffe.db.image.MyCaffeImageDatabase(m_log);
+            MyCaffeImageDatabase2 db = new MyCaffe.db.image.MyCaffeImageDatabase2(m_log);
 
             db.InitializeWithDsId1(settings, nDsId);
             return db;
