@@ -1,5 +1,5 @@
 # == Reinforcement Learning Sample ==
-# IMPORTANT: This sample requires the MyCaffe AI Platform version 1.12.1.82 or greater.
+# IMPORTANT: This sample requires the MyCaffe AI Platform version 1.12.2.41 or greater.
 # This sample requires:
 #   * Installing and running the MyCaffe AI Platform which is located at
 #     https://github.com/MyCaffe/MyCaffe/releases
@@ -199,7 +199,7 @@ cancel = CancelEvent()
 settings = SettingsCaffe()
 
 # Load on demand used for data is received from the Gym.
-settings.ImageDbLoadMethod = IMAGEDB_LOAD_METHOD.LOAD_ON_DEMAND
+settings.DbLoadMethod = DB_LOAD_METHOD.LOAD_ON_DEMAND
 # Use GPU ID = 0
 settings.GpuIds = '0'
 
