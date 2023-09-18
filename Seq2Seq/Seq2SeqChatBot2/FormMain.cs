@@ -270,7 +270,7 @@ namespace Seq2SeqChatBot
             BackgroundWorker bw = sender as BackgroundWorker;
             m_input = e.Argument as InputData;
             SettingsCaffe s = new SettingsCaffe();
-            s.ImageDbLoadMethod = IMAGEDB_LOAD_METHOD.LOAD_ALL;
+            s.DbLoadMethod = DB_LOAD_METHOD.LOAD_ALL;
 
             try
             {

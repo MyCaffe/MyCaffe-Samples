@@ -198,7 +198,7 @@ namespace ImageToSin
             BackgroundWorker bw = sender as BackgroundWorker;
             OPERATION op = (OPERATION)e.Argument;
             SettingsCaffe s = new SettingsCaffe();
-            s.ImageDbLoadMethod = IMAGEDB_LOAD_METHOD.LOAD_ALL;
+            s.DbLoadMethod = DB_LOAD_METHOD.LOAD_ALL;
 
             m_operation = op;
             m_mycaffe = new MyCaffeControl<float>(s, m_log, m_evtCancel);
@@ -283,7 +283,7 @@ namespace ImageToSin
                 for (int t = 0; t < m_model.TimeSteps; t++)
                 {
                     // Get images one number at a time, in order by label, but randomly selected.
-                    SimpleDatum sd = m_imgDb.QueryImage(m_ds.TrainingSource.ID, 0, null, IMGDB_IMAGE_SELECTION_METHOD.RANDOM, m_nLabelSeq);
+                    SimpleDatum sd = m_imgDb.QueryItem(m_ds.TrainingSource.ID, 0, null, DB_ITEM_SELECTION_METHOD.RANDOM, m_nLabelSeq);
                     m_mycaffeInput.Run(sd);
 
                     Net<float> inputNet = m_mycaffeInput.GetInternalNet(Phase.RUN);
@@ -353,7 +353,7 @@ namespace ImageToSin
                 }
 
                 // Get images one number at a time, in order by label, but randomly selected.
-                SimpleDatum sd = m_imgDb.QueryImage(m_ds.TrainingSource.ID, 0, null, IMGDB_IMAGE_SELECTION_METHOD.RANDOM, nLabelSeq);
+                SimpleDatum sd = m_imgDb.QueryItem(m_ds.TrainingSource.ID, 0, null, DB_ITEM_SELECTION_METHOD.RANDOM, nLabelSeq);
                 ResultCollection res = m_mycaffeInput.Run(sd);
 
                 Net<float> inputNet = m_mycaffeInput.GetInternalNet(Phase.RUN);
