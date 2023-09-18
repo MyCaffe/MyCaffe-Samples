@@ -1,5 +1,5 @@
 # == Image Classification Sample ==
-# IMPORTANT: This sample requires the MyCaffe AI Platform version 1.12.1.82 or greater.
+# IMPORTANT: This sample requires the MyCaffe AI Platform version 1.12.2.40 or greater.
 # This sample requires:
 #   * Installing and running the MyCaffe AI Platform which is located at
 #     https://github.com/MyCaffe/MyCaffe/releases
@@ -30,7 +30,7 @@ cancel = CancelEvent()
 settings = SettingsCaffe()
 
 # Load all images into memory before training
-settings.ImageDbLoadMethod = IMAGEDB_LOAD_METHOD.LOAD_ALL
+settings.DbLoadMethod = DB_LOAD_METHOD.LOAD_ALL
 # Use GPU ID = 0
 settings.GpuIds = '0'
 
