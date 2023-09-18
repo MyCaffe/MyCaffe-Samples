@@ -1,5 +1,5 @@
 # == Image Classification Sample ==
-# IMPORTANT: This sample requires the MyCaffe AI Platform version 1.12.2.40 or greater.
+# IMPORTANT: This sample requires the MyCaffe AI Platform version 1.12.2.41 or greater.
 # This sample requires:
 #   * Installing and running the MyCaffe AI Platform which is located at
 #     https://github.com/MyCaffe/MyCaffe/releases
