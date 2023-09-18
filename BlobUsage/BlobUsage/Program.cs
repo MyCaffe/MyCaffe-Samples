@@ -44,6 +44,10 @@ namespace BlobUsage
 
             // Release all GPU memory and other state data used.
             cuda.Dispose();
+
+            Console.WriteLine("Success!");
+            Console.WriteLine("Press any key to exit.");
+            Console.ReadKey();
         }
 
         private static void runSuperSimpleSample(CudaDnn<float> cuda, Log log)
