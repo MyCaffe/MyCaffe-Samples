@@ -38,7 +38,7 @@ namespace ImageToSin
         PlotCollection m_plotsInputLoss = new PlotCollection("Input Training");
         PlotCollection m_plotsSequenceLoss = new PlotCollection("Sequence Training");
         List<ConfigurationTargetLine> m_rgZeroLine = new List<ConfigurationTargetLine>();
-        string m_strInputOutputBlobName = "ip1";
+        string m_strInputOutputBlobName = "ip2";
         List<Tuple<Image, int>> m_rgInputImg = new List<Tuple<Image, int>>();
         AutoResetEvent m_evtForceError = new AutoResetEvent(false);
         OPERATION m_operation = OPERATION.TRAIN;
@@ -82,7 +82,7 @@ namespace ImageToSin
 
         private void copyCudaDnnDll()
         {
-            string strDll = AssemblyDirectory + "\\CudaDnnDll.11.7.dll";
+            string strDll = AssemblyDirectory + "\\CudaDnnDll.11.8.dll";
 
             if (!File.Exists(strDll))
             {
@@ -92,9 +92,9 @@ namespace ImageToSin
                     return;
 
                 string strSrc = strDll.Substring(0, nPos + strTarget.Length);
-                strSrc += "\\Seq2Seq\\packages\\MyCaffe.1.11.7.7\\nativeBinaries\\x64";
+                strSrc += "\\Seq2Seq\\packages\\MyCaffe.1.12.2.40\\nativeBinaries\\x64";
 
-                File.Copy(strSrc + "\\CudaDnnDll.11.7.dll", strDll);
+                File.Copy(strSrc + "\\CudaDnnDll.11.8.dll", strDll);
             }
         }
 
@@ -213,7 +213,8 @@ namespace ImageToSin
             NetParameter netParamMnist = m_model.CreateMnistModel(m_ds);
             SolverParameter solverParamMnist = m_model.CreateMnistSolver();
 
-            byte[] rgWts = loadWeights("input");
+            byte[] rgWts = null;
+            rgWts = loadWeights("input");
             m_mycaffeInput.Load(Phase.TRAIN, solverParamMnist.ToProto("root").ToString(), netParamMnist.ToProto("root").ToString(), rgWts, null, null, false, m_imgDb);
             Net<float> netTrain = m_mycaffeInput.GetInternalNet(Phase.TRAIN);
             Blob<float> input_ip = netTrain.FindBlob(m_strInputOutputBlobName); // input model's second to last output (includes relu)
@@ -231,6 +232,7 @@ namespace ImageToSin
                 NetParameter netParam = m_model.CreateModel(input_ip.channels, 10);
                 string strModel = netParam.ToProto("root").ToString();
                 SolverParameter solverParam = m_model.CreateSolver();
+                rgWts = null;
                 rgWts = loadWeights("sequence");
 
                 m_mycaffe.OnTrainingIteration += m_mycaffe_OnTrainingIteration;
